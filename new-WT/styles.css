@@ -1786,7 +1786,13 @@ h2 {
 
 .sheet__panel {
   position: relative;
-  width: min(520px, 100%);
+  /* 620px flat, per spec, but capped below that: `.sheet`'s own 20px of
+     padding on each side means anything under 660px viewport width can't fit
+     620 — and Chrome's grid "safe center" falls back to start-align once an
+     item overflows its cell, so an uncapped 620px clips 300px of the form off
+     the right edge at 320px wide rather than centering the overflow. The cap
+     only ever engages below 660px; above it this is exactly 620px. */
+  width: min(620px, calc(100% - 40px));
   max-height: 92vh;
   overflow-y: auto;
   padding: 36px 36px 32px;

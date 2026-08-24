@@ -1,0 +1,23 @@
+<!doctype html><meta charset=utf-8><title>sheet sweep</title>
+<script>
+const WIDTHS=[1440,768,700,660,620,600,560,414,390,360,320];
+const load=(w)=>new Promise(res=>{
+  const f=document.createElement("iframe");
+  f.width=w; f.height=900; f.style.cssText="position:fixed;left:-9999px;top:0;border:0";
+  f.src="/index.html";
+  f.onload=()=>setTimeout(()=>{
+    const d=f.contentDocument, win=f.contentWindow;
+    const sheet=d.getElementById("sheet");
+    sheet.hidden=false;
+    const panel=d.querySelector(".sheet__panel");
+    const r=panel.getBoundingClientRect();
+    const overflowX = d.documentElement.scrollWidth - w;
+    res({w, panelW:Math.round(r.width), panelRight:Math.round(r.right), viewportW:w,
+      clipsRight: r.right > w, overflowX});
+    f.remove();
+  },500);
+  document.body.appendChild(f);
+});
+(async()=>{const out=[];for(const w of WIDTHS)out.push(await load(w));
+document.title="DONE:"+JSON.stringify(out);})();
+</script>
