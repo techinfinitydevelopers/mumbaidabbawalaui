@@ -1,0 +1,1197 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mumbai Dabbawala — Perth · Join the waitlist</title>
+    <meta
+      name="description"
+      content="Mumbai's dabbawalas have carried home-cooked lunches since 1890. From 14 September 2026 they come to Perth. Join the waitlist."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Asar&family=Palanquin:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <!-- Inline and in <head> on purpose: this class gates the on-load
+         animations, and adding it from the deferred script at the end of
+         <body> would let one un-animated frame paint first. No class means no
+         animation, so JS-off and reduced-motion both get the plain page. -->
+    <script>
+      if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        document.documentElement.classList.add("page-in");
+      }
+    </script>
+  </head>
+  <body>
+    <!-- The hero's carved bottom-right edge, traced off the reference to ~1px and
+         expressed in objectBoundingBox units so it scales with the container.
+         Absolutely positioned: at 0x0 it would still generate a line box and push
+         the whole page down by one line. -->
+    <svg class="defs" aria-hidden="true" focusable="false">
+      <defs>
+        <clipPath id="hero-cut" clipPathUnits="objectBoundingBox">
+          <!-- Right lobe's bottom edge, then a 40px concave fillet, a 54.5 degree
+               straight chamfer, a 40px convex fillet, and the left lobe's bottom.
+               Every arc is the hero's own 40px corner radius. -->
+          <path
+            d="M0.028736,0
+               H0.971264 A0.028736,0.055944 0 0 1 1,0.055944
+               V0.746853 A0.028736,0.055944 0 0 1 0.971264,0.802797
+               H0.420977 A0.028736,0.055944 0 0 0 0.397558,0.826154
+               L0.342313,0.976923
+               A0.028736,0.055944 0 0 1 0.318966,1
+               H0.028736 A0.028736,0.055944 0 0 1 0,0.944056
+               V0.055944 A0.028736,0.055944 0 0 1 0.028736,0 Z"
+          />
+        </clipPath>
+
+        <!-- Portrait variant of the same idea for phones: the bite is a step out
+             of the bottom-right with a concave fillet, and the paragraph panel
+             tucks into it. Separate path because the desktop one's proportions
+             shear unusably when the box goes from 1.94 wide to 0.82. -->
+        <clipPath id="hero-cut-m" clipPathUnits="objectBoundingBox">
+          <path
+            d="M0.07,0
+               H0.93 A0.07,0.058 0 0 1 1,0.058
+               V0.742 A0.07,0.058 0 0 1 0.93,0.8
+               H0.41 A0.07,0.058 0 0 0 0.34,0.858
+               V0.942 A0.07,0.058 0 0 1 0.27,1
+               H0.07 A0.07,0.058 0 0 1 0,0.942
+               V0.058 A0.07,0.058 0 0 1 0.07,0 Z"
+          />
+        </clipPath>
+
+        <!-- Stacked tiffin dabba: the CTA icon and the card badges are the same
+             glyph at two sizes. -->
+        <g id="dabba-solid">
+          <path
+            d="M8.5 6.4a3.5 3.5 0 0 1 7 0"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+          <rect x="4.6" y="6.2" width="14.8" height="3.2" rx="1.2" />
+          <rect x="5.7" y="10.3" width="12.6" height="4.5" rx="1.1" />
+          <rect x="5.7" y="15.6" width="12.6" height="4.6" rx="1.1" />
+        </g>
+        <g
+          id="dabba-line"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+        >
+          <path d="M8.6 5.6a3.4 3.4 0 0 1 6.8 0" />
+          <rect x="3.7" y="5.5" width="16.6" height="3.4" rx="1.3" />
+          <rect x="5.1" y="9.8" width="13.8" height="4.5" rx="1.2" />
+          <rect x="5.1" y="15" width="13.8" height="4.7" rx="1.2" />
+        </g>
+      </defs>
+    </svg>
+
+    <main>
+      <div class="stage">
+        <div class="frame">
+          <section class="hero">
+            <img
+              class="hero__photo"
+              src="assets/hero.jpg"
+              alt="The Perth skyline glowing gold across the Swan River at sunset, framed by a dark tree canopy"
+            />
+            <div class="hero__scrim" aria-hidden="true"></div>
+
+            <header class="nav">
+              <!-- The supplied artwork, unaltered. It is charcoal and red, which
+                   cannot survive on a photograph, so it sits on a white chip
+                   rather than being recoloured. -->
+              <a class="brand" href="#top">
+                <img
+                  class="brand__logo"
+                  src="assets/logo.png"
+                  alt="Mumbai Dabbawala — since 1890"
+                />
+              </a>
+
+              <!-- The launch countdown: four tiles whose digits turn over like a
+                   calendar page when they change. One ticker writes them all. -->
+              <div class="counter" role="timer" aria-live="off">
+                <span class="counter__lead">Launches in</span>
+                <div class="counter__tiles">
+                <span class="tile tile--lead">
+                  <span class="tile__num">
+                    <span class="tile__cur" data-unit="days">--</span>
+                  </span>
+                  <span class="tile__u">days</span>
+                </span>
+                <span class="tile">
+                  <span class="tile__num">
+                    <span class="tile__cur" data-unit="hours">--</span>
+                  </span>
+                  <span class="tile__u">hrs</span>
+                </span>
+                <span class="tile tile--fine">
+                  <span class="tile__num">
+                    <span class="tile__cur" data-unit="minutes">--</span>
+                  </span>
+                  <span class="tile__u">min</span>
+                </span>
+                <span class="tile tile--fine">
+                  <span class="tile__num">
+                    <span class="tile__cur" data-unit="seconds">--</span>
+                  </span>
+                  <span class="tile__u">sec</span>
+                </span>
+                </div>
+              </div>
+            </header>
+
+            <div class="hero__copy">
+              <h1 class="hero__title">Mumbai's Legend<br />Comes to Perth</h1>
+              <p class="hero__sub">
+                200,000 home-cooked lunches a day, delivered by hand<br />
+                in Mumbai since 1890.
+              </p>
+              <a class="cta" href="#waitlist">
+                <span class="cta__label">Join The Waitlist</span>
+                <span class="cta__chip" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M7.75 6.4A4.25 4.25 0 0 1 16.25 6.4A0.75 0.75 0 0 1 14.75 6.4A2.75 2.75 0 0 0 9.25 6.4A0.75 0.75 0 0 1 7.75 6.4ZM5.8 6.2H18.2A1.2 1.2 0 0 1 19.4 7.4V8.2A1.2 1.2 0 0 1 18.2 9.4H5.8A1.2 1.2 0 0 1 4.6 8.2V7.4A1.2 1.2 0 0 1 5.8 6.2ZM6.8 10.3H17.2A1.1 1.1 0 0 1 18.3 11.4V13.7A1.1 1.1 0 0 1 17.2 14.8H6.8A1.1 1.1 0 0 1 5.7 13.7V11.4A1.1 1.1 0 0 1 6.8 10.3ZM6.8 15.6H17.2A1.1 1.1 0 0 1 18.3 16.7V19.1A1.1 1.1 0 0 1 17.2 20.2H6.8A1.1 1.1 0 0 1 5.7 19.1V16.7A1.1 1.1 0 0 1 6.8 15.6Z" /></svg>
+                </span>
+              </a>
+            </div>
+          </section>
+
+          <p class="intro">
+            The world's most reliable lunch run<br />
+            arrives in Perth this September.<br />
+            Join the waitlist to pick your suburb.
+          </p>
+
+          <div class="rail">
+            <ul class="rail__track">
+              <li class="card card--featured card--lit">
+                <div class="card__surface">
+                  <img class="card__photo" src="assets/dish-1.jpg" alt="Butter chicken in a copper karahi" />
+                  <span class="card__badge" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="#fff" color="#fff"><use href="#dabba-solid" /></svg>
+                  </span>
+                  <div class="card__text">
+                    <h3>Butter Chicken</h3>
+                    <p>Charred chicken in a tomato and cream gravy.</p>
+                  </div>
+                </div>
+                <!-- Was a circular arrow linking to #legacy. Now it says
+                     "Scroll to See", so it scrolls the rail instead — a
+                     visible label has to match what the control does, and
+                     "Scroll to See" pointing at a different section would be
+                     a WCAG 2.5.3 mismatch. Shares the handler below with
+                     .rail__next, which until now had none at all. -->
+                <button
+                  class="card__jump"
+                  type="button"
+                  data-rail-next
+                  aria-label="Scroll to see more dishes"
+                >
+                  <svg class="card__jump-ring" viewBox="0 0 100 100" aria-hidden="true">
+                    <!-- Starts at 9 o'clock and runs clockwise, so 25% of the
+                         path is 12 o'clock and 75% is 6 o'clock. Anchoring one
+                         run at each puts the two labels centred top and bottom
+                         with the gaps landing exactly at the two dots. The
+                         bottom run reads inverted — that is what a single
+                         circular path does, and what the reference shows. -->
+                    <path
+                      id="jump-ring"
+                      d="M12,50 A38,38 0 1 1 88,50 A38,38 0 1 1 12,50"
+                      fill="none"
+                    />
+                    <text>
+                      <textPath href="#jump-ring" startOffset="25%" text-anchor="middle">
+                        Scroll to see
+                      </textPath>
+                    </text>
+                    <text>
+                      <textPath href="#jump-ring" startOffset="75%" text-anchor="middle">
+                        Scroll to see
+                      </textPath>
+                    </text>
+                    <circle class="card__jump-dot" cx="12" cy="50" r="2.6" />
+                    <circle class="card__jump-dot" cx="88" cy="50" r="2.6" />
+                  </svg>
+                </button>
+              </li>
+
+              <li class="card">
+                <div class="card__surface">
+                  <img class="card__photo" src="assets/dish-2.jpg" alt="Hyderabadi biryani steaming in a clay handi" />
+                  <span class="card__badge" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="#fff" color="#fff"><use href="#dabba-solid" /></svg>
+                  </span>
+                  <div class="card__text">
+                    <h3>Hyderabadi Biryani</h3>
+                    <p>Rice, spice and meat, sealed in one clay pot.</p>
+                  </div>
+                </div>
+              </li>
+
+              <li class="card card--lit">
+                <div class="card__surface">
+                  <img class="card__photo" src="assets/dish-3.jpg" alt="A folded masala dosa on a banana leaf with chutney" />
+                  <span class="card__badge" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="#fff" color="#fff"><use href="#dabba-solid" /></svg>
+                  </span>
+                  <div class="card__text">
+                    <h3>Masala Dosa</h3>
+                    <p>A crisp rice crêpe folded over spiced potato.</p>
+                  </div>
+                </div>
+              </li>
+
+              <li class="card">
+                <div class="card__surface">
+                  <img class="card__photo" src="assets/dish-4.jpg" alt="Paneer tikka skewers blistered over flame" />
+                  <span class="card__badge" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="#fff" color="#fff"><use href="#dabba-solid" /></svg>
+                  </span>
+                  <div class="card__text">
+                    <h3>Paneer Tikka</h3>
+                    <p>Paneer in yoghurt and spice, blistered over flame.</p>
+                  </div>
+                </div>
+              </li>
+
+              <li class="card">
+                <div class="card__surface">
+                  <img class="card__photo" src="assets/dish-5.jpg" alt="Chole bhature — spiced chickpeas with a puffed bhatura" />
+                  <span class="card__badge" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="#fff" color="#fff"><use href="#dabba-solid" /></svg>
+                  </span>
+                  <div class="card__text">
+                    <h3>Chole Bhature</h3>
+                    <p>Spiced chickpeas with a puffed, golden bhatura.</p>
+                  </div>
+                </div>
+              </li>
+
+              <li class="card">
+                <div class="card__surface">
+                  <img class="card__photo" src="assets/dish-6.jpg" alt="Gulab jamun soaking in rose syrup" />
+                  <span class="card__badge" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="#fff" color="#fff"><use href="#dabba-solid" /></svg>
+                  </span>
+                  <div class="card__text">
+                    <h3>Gulab Jamun</h3>
+                    <p>Milk dumplings warm in cardamom and rose syrup.</p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+
+            <button class="rail__next" type="button" aria-label="Next dish" data-rail-next>
+              <svg viewBox="0 0 12 14" aria-hidden="true">
+                <path d="M1.4 0.8 10.8 7 1.4 13.2Z" fill="#fff" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ------------------------------------------------------------ legacy -- -->
+      <section class="band" id="legacy">
+        <div class="band__copy">
+          <p class="eyebrow">Since 1890</p>
+          <h2>135 years of never<br />missing lunch.</h2>
+          <p class="lede">
+            Every working morning in Mumbai, five thousand dabbawalas collect
+            home-cooked lunches from kitchens and put 200,000 of them on the right
+            desk by noon — by bicycle, handcart and suburban train.
+          </p>
+
+          <ul class="stats">
+            <li>
+              <span class="stats__n"><span data-count="135">135</span></span>
+              <span class="stats__l">years running,<br />since 1890</span>
+            </li>
+            <li>
+              <span class="stats__n"><span data-count="5000">5,000</span><span class="stats__plus">+</span></span>
+              <span class="stats__l">carriers on<br />the network</span>
+            </li>
+            <li>
+              <span class="stats__n"><span data-count="200" data-suffix="k">200k</span><span class="stats__plus">+</span></span>
+              <span class="stats__l">lunches carried<br />every day</span>
+            </li>
+          </ul>
+
+        </div>
+
+        <div class="band__art">
+          <img class="art art--tall" src="assets/legacy-carrier.jpg" alt="A dabbawala steadying a bicycle loaded with tiffin dabbas" />
+          <img class="art art--tall" src="assets/legacy-stack.jpg" alt="A tall stack of steel tiffin dabbas" />
+          <img class="art art--wide" src="assets/legacy-code.jpg" alt="The routing code K BO 12 E7 hand-painted in red and yellow enamel on a steel dabba lid" />
+        </div>
+      </section>
+
+
+      <!-- ------------------------------------------------------------- run -- -->
+      <!-- Structure and mechanic follow a supplied reference section (CRAV
+           "Takeaway"): a wavy divider bleeding the page colour in, a dashed
+           route drawn as one SVG path, a traveller driven along that path by
+           scroll progress, and photo pins pegged along it. The reference's
+           palette (mustard/beige), its display faces and its burger
+           photography are all its own — this carries MD's four colours, Asar
+           and Palanquin, and real stills of the actual run instead. The
+           traveller is the page's own dabba glyph rather than a plane: the
+           dabba is what actually travels. -->
+      <!-- The wrapper is the scroll track for the pin: the section sticks to
+           the bottom of the viewport for one more viewport of scroll so the
+           last stretch of the route finishes before the page moves on. See
+           .run-pin in styles.css. -->
+      <div class="run-pin">
+        <section class="run run--desktop" id="run">
+    <div class="run__wave" aria-hidden="true">
+      <svg viewBox="0 0 1536 300" preserveAspectRatio="none">
+        <path fill="var(--brand-offwhite)" d="M1536,0 H-1 V136.5 S184.32,63.5 460.8,156.5 S860.16,105 1121.28,137 S1413.12,105 1536,105 V0" />
+      </svg>
+    </div>
+
+        <div class="run__route" aria-hidden="true">
+          <!-- preserveAspectRatio="none" so the route fills the section instead
+               of being letterboxed. With the default (xMidYMid meet) the
+               viewBox's 0.794 ratio inside a wider section left ~260px of dead
+               band above and below the path — most of the empty space this
+               section used to carry. The trade is a ~5% vertical stretch on the
+               path and the sprite, invisible at this size. -->
+          <!-- 2400 tall, not the path's own 2176: the path reaches y 2234 and
+               the sprite is 274 units tall centred on the point, so its bottom
+               hit 2371 and was cut by the section's edge. 2400 clears that.
+               The left/right bleed is left alone — dashes running off the sides
+               is the reference's own look. Every pin offset below is scaled by
+               2176/2400 to stay on the line. -->
+          <svg viewBox="0 0 1728 2400" preserveAspectRatio="none">
+            <path
+              id="run-path"
+              class="run__line"
+              d="M500 -139C557 -139 1550.43 364.378 1610.6 653.93C1745.6 1303.59 -160.566 551.165 -11.7069 1197.36C117.259 1757.21 1470.1 925.826 1474.12 1502.33C1478.15 2080.14 63.7084 1375.34 -11.707 1896.78C-107.419 2558.55 1928.5 2042.5 1928.5 2042.5"
+            />
+            <!-- The plane artwork from the supplied zip. 259x274 route units
+                 at x/y -130/-137 centres it on the point the script sets on
+                 the parent group — the reference's own numbers, kept because
+                 the route geometry is unchanged. -->
+            <g id="run-plane" class="run__plane">
+              <image href="assets/plane.webp" x="-130" y="-137" width="259" height="274" />
+            </g>
+          </svg>
+        </div>
+
+        <div class="run__copy">
+          <p class="eyebrow run-rev">The run</p>
+          <h2 class="run-rev">One lunch run,<br />Mumbai to Perth.</h2>
+          <p class="lede run-rev">
+            Five thousand carriers move 200,000 home-cooked lunches across
+            Mumbai every working morning, routed by nothing but a code painted
+            on each lid. That same run opens in Perth on 14 September 2026.
+          </p>
+        </div>
+
+        <div class="pin pin--r pin--mumbai run-rev">
+          <p class="pin__label">Mumbai</p>
+          <div class="pin__card"><img src="assets/run-mumbai.jpg" alt="A dense Mumbai street at golden hour, balconies and overhead cables above a black-and-yellow taxi" loading="lazy" /></div>
+        </div>
+        <div class="pin pin--l pin--biryani run-rev">
+          <p class="pin__label">Biryani</p>
+          <div class="pin__card"><img src="assets/dish-2.jpg" alt="Hyderabadi biryani steaming in a clay handi" loading="lazy" /></div>
+        </div>
+        <div class="pin pin--r pin--paneer run-rev">
+          <p class="pin__label">Paneer tikka</p>
+          <div class="pin__card"><img src="assets/dish-4.jpg" alt="Paneer tikka skewers blistered over flame" loading="lazy" /></div>
+        </div>
+        <div class="pin pin--l pin--jamun run-rev">
+          <p class="pin__label">Gulab jamun</p>
+          <div class="pin__card"><img src="assets/dish-6.jpg" alt="Gulab jamun soaking in rose syrup" loading="lazy" /></div>
+        </div>
+        <div class="pin pin--r pin--perth run-rev">
+          <p class="pin__label">Perth</p>
+          <div class="pin__card"><img src="assets/run-perth.jpg" alt="The Perth skyline across the Swan River at golden hour, framed by gum trees" loading="lazy" /></div>
+        </div>
+        </section>
+        <!-- The pin's scroll distance. A real element, not padding on the
+             wrapper: a sticky box is constrained to its containing block's
+             content box, so padding buys no hold at all. -->
+        <div class="run-pin__hold" aria-hidden="true"></div>
+      </div>
+
+      <!-- The reference swaps in a different section under 768; same here —
+           the route's serpentine geometry has nowhere to go in a portrait
+           column, so the stages become a plain ordered list. -->
+      <section class="run run--mobile" aria-labelledby="run-m-title">
+    <div class="run__wave" aria-hidden="true">
+      <svg viewBox="0 0 1536 300" preserveAspectRatio="none">
+        <path fill="var(--brand-offwhite)" d="M1536,0 H-1 V136.5 S184.32,63.5 460.8,156.5 S860.16,105 1121.28,137 S1413.12,105 1536,105 V0" />
+      </svg>
+    </div>
+
+        <div class="run__copy">
+          <p class="eyebrow run-rev">The run</p>
+          <h2 id="run-m-title" class="run-rev">One lunch run, Mumbai to Perth.</h2>
+          <p class="lede run-rev">
+            200,000 home-cooked lunches a day, routed by a code painted on
+            each lid. The same run opens in Perth on 14 September 2026.
+          </p>
+        </div>
+        <ol class="mrun">
+          <li class="mrun__city run-rev">
+            <p class="pin__label">Mumbai</p>
+            <div class="pin__card"><img src="assets/run-mumbai.jpg" alt="A dense Mumbai street at golden hour, balconies and overhead cables above a black-and-yellow taxi" loading="lazy" /></div>
+            <p class="mrun__note">Where the run starts. 5,000 carriers, every working morning.</p>
+          </li>
+          <li class="mrun__city run-rev">
+            <p class="pin__label">Biryani</p>
+            <div class="pin__card"><img src="assets/dish-2.jpg" alt="Hyderabadi biryani steaming in a clay handi" loading="lazy" /></div>
+            <p class="mrun__note">Sealed in the clay handi it was cooked in.</p>
+          </li>
+          <li class="mrun__city run-rev">
+            <p class="pin__label">Paneer tikka</p>
+            <div class="pin__card"><img src="assets/dish-4.jpg" alt="Paneer tikka skewers blistered over flame" loading="lazy" /></div>
+            <p class="mrun__note">Blistered over flame, packed while still hot.</p>
+          </li>
+          <li class="mrun__city run-rev">
+            <p class="pin__label">Gulab jamun</p>
+            <div class="pin__card"><img src="assets/dish-6.jpg" alt="Gulab jamun soaking in rose syrup" loading="lazy" /></div>
+            <p class="mrun__note">The tier nobody trades away.</p>
+          </li>
+          <li class="mrun__city run-rev">
+            <p class="pin__label">Perth</p>
+            <div class="pin__card"><img src="assets/run-perth.jpg" alt="The Perth skyline across the Swan River at golden hour, framed by gum trees" loading="lazy" /></div>
+            <p class="mrun__note">From 14 September 2026, the same run lands here.</p>
+          </li>
+        </ol>
+      </section>
+
+      <!-- ---------------------------------------------------------- waitlist -- -->
+      <!-- A bento mosaic, structurally after a shared reference (an AI/3D
+           product hero): a grid of small photo/stat/badge cards on the left,
+           a headline + inline signup on the right, a feature card and a slim
+           note beneath it. Every card's content is real — no invented people,
+           no invented numbers — the reference's "Our creators" avatar row
+           became a dish trio instead of stand-in faces. -->
+      <section class="showcase" id="waitlist">
+        <!-- Two columns that scroll on their own, the left travelling up
+             and the right travelling down. Each track holds its tiles
+             twice: the animation runs to exactly -50% (or from -50% to 0),
+             so the second set is under the cursor at the moment the first
+             wraps and the loop has no seam. The duplicate set is
+             aria-hidden with empty alts so a screen reader reads each
+             photograph once. -->
+        <div class="mosaic" aria-label="Photographs from the Mumbai dabbawala network">
+        <div class="mosaic__col mosaic__col--up">
+          <div class="mosaic__track">
+            <figure class="piece piece--photo piece--h-xl">
+              <img src="assets/legacy-carrier.jpg" alt="A dabbawala steadying a bicycle loaded with tiffin dabbas" />
+            </figure>
+
+            <figure class="piece piece--object">
+              <img src="assets/legacy-code.jpg" alt="The routing code K BO 12 E7 hand-painted in red and yellow enamel on a steel dabba lid" />
+            </figure>
+
+            <figure class="piece piece--photo piece--h-md">
+              <img src="assets/dish-4.jpg" alt="Paneer tikka skewers blistered over flame" />
+            </figure>
+
+            <figure class="piece piece--photo piece--h-lg">
+              <img src="assets/legacy-lunch.jpg" alt="A home-cooked lunch laid out in a steel tiffin" />
+            </figure>
+
+            <figure class="piece piece--photo piece--h-sm">
+              <img src="assets/dish-2.jpg" alt="Hyderabadi biryani steaming in a clay handi" />
+            </figure>
+
+            <figure class="piece piece--photo piece--h-xl" aria-hidden="true">
+              <img src="assets/legacy-carrier.jpg" alt="" />
+            </figure>
+
+            <figure class="piece piece--object" aria-hidden="true">
+              <img src="assets/legacy-code.jpg" alt="" />
+            </figure>
+
+            <figure class="piece piece--photo piece--h-md" aria-hidden="true">
+              <img src="assets/dish-4.jpg" alt="" />
+            </figure>
+
+            <figure class="piece piece--photo piece--h-lg" aria-hidden="true">
+              <img src="assets/legacy-lunch.jpg" alt="" />
+            </figure>
+
+            <figure class="piece piece--photo piece--h-sm" aria-hidden="true">
+              <img src="assets/dish-2.jpg" alt="" />
+            </figure>
+          </div>
+        </div>
+        <div class="mosaic__col mosaic__col--down">
+          <div class="mosaic__track">
+            <figure class="piece piece--photo piece--h-md">
+              <img src="assets/dish-5.jpg" alt="Chole bhature — spiced chickpeas with a puffed bhatura" />
+            </figure>
+
+            <figure class="piece piece--photo piece--h-lg">
+              <img src="assets/legacy-stack.jpg" alt="A tall stack of steel tiffin dabbas" />
+            </figure>
+
+            <figure class="piece piece--photo piece--h-sm">
+              <img src="assets/dish-6.jpg" alt="Gulab jamun soaking in rose syrup" />
+            </figure>
+
+            <figure class="piece piece--photo piece--h-xl">
+              <img src="assets/legacy-rush.jpg" alt="A Mumbai street at rush hour, the lunch run moving through traffic" />
+            </figure>
+
+            <figure class="piece piece--photo piece--h-md">
+              <img src="assets/dish-1.jpg" alt="Butter chicken in a copper karahi" />
+            </figure>
+
+            <figure class="piece piece--photo piece--h-sm">
+              <img src="assets/dish-3.jpg" alt="A folded masala dosa on a banana leaf with chutney" />
+            </figure>
+
+            <figure class="piece piece--photo piece--h-md" aria-hidden="true">
+              <img src="assets/dish-5.jpg" alt="" />
+            </figure>
+
+            <figure class="piece piece--photo piece--h-lg" aria-hidden="true">
+              <img src="assets/legacy-stack.jpg" alt="" />
+            </figure>
+
+            <figure class="piece piece--photo piece--h-sm" aria-hidden="true">
+              <img src="assets/dish-6.jpg" alt="" />
+            </figure>
+
+            <figure class="piece piece--photo piece--h-xl" aria-hidden="true">
+              <img src="assets/legacy-rush.jpg" alt="" />
+            </figure>
+
+            <figure class="piece piece--photo piece--h-md" aria-hidden="true">
+              <img src="assets/dish-1.jpg" alt="" />
+            </figure>
+
+            <figure class="piece piece--photo piece--h-sm" aria-hidden="true">
+              <img src="assets/dish-3.jpg" alt="" />
+            </figure>
+          </div>
+        </div>
+        </div>
+
+        <div class="showcase__main">
+          <div class="showcase__hero">
+            <p class="eyebrow">The waitlist</p>
+            <h2>The first run<br />starts with you.</h2>
+            <p class="lede">
+              Mumbai's dabbawalas have delivered lunch on time, every time,
+              since 1890. This September the same network reaches Perth —
+              join the list and we'll email you the moment your suburb
+              opens.
+            </p>
+
+            <form class="showcase__form" id="signup" novalidate>
+              <div class="showcase__row">
+                <span class="showcase__field">
+                  <label for="email" class="sr-only">Email address</label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    inputmode="email"
+                    autocomplete="email"
+                    placeholder="you@example.com"
+                    aria-describedby="route-note route-err"
+                    required
+                  />
+                </span>
+                <button class="cta" type="submit">
+                  <span class="cta__label">Join The Waitlist</span>
+                  <span class="cta__chip" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M7.75 6.4A4.25 4.25 0 0 1 16.25 6.4A0.75 0.75 0 0 1 14.75 6.4A2.75 2.75 0 0 0 9.25 6.4A0.75 0.75 0 0 1 7.75 6.4ZM5.8 6.2H18.2A1.2 1.2 0 0 1 19.4 7.4V8.2A1.2 1.2 0 0 1 18.2 9.4H5.8A1.2 1.2 0 0 1 4.6 8.2V7.4A1.2 1.2 0 0 1 5.8 6.2ZM6.8 10.3H17.2A1.1 1.1 0 0 1 18.3 11.4V13.7A1.1 1.1 0 0 1 17.2 14.8H6.8A1.1 1.1 0 0 1 5.7 13.7V11.4A1.1 1.1 0 0 1 6.8 10.3ZM6.8 15.6H17.2A1.1 1.1 0 0 1 18.3 16.7V19.1A1.1 1.1 0 0 1 17.2 20.2H6.8A1.1 1.1 0 0 1 5.7 19.1V16.7A1.1 1.1 0 0 1 6.8 15.6Z" /></svg>
+                  </span>
+                </button>
+              </div>
+
+              <!-- Empty by default, not display:none: CSS collapses an
+                   :empty node, and JS mutates its text rather than toggling
+                   visibility, which is what makes role="alert" reliably
+                   announce. -->
+              <p class="showcase__err" id="route-err" role="alert"></p>
+            </form>
+          </div>
+
+          <div class="showcase__feature">
+            <div class="showcase__feature-copy">
+              <p class="eyebrow">Launching soon</p>
+              <p class="showcase__feature-h">Perth's corridor opens 14 September 2026.</p>
+            </div>
+            <img class="showcase__feature-img" src="assets/hero.jpg" alt="" />
+          </div>
+
+          <p class="showcase__note" id="route-note">
+            <span class="showcase__lock" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <rect x="4.6" y="10.4" width="14.8" height="9.4" rx="2.4" stroke="currentColor" stroke-width="1.6" />
+                <path d="M8.4 10.2V8a3.6 3.6 0 0 1 7.2 0v2.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+              </svg>
+            </span>
+            Email only — we never publish a phone number and we never call.
+            One email, the week your suburb goes live.
+          </p>
+        </div>
+      </section>
+
+      <!-- ------------------------------------------------------------ footer -- -->
+      <footer class="foot">
+        <img class="foot__logo" src="assets/logo.png" alt="Mumbai Dabbawala — since 1890" />
+        <div class="foot__meta">
+          <a href="mailto:support@mumbaidabbawala.com.au">support@mumbaidabbawala.com.au</a>
+          <span>Mumbai since 1890 · Perth from 14 September 2026</span>
+        </div>
+      </footer>
+    </main>
+
+    <!-- ------------------------------------------------------------- modal -- -->
+    <div class="sheet" id="sheet" hidden>
+      <div class="sheet__backdrop" data-close></div>
+      <div class="sheet__panel" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+        <button class="sheet__x" type="button" aria-label="Close" data-close>
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M7 7l10 10M17 7 7 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
+        </button>
+
+        <div class="sheet__head" id="sheet-head">
+          <p class="eyebrow">Almost done</p>
+          <h2 id="sheet-title">Tell us where to run.</h2>
+          <p class="sheet__lede">
+            Two of these are optional. The suburb is what decides the order we open
+            in.
+          </p>
+        </div>
+
+        <form class="sheet__form" id="details" novalidate>
+          <label for="d-email">Email address</label>
+          <input id="d-email" name="email" type="email" autocomplete="email" required />
+
+          <label for="d-mobile">Mobile <span class="opt">optional</span></label>
+          <div class="sheet__phone">
+            <span class="sheet__cc">+61</span>
+            <input
+              id="d-mobile"
+              name="mobile"
+              type="tel"
+              inputmode="numeric"
+              autocomplete="tel-national"
+              placeholder="4XX XXX XXX"
+              pattern="[0-9 ]{9,12}"
+            />
+          </div>
+
+          <label for="d-suburb">Perth suburb <span class="opt">optional</span></label>
+          <select id="d-suburb" name="suburb">
+            <option value="">Pick a suburb</option>
+            <option>Perth CBD</option>
+            <option>Northbridge</option>
+            <option>West Perth</option>
+            <option>Subiaco</option>
+            <option>Leederville</option>
+            <option>Mount Lawley</option>
+            <option>Victoria Park</option>
+            <option>South Perth</option>
+            <option>Fremantle</option>
+            <option>Scarborough</option>
+            <option>Morley</option>
+            <option>Joondalup</option>
+            <option>Cannington</option>
+          </select>
+
+          <fieldset class="sheet__pref">
+            <legend>Preference</legend>
+            <label class="pill"><input type="radio" name="pref" value="veg" checked /> <span>Veg</span></label>
+            <label class="pill"><input type="radio" name="pref" value="non-veg" /> <span>Non-veg</span></label>
+          </fieldset>
+
+          <button class="btn btn--accent btn--block" type="submit">Confirm my place</button>
+          <p class="sheet__fine">
+            We will only email you. Questions go to
+            <a href="mailto:support@mumbaidabbawala.com.au">support@mumbaidabbawala.com.au</a>.
+          </p>
+        </form>
+
+        <div class="sheet__done" id="done" hidden>
+          <p class="sheet__tick" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M4 12.5l5.2 5.2L20 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </p>
+          <h3>You are on the list.</h3>
+          <p>
+            We will email you before the first Perth run. Nothing else lands in your
+            inbox until then.
+          </p>
+          <button class="btn btn--accent" type="button" data-close>Close</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* Countdown to the first Perth run: 14 Sep 2026, 12:00 AWST (UTC+8). */
+      (() => {
+        const target = Date.parse("2026-09-14T12:00:00+08:00");
+        /* Every [data-unit] on the page, so any further readout added later is
+           the same clock rather than a second one that drifts. */
+        const cells = { days: [], hours: [], minutes: [], seconds: [] };
+        for (const el of document.querySelectorAll("[data-unit]")) {
+          cells[el.dataset.unit]?.push(el);
+        }
+        if (!cells.days.length) return;
+
+        const pad = (n) => String(n).padStart(2, "0");
+
+        /* Write only what changed, and turn over the digit that did. The outgoing
+           value is cloned into a second layer that lifts away while the new one
+           drops in behind it — two layers is what makes it read as a page rather
+           than a number fading. A digit that animates every tick reads as noise;
+           one that animates when it rolls over reads as alive. */
+        const put = (unit, text) => {
+          for (const el of cells[unit]) {
+            const from = el.textContent;
+            if (from === text) continue;
+            el.textContent = text;
+
+            const face = el.parentElement;
+            if (!face || from === "--") continue;
+
+            const leaving = document.createElement("span");
+            leaving.className = "tile__prev";
+            leaving.textContent = from;
+            leaving.addEventListener("animationend", () => leaving.remove());
+            face.appendChild(leaving);
+
+            el.classList.remove("is-turning");
+            void el.offsetWidth;
+            el.classList.add("is-turning");
+          }
+        };
+
+        const tick = () => {
+          const left = target - Date.now();
+          if (left <= 0) {
+            document.getElementById("countdown")?.classList.add("count--done");
+            for (const unit of Object.keys(cells)) put(unit, "00");
+            return;
+          }
+          const s = Math.floor(left / 1000);
+          put("days", pad(Math.floor(s / 86400)));
+          put("hours", pad(Math.floor(s / 3600) % 24));
+          put("minutes", pad(Math.floor(s / 60) % 60));
+          put("seconds", pad(s % 60));
+        };
+        tick();
+        setInterval(tick, 1000);
+      })();
+
+      /* Email up front, the rest in the sheet — the brief's two-step signup.
+         Nothing is posted anywhere yet: there is no backend behind this page. */
+      (() => {
+        const sheet = document.getElementById("sheet");
+        const signup = document.getElementById("signup");
+        const details = document.getElementById("details");
+        const done = document.getElementById("done");
+        if (!sheet || !signup || !details) return;
+
+        let lastFocus = null;
+
+        const open = (email) => {
+          lastFocus = document.activeElement;
+          sheet.hidden = false;
+          document.body.style.overflow = "hidden";
+          const field = details.querySelector("#d-email");
+          if (email) field.value = email;
+          (email ? details.querySelector("#d-mobile") : field).focus();
+        };
+
+        const head = document.getElementById("sheet-head");
+
+        const close = () => {
+          sheet.hidden = true;
+          document.body.style.overflow = "";
+          details.hidden = false;
+          if (head) head.hidden = false;
+          done.hidden = true;
+          if (lastFocus) lastFocus.focus();
+        };
+
+        const emailField = signup.querySelector("#email");
+        const routeErr = signup.querySelector("#route-err");
+
+        /* role="alert" only announces reliably in every AT when its text
+           actually mutates — toggling display on a static message does not
+           consistently fire. So the node stays in the DOM (CSS collapses it
+           while empty) and this writes/clears its text instead. */
+        const setBad = (bad) => {
+          signup.classList.toggle("signup--bad", bad);
+          if (bad) emailField.setAttribute("aria-invalid", "true");
+          else emailField.removeAttribute("aria-invalid");
+          if (routeErr) routeErr.textContent = bad ? "That address does not look right yet." : "";
+        };
+
+        signup.addEventListener("submit", (e) => {
+          e.preventDefault();
+          if (!emailField.checkValidity() || !emailField.value) {
+            emailField.focus();
+            setBad(true);
+            return;
+          }
+          setBad(false);
+          open(emailField.value.trim());
+        });
+
+        /* Forgiving, not just validating: once the address looks right again
+           mid-correction, the error clears without waiting for resubmit. */
+        emailField.addEventListener("input", () => {
+          if (signup.classList.contains("signup--bad") && emailField.checkValidity() && emailField.value) {
+            setBad(false);
+          }
+        });
+
+        details.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const email = details.querySelector("#d-email");
+          if (!email.checkValidity() || !email.value) {
+            email.focus();
+            return;
+          }
+          details.hidden = true;
+          if (head) head.hidden = true;
+          done.hidden = false;
+        });
+
+        for (const el of sheet.querySelectorAll("[data-close]")) el.addEventListener("click", close);
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && !sheet.hidden) close();
+        });
+
+        /* The hero's "Join Waitlist" jumps to the form rather than opening the
+           sheet, so the email is always collected first. */
+      })();
+
+      /* On-scroll reveal for the legacy collage and the waitlist section.
+         `reveal-ready` is what the CSS keys the hidden starting state off —
+         added here, and only here, so a browser without IntersectionObserver
+         (or a user who asked for less motion) simply never leaves the plain,
+         fully visible layout defined outside this class. */
+      (() => {
+        if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        if (!("IntersectionObserver" in window)) return;
+
+        const revealOnScroll = (el) => {
+          if (!el) return;
+          el.classList.add("reveal-ready");
+          const io = new IntersectionObserver(
+            (entries) => {
+              for (const entry of entries) {
+                if (!entry.isIntersecting) continue;
+                el.classList.add("is-visible");
+                io.disconnect();
+              }
+            },
+            /* rootMargin pulls the trigger line 20% up from the viewport
+               bottom, so a section reveals once it is properly entered rather
+               than the instant its first sliver appears. A bare threshold does
+               not achieve this: on a tall window 0.2 of the section can already
+               be on screen at page load, which made these read as load
+               animations rather than arrival ones. */
+            { threshold: 0.15, rootMargin: "0px 0px -20% 0px" },
+          );
+          io.observe(el);
+        };
+
+        revealOnScroll(document.getElementById("legacy"));
+        revealOnScroll(document.getElementById("waitlist"));
+      })();
+
+      /* The dabba flies the dashed route as the run section scrolls past.
+         Adapted from the supplied reference's own plane script, kept in this
+         file's house style: a passive scroll listener rather than rAF-driven
+         polling, since IntersectionObserver and rAF are both suspended while
+         the tab is hidden and this page has already been bitten by that. */
+      (() => {
+        const section = document.getElementById("run");
+        const path = document.getElementById("run-path");
+        const plane = document.getElementById("run-plane");
+        if (!section || !path || !plane) return;
+        /* The scroll TRACK is the pin wrapper, not the section. Once the
+           section sticks its own rect stops moving, so progress read off it
+           would freeze with the dabba still short of Perth — the wrapper
+           keeps scrolling for the whole pin. */
+        const track = section.closest(".run-pin") || section;
+
+        const LEN = path.getTotalLength();
+        const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+        let target = 0;
+        let current = 0;
+        let ticking = false;
+
+        const read = () => {
+          const r = section.getBoundingClientRect();
+          /* Zero height means the desktop section is display:none — the phone
+             variant is showing — so there is nothing to drive. */
+          if (!r.height) return false;
+          const t = track.getBoundingClientRect();
+          /* Progress 0 once the section has genuinely arrived — its top at 60%
+             of the viewport, so the eyebrow and headline are already readable
+             — and 1 the moment the track's bottom reaches the viewport bottom,
+             which is exactly where the pin releases. The flight therefore
+             finishes on the last held frame and the page only moves on after
+             it. An earlier mapping spread 0..1 over the section height PLUS a
+             whole viewport, so a third of the flight was spent before the
+             section was even readable.
+
+             0.6 rather than 0.85 for a measured reason: at 0.85 the section is
+             still low on screen while the route's first dip is already being
+             flown, and the dabba dropped ~96px below the fold and came back.
+             Starting later keeps the whole flight on screen.
+
+             Both lines read START. They have to: with the start moved to 0.6
+             and travel still carrying the old 0.85's remainder, progress
+             topped out at 0.914 when the pin released — so the last 9% of the
+             route, Perth's pin included, simply never ran. */
+          const START = 0.6;
+          const startTop = innerHeight * START;
+          const travel = Math.max(t.height - innerHeight * (1 - START), 1);
+          target = clamp((startTop - t.top) / travel, 0, 1);
+          return true;
+        };
+
+        /* Two points 12 units apart give the tangent, which is what points the
+           plane along the path rather than leaving it upright. MINUS 90, not
+           plus: the sprite's nose is at the BOTTOM of the artwork, so its
+           forward axis is already +90 degrees. Adding another 90 put it at
+           ang + 180 — flying backwards, belly up, which is exactly how it
+           looked. */
+        /* Each pin's own progress along the route, found by nearest point
+           rather than hand-tuned: sample the path, convert to the section's
+           own pixels (preserveAspectRatio="none" makes that a straight
+           proportion of the viewBox), and take the closest sample to the pin's
+           centre. 2D, not just y — the route doubles back, so matching on y
+           alone would pair a pin with the wrong crossing. */
+        const VB_W = 1728;
+        const VB_H = 2400;
+        let stops = [];
+
+        const measureStops = () => {
+          const s = section.getBoundingClientRect();
+          if (!s.height) return;
+          const N = 320;
+          const pts = [];
+          for (let i = 0; i <= N; i += 1) {
+            const q = path.getPointAtLength((i / N) * LEN);
+            pts.push({ p: i / N, x: (q.x / VB_W) * s.width, y: (q.y / VB_H) * s.height });
+          }
+          stops = [...section.querySelectorAll(".pin")].map((el) => {
+            const r = el.getBoundingClientRect();
+            const cx = r.left - s.left + r.width / 2;
+            const cy = r.top - s.top + r.height / 2;
+            let at = 0;
+            let best = Infinity;
+            for (const pt of pts) {
+              const d = (pt.x - cx) ** 2 + (pt.y - cy) ** 2;
+              if (d < best) {
+                best = d;
+                at = pt.p;
+              }
+            }
+            return { el, at, done: el.classList.contains("is-in") };
+          });
+        };
+
+        const passStops = (p) => {
+          for (const st of stops) {
+            if (st.done || p < st.at) continue;
+            /* Reached by the dabba AND actually on screen. Geometry alone is
+               enough at desktop heights, but on a short viewport the lower
+               pins are reached while still below the fold, and a pop the
+               reader never saw is a pop wasted. This only ever delays one:
+               a pin scrolled clean past sits above the fold, which passes. */
+            if (st.el.getBoundingClientRect().top > innerHeight - 40) continue;
+            st.el.classList.add("is-in");
+            st.done = true;
+          }
+        };
+
+        const place = (p) => {
+          const d = clamp(p, 0, 1) * LEN;
+          const a = path.getPointAtLength(d);
+          const b = path.getPointAtLength(clamp(d + 12, 0, LEN));
+          const ang = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
+          plane.setAttribute("transform", `translate(${a.x} ${a.y}) rotate(${ang - 90})`);
+          passStops(p);
+        };
+
+        const loop = () => {
+          current += (target - current) * 0.12;
+          place(current);
+          if (Math.abs(target - current) > 0.0002) requestAnimationFrame(loop);
+          else {
+            ticking = false;
+            place(target);
+          }
+        };
+
+        const onScroll = () => {
+          if (!read()) return;
+          if (!ticking) {
+            ticking = true;
+            requestAnimationFrame(loop);
+          }
+        };
+
+        const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+        /* CSS keys the pin off this class, so a reader with no JS or less
+           motion never gets held on a frame that is not animating. Added
+           before the first read(), since it is what gives the track its extra
+           height. */
+        if (!reduced && track !== section) track.classList.add("is-pinned");
+        read();
+        measureStops();
+        current = target;
+        place(current);
+        if (!reduced) addEventListener("scroll", onScroll, { passive: true });
+        addEventListener("resize", () => {
+          if (!read()) return;
+          measureStops();
+          current = target;
+          place(current);
+        });
+      })();
+
+      /* Per-element entrance reveal for the run's pins and copy. Separate from
+         revealOnScroll above because that one is a single-shot trigger for a
+         whole section; these need to land one at a time as each is reached. */
+      (() => {
+        if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        if (!("IntersectionObserver" in window)) return;
+
+        /* Pins are excluded: they are revealed by the plane reaching them,
+           not by the section scrolling into view. The copy still uses the
+           observer. */
+        const items = document.querySelectorAll(".run-rev:not(.pin)");
+        if (!items.length) return;
+        for (const sec of document.querySelectorAll(".run")) sec.classList.add("run-ready");
+
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              /* The bottom test catches anything a fast flick scrolled clean
+                 past before the observer ever fired for it. */
+              if (!e.isIntersecting && e.boundingClientRect.bottom >= 0) continue;
+              e.target.classList.add("is-in");
+              io.unobserve(e.target);
+            }
+          },
+          { rootMargin: "0px 0px -12% 0px", threshold: 0.15 },
+        );
+        for (const el of items) io.observe(el);
+      })();
+      /* Scrolls the dish rail one card along. Wired to both the arrow button
+         at the rail's edge and the "Scroll to See" pill on the featured card —
+         neither had a handler before this, so the rail was keyboard- and
+         click-inaccessible and only moved by trackpad or touch. Step is
+         measured from the first two cards rather than hardcoded, so it stays
+         right at the 700px breakpoint where the cards shrink to 172px. */
+      (() => {
+        const track = document.querySelector(".rail__track");
+        const buttons = document.querySelectorAll("[data-rail-next]");
+        if (!track || !buttons.length) return;
+
+        const step = () => {
+          const cards = track.querySelectorAll(".card");
+          if (cards.length < 2) return track.clientWidth;
+          return (
+            cards[1].getBoundingClientRect().left -
+            cards[0].getBoundingClientRect().left
+          );
+        };
+
+        for (const b of buttons) {
+          b.addEventListener("click", () => {
+            /* Wrap back to the start once there is nothing left to reveal,
+               so the control never becomes a dead end. */
+            const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+            track.scrollBy({
+              left: atEnd ? -track.scrollLeft : step(),
+              behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+            });
+          });
+        }
+      })();
+
+      /* Counts the Since-1890 figures up when the band is reached. The markup
+         already holds the final values, so this only runs where it can
+         finish: with no IntersectionObserver, or under reduced motion, it
+         returns before zeroing anything and the real numbers stay put. */
+      (() => {
+        const stats = document.querySelector(".stats");
+        if (!stats) return;
+        const cells = stats.querySelectorAll("[data-count]");
+        if (!cells.length) return;
+        if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        if (!("IntersectionObserver" in window)) return;
+
+        /* en-AU so 5000 reads "5,000" — the same separator the markup ships. */
+        const fmt = (n, suffix) => n.toLocaleString("en-AU") + suffix;
+
+        const run = (el) => {
+          const target = Number(el.dataset.count);
+          const suffix = el.dataset.suffix ?? "";
+          const DUR = 1400;
+          const land = () => (el.textContent = fmt(target, suffix));
+          let t0 = null;
+          let done = false;
+          const step = (t) => {
+            if (done) return;
+            t0 ??= t;
+            const p = Math.min((t - t0) / DUR, 1);
+            /* easeOutCubic: most of the distance early, then it settles —
+               a linear count reads like a loading spinner. */
+            el.textContent = fmt(Math.round(target * (1 - (1 - p) ** 3)), suffix);
+            if (p < 1) requestAnimationFrame(step);
+            else done = true;
+          };
+          /* Zeroing happens HERE, a frame before the count starts — not up
+             front. Zero it at script time and any path where rAF never ticks
+             leaves the reader looking at "0" forever, which is worse than no
+             animation at all. */
+          el.textContent = fmt(0, suffix);
+          requestAnimationFrame(step);
+          /* And if rAF still never delivers, land on the real figure rather
+             than stall. Costs one timer per cell, once. */
+          setTimeout(() => {
+            if (!done) {
+              done = true;
+              land();
+            }
+          }, DUR + 600);
+        };
+
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (!e.isIntersecting) continue;
+              for (const el of cells) run(el);
+              io.disconnect();
+            }
+          },
+          { threshold: 0.4 },
+        );
+        io.observe(stats);
+      })();
+    </script>
+  </body>
+</html>

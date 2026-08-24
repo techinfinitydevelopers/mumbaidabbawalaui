@@ -1,0 +1,342 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ---------------------------------------------------------------------------
+   Brand tokens
+     #ED3237  red      — accent, CTAs, single points of emphasis
+     #373435  charcoal — type on light, ground on dark bands
+     #FEFEFE  off-white — page background
+     #FFFFFF  white     — raised surfaces (cards, inputs)
+
+   Semantic names below are what components consume. Dark bands re-declare the
+   same names under .theme-dark, so a section flips ground without any component
+   knowing which mode it is in.
+--------------------------------------------------------------------------- */
+:root {
+  --brand-red: #ed3237;
+  --brand-charcoal: #373435;
+  --brand-offwhite: #fefefe;
+  --brand-white: #ffffff;
+
+  --bg: var(--brand-offwhite);
+  --surface: var(--brand-white);
+  --surface-raised: var(--brand-white);
+
+  --heading: var(--brand-charcoal);
+  --body: color-mix(in srgb, var(--brand-charcoal) 78%, transparent);
+  /* 68%, not 55% — below this the eyebrow labels drop under 4.5:1 on #FEFEFE. */
+  --muted: color-mix(in srgb, var(--brand-charcoal) 68%, transparent);
+
+  /* `shadcn init` writes its own --accent and --muted into this block. Both
+     names were already taken here and mean something different: ours are the
+     brand red and a body-copy grey, theirs are neutral hover backgrounds. Ours
+     win — bg-accent is every CTA on the site. If a shadcn component needs a
+     neutral hover ground, point it at --secondary, which does not collide.
+     Re-check these two lines after any `shadcn add`. */
+  --accent: var(--brand-red);
+  --on-accent: var(--brand-white);
+
+  --line: color-mix(in srgb, var(--brand-charcoal) 14%, transparent);
+  --line-strong: color-mix(in srgb, var(--brand-charcoal) 30%, transparent);
+
+  --focus: var(--brand-red);
+
+  --background: oklch(1 0 0);
+
+  --foreground: oklch(0.145 0 0);
+
+  --card: oklch(1 0 0);
+
+  --card-foreground: oklch(0.145 0 0);
+
+  --popover: oklch(1 0 0);
+
+  --popover-foreground: oklch(0.145 0 0);
+
+  --primary: oklch(0.205 0 0);
+
+  --primary-foreground: oklch(0.985 0 0);
+
+  --secondary: oklch(0.97 0 0);
+
+  --secondary-foreground: oklch(0.205 0 0);
+
+  --muted-foreground: oklch(0.556 0 0);
+
+  --accent-foreground: oklch(0.205 0 0);
+
+  --destructive: oklch(0.577 0.245 27.325);
+
+  --border: oklch(0.922 0 0);
+
+  --input: oklch(0.922 0 0);
+
+  --ring: oklch(0.708 0 0);
+
+  --chart-1: oklch(0.87 0 0);
+
+  --chart-2: oklch(0.556 0 0);
+
+  --chart-3: oklch(0.439 0 0);
+
+  --chart-4: oklch(0.371 0 0);
+
+  --chart-5: oklch(0.269 0 0);
+
+  --radius: 0.625rem;
+
+  --sidebar: oklch(0.985 0 0);
+
+  --sidebar-foreground: oklch(0.145 0 0);
+
+  --sidebar-primary: oklch(0.205 0 0);
+
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+
+  --sidebar-accent: oklch(0.97 0 0);
+
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+
+  --sidebar-border: oklch(0.922 0 0);
+
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+/* Dark band: charcoal ground, off-white type. Same token names.
+   `color` is re-declared here, not just the tokens: `body` already computed its
+   colour from the light `--body`, and inheritance passes the resolved colour
+   rather than the var reference — so redefining the token alone leaves every
+   plain <p> in here inheriting charcoal-on-charcoal. */
+.theme-dark {
+  color: var(--body);
+
+  --bg: var(--brand-charcoal);
+  --surface: color-mix(in srgb, var(--brand-charcoal) 88%, black);
+  --surface-raised: color-mix(in srgb, var(--brand-charcoal) 80%, black);
+
+  --heading: var(--brand-offwhite);
+  --body: color-mix(in srgb, var(--brand-offwhite) 74%, transparent);
+  /* Same reasoning on charcoal ground: 52% measured ~4.4:1, 62% clears it. */
+  --muted: color-mix(in srgb, var(--brand-offwhite) 62%, transparent);
+
+  --line: color-mix(in srgb, var(--brand-offwhite) 16%, transparent);
+  --line-strong: color-mix(in srgb, var(--brand-offwhite) 34%, transparent);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-heading: var(--heading);
+  --color-body: var(--body);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+
+  --color-charcoal: var(--brand-charcoal);
+  --color-offwhite: var(--brand-offwhite);
+
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-asar);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    @apply font-sans;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--body);
+    font-family: var(--font-palanquin), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    /* `clip`, not `hidden`: hidden makes body a scroll container, which breaks
+       the hero's `position: sticky` pinning. clip contains overflow without it. */
+    overflow-x: clip;
+    /* `shadcn init` appends `@apply bg-background text-foreground` here. Both
+       land after the two declarations above and win, swapping #FEFEFE for pure
+       white and the 78% charcoal body colour for near-black. Removed — the
+       brand palette is set by --bg / --body. */
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-asar), Georgia, serif;
+    color: var(--heading);
+    font-weight: 400;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--brand-red);
+    color: var(--brand-white);
+  }
+  * {
+    @apply border-border outline-ring/50;
+  }
+}
+
+@layer components {
+  .container-page {
+    width: min(100% - 2.5rem, 1180px);
+    margin-inline: auto;
+  }
+
+  /* Infinite ticker. The track holds two identical copies of the content and
+     slides exactly half its width, so the loop point is invisible. */
+  .marquee {
+    overflow: hidden;
+    /* Fade the ends so phrases enter and leave rather than getting clipped. */
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 8%,
+      black 92%,
+      transparent
+    );
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-slide 44s linear infinite;
+  }
+
+  /* Pausing on hover lets people actually read a phrase they caught. */
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+
+  @keyframes marquee-slide {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  /* Eyebrow / kicker label used above section headings. */
+  .eyebrow {
+    font-family: var(--font-palanquin), system-ui, sans-serif;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* The blanket rule above would fast-forward the ticker to its end position.
+     Stop it outright and let it sit where it started instead. */
+  .marquee-track {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .marquee {
+    overflow-x: auto;
+  }
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}

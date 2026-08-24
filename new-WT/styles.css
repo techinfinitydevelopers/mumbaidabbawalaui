@@ -1,0 +1,2532 @@
+/* ---------------------------------------------------------------------------
+   Elevate hero — replica of hero-section.jpeg
+
+   The reference is an 845x529 crop of a 1440x900 viewport, so every number here
+   is a reference measurement scaled by 1440/845 = 1.7041. Comments carry the
+   reference pixels alongside, so any value can be re-checked against the source.
+
+   Traced, not guessed: the hero box is 11..833 x 11..435 ref -> a 20px page
+   inset and a 1400x721 card; the carve, the type sizes and the button boxes all
+   come from pixel probes on the reference (see the notes in each block).
+--------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --page-pad: 20px; /* 11 ref */
+  --hero-ratio: 1.9417; /* 1400 / 721 */
+
+  /* Where the carve sits, as fractions of the hero box. */
+  --cut-v: 80.31%; /* 351.5 ref, the bottom edge of the right-hand span */
+  --cut-u: 42.03%; /* 357 ref, where that edge stops and the curve begins */
+
+  --radius-hero: 40px; /* 23.2 ref, least-squares fit on all four corners */
+  --radius-card: 30px; /* 17.5 ref, same method */
+  --radius-btn: 14px; /* 8 ref, measured on both buttons' corners */
+
+  /* Brand palette. The reference's green is gone: this is Mumbai Dabbawala's. */
+  --brand-red: #ed3237;
+  --brand-charcoal: #373435;
+  --brand-offwhite: #fefefe;
+  --brand-white: #ffffff;
+
+  --accent: var(--brand-red);
+  --accent-soft: #fdecec; /* red at ~8% over white — surfaces and chips */
+  --accent-line: #f2b7b9;
+  --accent-ink: #b3282c; /* red dark enough to read as type on --accent-soft */
+  --ink: var(--brand-charcoal);
+  --ink-soft: #5c5859;
+
+  /* Brand faces. Asar is display-only and ships one weight, so headings are 400
+     and never bold — a synthesised bold would smear it. */
+  --font-head: Asar, Georgia, "Times New Roman", serif;
+  --font-body: Palanquin, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  background: var(--brand-offwhite);
+  padding: var(--page-pad);
+  font-family: var(--font-body);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-head);
+  font-weight: 400;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+.defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* ---------------------------------------------------------- stage + hero -- */
+
+/* Reserves exactly the height .intro gives up by being positioned out of flow:
+   43px offset + three lines at 30px + its 40px bottom margin. */
+.stage {
+  padding-bottom: 173px;
+}
+
+/* .frame is the hero's own box. The rail lives inside it but outside .hero, so
+   the carve can clip the photograph without clipping the cards that sit in it. */
+.frame {
+  position: relative;
+  aspect-ratio: var(--hero-ratio);
+}
+
+.hero {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-hero);
+  /* border-radius rounds the three real corners; the clip path carves the
+     bottom-right step, including the small radius on its inner corner. */
+  clip-path: url(#hero-cut);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.hero__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Bottom-aligned: the top ~120 source px carry a garbled shop sign, and this
+     crops them out while adding street to the foreground. */
+  object-position: 50% 100%;
+}
+
+/* Three scrims, not one: a top band so the nav reads, a left wedge so the
+   headline reads, and a foot so the lawn does not glare under the CTA. The
+   top scrim is 0.44 because the reference's sky is at 0.65 of its own value
+   at the very top edge and clear by a quarter of the way down. */
+.hero__scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    /* The supplied skyline is bright edge to edge — no dark tree to sit the
+       headline on — so the wedge reaches further and the top band is heavier
+       than the reference needed. Sampled targets: under 110 of 255 behind the
+       subcopy and behind the nav ticker. */
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.52) 0%, rgba(0, 0, 0, 0.14) 18%, rgba(0, 0, 0, 0) 34%),
+    linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.78) 0%,
+      rgba(0, 0, 0, 0.58) 30%,
+      rgba(0, 0, 0, 0.24) 58%,
+      rgba(0, 0, 0, 0.06) 100%
+    ),
+    linear-gradient(to top, rgba(0, 0, 0, 0.44) 0%, rgba(0, 0, 0, 0) 34%);
+}
+
+/* ------------------------------------------------------------------- nav -- */
+
+.nav {
+  position: absolute;
+  top: 40px; /* pill centre lands on 48 ref */
+  left: 63px; /* logo ink starts at 48 ref */
+  right: 63px; /* pill's right edge at 797 ref — the same inset */
+  height: 43px; /* 25 ref */
+  display: flex;
+  align-items: center;
+  z-index: 2;
+}
+
+/* A white chip, because the logo ships as charcoal and red on transparent and the
+   hero is a photograph: recolouring the artwork was the alternative, and the
+   original reading exactly as drawn is worth more than a scrim-friendly variant. */
+.brand {
+  display: flex;
+  align-items: center;
+  padding: 8px 15px;
+  border-radius: var(--radius-btn);
+  background: var(--brand-white);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.26);
+  text-decoration: none;
+}
+
+/* 34px inside the chip keeps the whole lockup — vertical "MUMBAI", the dabba mark
+   and the "Since 1890" line — legible while the chip stays inside the nav row. */
+.brand__logo {
+  height: 34px;
+  width: auto;
+  display: block;
+}
+
+/* ---------------------------------------------------------------- buttons -- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  color: #fff;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* 184 design wide, 51 tall: 64..172 x 366..395 ref. The padding is asymmetric in
+   the reference too — the icon sits closer to the left edge than the label does to
+   the right. 19.5px because Palanquin runs narrow: that is the size whose "Join
+   Waitlist" fills the same 102px the box was measured around. */
+.btn--accent {
+  height: 51px;
+  padding: 0 18px 0 20px;
+  gap: 10px;
+  font-size: 19.5px;
+  background: var(--accent);
+}
+
+.btn--accent:hover {
+  background: #d4272c;
+}
+
+.btn__icon {
+  width: 34px; /* 20 ref — the dabba glyph is large for the button */
+  height: 34px;
+  color: #fff;
+}
+
+.btn__icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* The nav's right slot is the countdown: four tiles, each turning its digit over
+   like a calendar page when it changes. Tiles rather than a line of numbers so it
+   reads as a countdown at a glance, and so each unit can turn independently. */
+.counter {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: auto;
+}
+
+.counter__lead {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.74);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.55);
+}
+
+.counter__tiles {
+  display: flex;
+  gap: 8px;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  width: 54px;
+  padding: 8px 4px 7px;
+  border-radius: 13px;
+  background: rgba(22, 18, 17, 0.52);
+  border: 1px solid rgba(255, 255, 255, 0.17);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.11),
+    0 10px 26px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Days is the figure people actually read. */
+.tile--lead {
+  background: rgba(237, 50, 55, 0.86);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* The face is the stage for the page turn: fixed height so the two layers sit on
+   top of each other, and a perspective so the rotation has depth. */
+.tile__num {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 25px;
+  perspective: 220px;
+}
+
+.tile__cur,
+.tile__prev {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 21px;
+  line-height: 1;
+  font-weight: 700;
+  color: var(--brand-white);
+  font-variant-numeric: tabular-nums;
+  backface-visibility: hidden;
+}
+
+/* Sequential, not simultaneous: the old page has to be gone before the new one
+   arrives, or the two layers overlap into mush at the halfway point. 0.22s out,
+   then 0.26s in. The brightness dip is what sells a page turning rather than a
+   number sliding. */
+.tile__prev {
+  transform-origin: 50% 0%;
+  animation: page-lift 0.22s cubic-bezier(0.5, 0, 0.9, 0.4) forwards;
+}
+
+.tile__cur.is-turning {
+  transform-origin: 50% 100%;
+  animation: page-drop 0.26s cubic-bezier(0.15, 0.75, 0.4, 1) 0.2s backwards;
+}
+
+@keyframes page-lift {
+  0% {
+    transform: none;
+    opacity: 1;
+  }
+  70% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: rotateX(92deg) translateY(-16%);
+    opacity: 0;
+    filter: brightness(0.55);
+  }
+}
+
+@keyframes page-drop {
+  0% {
+    transform: rotateX(-88deg) translateY(14%);
+    opacity: 0;
+    filter: brightness(0.5);
+  }
+  45% {
+    opacity: 1;
+  }
+  100% {
+    transform: none;
+    opacity: 1;
+    filter: none;
+  }
+}
+
+.tile__u {
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.tile--lead .tile__u {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ------------------------------------------------------------------- CTA -- */
+
+/* Follows the 21st.dev reference (shadcnspace "Button with Icon"). Its move is not
+   a nudge: on hover the chip travels the whole width to the left end while the
+   label's padding swaps by the same amounts, so the box never changes size and the
+   label appears to trade places with the chip. Reference is h-12 with p-1/ps-6/pe-14
+   and a w-10 chip at right-1, over 500ms; scaled here to carry an 18px Palanquin
+   label. The reference also rotates its arrow 45 degrees — skipped, because a
+   tipped dabba reads as a spilled one. */
+.cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 56px;
+  padding: 0 68px 0 28px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--brand-white);
+  font: 600 18px/1 var(--font-body);
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    padding 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cta__label {
+  position: relative;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+.cta__chip {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--brand-white);
+  color: var(--accent);
+  transition: right 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cta__chip svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+  fill: currentColor;
+}
+
+.cta:hover {
+  padding: 0 28px 0 68px;
+  background: #d4272c;
+  box-shadow: 0 12px 28px rgba(237, 50, 55, 0.34);
+}
+
+/* 51 = the chip's own 46 plus its 5px inset, so it lands with the same air on the
+   left as it had on the right. */
+.cta:hover .cta__chip {
+  right: calc(100% - 51px);
+}
+
+.cta:active {
+  transform: scale(0.985);
+}
+
+.cta:focus-visible {
+  outline: 2px solid var(--brand-white);
+  outline-offset: 3px;
+}
+
+/* Full width where it replaces a block button: label left, chip right, which is
+   the reference's own arrangement rather than a centred label. */
+.cta--block {
+  display: flex;
+  width: 100%;
+}
+
+/* ------------------------------------------------------------ hero copy -- */
+
+/* Art-directed, not traced: the reference put this block at left 90 / top 227,
+   which is where the headline's baseline landed on its measured 187.5 ref. */
+.hero__copy {
+  position: absolute;
+  left: 64px;
+  top: 200px;
+  z-index: 2;
+}
+
+/* 70px in Asar carries the same 46.4px cap height the reference was set at
+   (Asar's cap is 0.658em against Poppins' 0.702em), so the headline keeps its
+   measured weight in the frame even though the face changed. */
+.hero__title {
+  margin: 0;
+  font-size: 70px;
+  /* Set to the font size, not the reference's 58.5-ref baseline-to-baseline
+     (100px): solid leading, so the two lines close up. */
+  line-height: 70px;
+  color: #fff;
+}
+
+/* Same size as the paragraph below the hero: their column-ink profiles in the
+   reference are identical character for character over 135 ref px. 23.5px is
+   the Palanquin size that reproduces the measured 561px line, its x-height
+   being far smaller than Poppins'. */
+.hero__sub {
+  margin: 6px 0 0;
+  font-size: 20.5px;
+  line-height: 30px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.hero__copy .cta {
+  margin-top: 105px;
+}
+
+/* ------------------------------------------------------------------ rail -- */
+
+.rail {
+  position: absolute;
+  /* Card 1's left edge sits a few px inside where the carve's edge begins
+     (361 vs 357 ref), and card 3 stops 12px short of the hero's right edge. */
+  left: 42.51%;
+  right: 10px;
+  top: calc(var(--cut-v) + 23px);
+}
+
+.rail__track {
+  display: flex;
+  gap: 31px; /* 18 ref — 275px pitch */
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.rail__track::-webkit-scrollbar {
+  display: none;
+}
+
+.card {
+  position: relative;
+  /* Fixed, not fluid: the featured card's scoop is a px path, so the card it is
+     cut from has to be a known size. Three fit the rail exactly; the rest scroll. */
+  flex: 0 0 244px; /* 143.5 ref */
+  height: 251px; /* 147.3 ref — very nearly square */
+  scroll-snap-align: start;
+
+  --scrim-foot: 0.58;
+  --scrim-mid: 0.26;
+  --scrim-head: 0;
+}
+
+/* A bright photograph needs more scrim to hold white type, and to keep the
+   frosted badge visible against a pale sky. */
+.card--lit {
+  --scrim-foot: 0.78;
+  --scrim-mid: 0.46;
+  --scrim-head: 0.16;
+}
+
+/* An already-dark photograph needs less, or the card goes flat. */
+.card--dim {
+  --scrim-foot: 0.46;
+  --scrim-mid: 0.18;
+}
+
+.card__surface {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+/* The featured card's top-right corner is scooped out so the jump button can
+   nest in it with clear air all round. The traced boundary has an inflection —
+   it leaves the top edge horizontally, swings down, and meets the right edge
+   vertically — so a subtracted circle cannot draw it: it needs two 30px convex
+   fillets flanking a 46px concave arc. The path sits on .card__surface, not on
+   .card, or it would cut the button away along with the corner. */
+.card--featured .card__surface {
+  clip-path: path(
+    "M30 0H140A30 30 0 0 1 170 30A46 46 0 0 0 214.8 76A30 30 0 0 1 244 106V221A30 30 0 0 1 214 251H30A30 30 0 0 1 0 221V30A30 30 0 0 1 30 0Z"
+  );
+}
+
+.card__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card__surface::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* Neutral black only. The reference's card 1 looks green-tinted but is not:
+     the haze inside it stays H203 S16%, and card 3's concrete gets brighter
+     downward — there is no colour scrim on any card, just dark photographs.
+     The stops are tokens because the three photographs are not equally dark:
+     the reference's own card means run 87 / 98 / 75 of 255, and matching that
+     spread means tuning the scrim per photo rather than per card position. */
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, var(--scrim-foot)) 0%,
+    rgba(0, 0, 0, var(--scrim-mid)) 45%,
+    rgba(0, 0, 0, var(--scrim-head)) 74%,
+    rgba(0, 0, 0, var(--scrim-head)) 100%
+  );
+}
+
+.card__badge {
+  position: absolute;
+  top: 26px;
+  left: 27px; /* 15.5 / 16 ref */
+  width: 48px;
+  height: 48px; /* 29 ref */
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.26);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 2;
+}
+
+.card__badge svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+/* Nests in the scooped corner, overhanging on two sides: 2px past the card's
+   right edge and 2px above its top. Inset it flush and the clearance ring goes
+   symmetric, which kills the carved look. */
+/* A round badge with the label curved around its own ring, per the supplied
+   reference. */
+.card__jump {
+  position: absolute;
+  top: 0;
+  right: -5px;
+  width: 72px;
+  height: 72px;
+  padding: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent); /* the reference's ring is the full red */
+  cursor: pointer;
+  z-index: 3;
+}
+
+.card__jump-ring {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* Slow, and the whole ring turns — text and both dots together, since they
+     share the SVG. 18s reads as drift rather than spin at this diameter. */
+  animation: jump-spin 18s linear infinite;
+}
+
+@keyframes jump-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Stops while the reader is about to click it, so the label can be read. */
+.card__jump:hover .card__jump-ring,
+.card__jump:focus-visible .card__jump-ring {
+  animation-play-state: paused;
+}
+
+/* 11.5 viewBox units, not the 8.6 this carried at 92px: the ring text is sized
+   in viewBox units so it scales with the badge, and at 72px the old value
+   rendered ~6.2px — illegible. 11.5 gives ~8.3px here. The run then uses ~87%
+   of the available half-arc, so letter-spacing comes down from 0.1em to keep
+   it off the end of the path. */
+.card__jump-ring text {
+  font: 700 11.5px/1 var(--font-body);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  fill: var(--accent-ink);
+}
+
+.card__jump-dot {
+  fill: var(--accent);
+}
+
+.card__jump:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* The glyph fills 64 % of the chip in the reference — a small icon in a big
+   circle reads as a different component. */
+.card__jump:hover {
+  background: #fbdcdd;
+}
+
+.card__text {
+  position: absolute;
+  left: 27px;
+  right: 27px;
+  bottom: 20px;
+  z-index: 2;
+}
+
+/* Asar ships one weight, so a card title cannot lean on bold to separate itself
+   from a photograph the way the reference's 600 did — it leans on a shadow. */
+.card__text h3 {
+  margin: 0 0 14px;
+  font-size: 17px; /* Asar, matched on cap height to the measured title */
+  line-height: 22px;
+  color: #fff;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* 20px, not the 13 a first glance suggests: the reference's body line measures
+   177 design px, and Palanquin needs 20px to fill it. */
+.card__text p {
+  margin: 0;
+  font-size: 18px;
+  line-height: 23.5px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.88);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.rail__next {
+  position: absolute;
+  top: 125px; /* the card's vertical centre */
+  right: 10px;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 14px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
+}
+
+.rail__next svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ----------------------------------------------------------------- intro -- */
+
+/* Same size as the hero subcopy, as the reference has it. 43px puts its first
+   baseline on the traced 474.5 ref. */
+/* Absolutely placed below the hero rather than in flow, because on phones it
+   becomes a panel tucked into the hero's carve and has to sit between the hero
+   and the rail in the DOM. .stage reserves the height it no longer occupies. */
+.intro {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin: 43px 0 40px;
+  max-width: 400px;
+  padding-left: 20px;
+  font-size: 19.5px;
+  line-height: 30px;
+  color: var(--ink);
+}
+
+/* =========================================================================
+   Sections below the hero. These have no reference to trace, so they are
+   built from the hero's own vocabulary: 40px on big surfaces, 30px on cards,
+   the brand red, and the same body size the hero already carries.
+   ========================================================================= */
+
+.eyebrow {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.eyebrow--light {
+  color: #f3b9bb;
+}
+
+/* 47px Asar carries the cap height 44px Poppins did. Line-height 1.2, not the
+   1.16 a grotesque tolerates: Asar's ascenders and descenders are longer. */
+h2 {
+  margin: 14px 0 0;
+  font-size: 47px;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.lede {
+  margin: 22px 0 0;
+  max-width: 52ch;
+  font-size: 19.5px;
+  line-height: 31px;
+  color: var(--ink-soft);
+}
+
+.lede--light {
+  color: rgba(255, 255, 255, 0.86);
+}
+
+/* ---------------------------------------------------------------- legacy -- */
+
+.band {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 64px;
+  padding: 104px 15px 96px;
+}
+
+.stats {
+  display: flex;
+  gap: 44px;
+  margin: 40px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stats li {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stats__n {
+  font-size: 42px;
+  line-height: 1;
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Figures stay in Palanquin: Asar is a display face, and its numerals are not
+   built to line up across a row of stats. */
+.stats__plus {
+  color: var(--accent);
+}
+
+.stats__l {
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--ink-soft);
+}
+
+/* A collage rather than a row-and-a-banner: the carrier runs the full height of
+   the column and the other two stack beside it, which keeps this column roughly
+   as tall as the copy column next to it. */
+.band__art {
+  display: grid;
+  grid-template-columns: 1.12fr 0.88fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 18px;
+  align-content: start;
+}
+
+.art {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-card);
+  object-fit: cover;
+}
+
+.art--tall:first-child {
+  grid-row: 1 / 3;
+  height: 418px;
+}
+
+.art--tall {
+  height: 200px;
+}
+
+.art--wide {
+  height: 200px;
+  object-position: 50% 46%;
+}
+
+/* On-scroll reveal for the collage: each photo wipes in via its own clip-path
+   direction rather than a plain fade — a wipe reads as uncovering a specific
+   photo, which suits a collage better than a fade does. `reveal-ready` is
+   added by JS only when IntersectionObserver exists and the user has not
+   asked for reduced motion; without it every .art is just the plain, fully
+   visible image above, so nothing here can strand a photo invisible in a
+   no-JS or no-IO environment. Every inset() keeps `round var(--radius-card)`
+   so the clip's edge follows the photo's own rounded corner through the wipe.
+
+   Three different directions, one per photo, matching the collage's own
+   layout rather than repeating one motion three times:
+   - the tall lead photo rises bottom-to-top (it's the one the eye lands on
+     first, and its full height gives that motion room to read)
+   - the second tall photo settles top-to-bottom (the opposite of the first,
+     so the two verticals don't move identically side by side)
+   - the wide photo grows from its top-left corner toward its bottom-right —
+     the closest a pure clip-path inset() can get to a true diagonal wipe,
+     since inset() only ever describes an axis-aligned rectangle. */
+.band.reveal-ready .art--tall:first-child {
+  clip-path: inset(100% 0 0 0 round var(--radius-card)); /* bottom-to-top */
+  transition: clip-path 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.band.reveal-ready .art--tall:not(:first-child) {
+  clip-path: inset(0 0 100% 0 round var(--radius-card)); /* top-to-bottom */
+  transition: clip-path 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.band.reveal-ready .art--wide {
+  clip-path: inset(0 100% 100% 0 round var(--radius-card)); /* top-left → bottom-right */
+  transition: clip-path 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.band.reveal-ready.is-visible .art--tall:first-child {
+  clip-path: inset(0% 0 0 0 round var(--radius-card));
+}
+
+.band.reveal-ready.is-visible .art--tall:not(:first-child) {
+  clip-path: inset(0 0 0% 0 round var(--radius-card));
+}
+
+.band.reveal-ready.is-visible .art--wide {
+  clip-path: inset(0 0% 0% 0 round var(--radius-card));
+}
+
+/* Staggered in the collage's own visual order: the tall lead photo first,
+   then the two that stack beside it. */
+.band.reveal-ready.is-visible .art--tall:first-child {
+  transition-delay: 0s;
+}
+
+.band.reveal-ready.is-visible .art--tall:not(:first-child) {
+  transition-delay: 0.12s;
+}
+
+.band.reveal-ready.is-visible .art--wide {
+  transition-delay: 0.24s;
+}
+
+/* -------------------------------------------------------------- waitlist -- */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* A bento mosaic, structurally after a shared reference: small photo/stat/
+   badge tiles on one side, a headline and the actual signup on the other.
+   The wrapper is a warm-grey ground (charcoal mixed 5% into white — no new
+   hue) so the white tiles and cards read as objects sitting on it, the way
+   the reference's cards sit on its own light-grey page. minmax(0, …), not a
+   bare fr, on every track in this section: a bare fr's minimum width comes
+   from its content's min-content, and this page has already hit that
+   exact overflow bug twice. */
+.showcase {
+  position: relative;
+  display: grid;
+  /* Not stretch: the mosaic is a masonry board whose height is a function of
+     how many tiles it holds, and forcing the form column to match it put
+     ~300px of dead space under the privacy note. Letting each column end
+     where its content ends is the board aesthetic anyway — the reference's
+     own columns finish at different heights. */
+  align-items: start;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: 24px;
+  margin: 96px 0 0;
+  padding: 28px;
+  border-radius: var(--radius-hero);
+  background: color-mix(in srgb, var(--brand-charcoal) 5%, var(--brand-white));
+}
+
+/* Two columns that scroll continuously in opposite directions. This is no
+   longer a masonry flow — multi-column can't animate its columns
+   independently, so each is its own track and the varied tile heights carry
+   the board feel instead.
+
+   The height here is the viewport onto the tracks, not the content: it is
+   what the tracks scroll *through*, and it is roughly the natural height of
+   the form column beside it so the two sides read as one band. */
+.mosaic {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+  height: 660px;
+  overflow: hidden;
+  /* The tiles are square-cornered against this box's edge otherwise — the
+     section's own radius is further out, so without this the top and bottom
+     of each column cut off hard. */
+  border-radius: 24px;
+  /* Fades the cut at both ends so tiles enter and leave rather than being
+     chopped. -webkit- first: Safari still needs the prefixed property. */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
+}
+
+.mosaic__track {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  /* One gap of bottom padding, and it is load-bearing. n tiles have n-1 gaps
+     between them, but the distance the track must travel to put the second
+     set exactly where the first was is n/2 tiles PLUS n/2 gaps. Without this
+     the track is one gap short, translateY(-50%) undershoots by half a gap,
+     and the loop visibly jumps 7px every pass — measured, not theorised.
+     Padding it to n gaps makes 50% land exactly on the seam. Keep this equal
+     to the gap above. */
+  padding-bottom: 14px;
+  will-change: transform;
+}
+
+/* 50% of a track holding two identical sets is exactly one set. Up and down
+   are the same travel, just opposite start/end. */
+@keyframes mosaic-up {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes mosaic-down {
+  from {
+    transform: translateY(-50%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Durations differ per column because the two tracks are different lengths —
+   matching the seconds would make the shorter column visibly faster. These
+   land both near ~34px/s, slow enough to read a photograph as it passes. */
+.mosaic__col--up .mosaic__track {
+  animation: mosaic-up 46s linear infinite;
+}
+
+.mosaic__col--down .mosaic__track {
+  animation: mosaic-down 54s linear infinite;
+}
+
+/* Pausing on hover is what makes it feel like a board rather than a
+   billboard — the reader can stop it to look at something. :focus-within so
+   it also stops for a keyboard user tabbing through. */
+.mosaic:hover .mosaic__track,
+.mosaic:focus-within .mosaic__track {
+  animation-play-state: paused;
+}
+
+.piece {
+  position: relative;
+  /* Every tile is a <figure>, which carries the UA's own `margin: 1em 40px`
+     — that was insetting each one 40px horizontally inside its own cell.
+     The track's flex gap owns the spacing now, so this is a plain reset. */
+  margin: 0;
+  /* flex items shrink to fit by default, which would squash every tile as
+     the track grew past its container. */
+  flex: 0 0 auto;
+  border-radius: 28px;
+  overflow: hidden;
+  background: var(--brand-white);
+}
+
+/* One rule for every photo tile, so adding another is a class on the markup
+   rather than a new block here. The heights are modifiers below: a photo
+   with object-fit: cover contributes no intrinsic height, so inside a flex
+   track it has to be given one or the tile collapses. */
+.piece--photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.piece--h-sm {
+  height: 132px;
+}
+
+.piece--h-md {
+  height: 158px;
+}
+
+.piece--h-lg {
+  height: 182px;
+}
+
+.piece--h-xl {
+  height: 240px;
+}
+
+/* The one tinted tile — accent-soft, echoing the single colour block the
+   reference puts its product shot on. No caption here: the reference's
+   equivalent tile is image-only, and the card directly below it is the one
+   that carries words. */
+.piece--object {
+  height: 165px;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background: var(--accent-soft);
+}
+
+/* Circular, because the lid genuinely is — the crop reads as the object
+   itself rather than as a photo that happens to be masked, which is what
+   makes the reference's cut-out product shot work in this slot. */
+.piece--object img {
+  width: min(118px, 100%);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  object-fit: cover;
+  box-shadow: 0 14px 30px rgba(179, 40, 44, 0.26);
+}
+
+.showcase__main {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.showcase__hero {
+  padding: 40px;
+  border-radius: 28px;
+  background: var(--brand-white);
+}
+
+.showcase__form {
+  margin-top: 28px;
+}
+
+.showcase__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.showcase__field {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+.showcase__field input {
+  width: 100%;
+  height: 56px;
+  padding: 0 22px;
+  border: 1.5px solid rgba(55, 52, 53, 0.16);
+  border-radius: 999px;
+  background: var(--brand-white);
+  font: 400 17px/1 var(--font-body);
+  color: var(--ink);
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.showcase__field input::placeholder {
+  color: var(--ink-soft);
+}
+
+/* border-color alone already clears 1.4.11 (4.11:1 on white); the outline
+   is a second, crisper indicator on top of it rather than the only one. */
+.showcase__field input:focus-visible {
+  border-color: var(--accent);
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(237, 50, 55, 0.16);
+}
+
+/* No JS: :has() reads the browser's own validity state. Never implies a
+   place is reserved, only that the address looks right; degrades silently
+   where :has() is unsupported. */
+.showcase:has(#email:valid) .showcase__field input {
+  border-color: var(--accent);
+}
+
+.signup--bad .showcase__field input {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* No text of its own by default — CSS collapses an :empty node rather than
+   the markup carrying display:none, because role="alert" only announces
+   reliably across AT when its content actually mutates; the submit handler
+   writes and clears this element's text instead of toggling visibility. */
+.showcase__err {
+  margin: 10px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent-ink);
+}
+
+.showcase__err:empty {
+  display: none;
+}
+
+.showcase__feature {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px 28px;
+  border-radius: 28px;
+  background: var(--brand-white);
+}
+
+.showcase__feature-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.showcase__feature-h {
+  margin: 8px 0 0;
+  font: 400 22px/1.3 var(--font-head);
+  color: var(--ink);
+}
+
+.showcase__feature-img {
+  flex: 0 0 auto;
+  width: 96px;
+  height: 96px;
+  border-radius: 20px;
+  object-fit: cover;
+}
+
+.showcase__note {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 0;
+  padding: 4px 28px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.showcase__lock {
+  flex: 0 0 16px;
+  margin-top: 2px;
+  color: var(--accent);
+}
+
+.showcase__lock svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+/* On-scroll reveal: the mosaic's tiles pop in staggered, as if the grid were
+   assembling itself, while the copy/form and the cards beside it fade and
+   rise — the same reveal-ready/is-visible mechanism the rest of the page
+   uses, keyed off #waitlist regardless of which design is inside it. */
+.showcase.reveal-ready .piece {
+  opacity: 0;
+  transform: scale(0.92);
+  transition:
+    opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.showcase.reveal-ready.is-visible .piece {
+  opacity: 1;
+  transform: none;
+}
+
+/* The board fades in as two columns rather than tile by tile: the tiles are
+   inside animated tracks, so a per-tile transform would fight the marquee's
+   own transform on the same element's ancestor and the stagger would be
+   invisible behind the scroll anyway. */
+.showcase.reveal-ready .mosaic__col {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.showcase.reveal-ready.is-visible .mosaic__col {
+  opacity: 1;
+  transform: none;
+}
+
+.showcase.reveal-ready.is-visible .mosaic__col--down {
+  transition-delay: 0.1s;
+}
+
+.showcase.reveal-ready .showcase__hero > * {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.showcase.reveal-ready.is-visible .showcase__hero > * {
+  opacity: 1;
+  transform: none;
+}
+
+.showcase.reveal-ready.is-visible .showcase__hero > :nth-child(1) {
+  transition-delay: 0s;
+}
+.showcase.reveal-ready.is-visible .showcase__hero > :nth-child(2) {
+  transition-delay: 0.08s;
+}
+.showcase.reveal-ready.is-visible .showcase__hero > :nth-child(3) {
+  transition-delay: 0.16s;
+}
+.showcase.reveal-ready.is-visible .showcase__hero > :nth-child(4) {
+  transition-delay: 0.24s;
+}
+
+.showcase.reveal-ready .showcase__feature,
+.showcase.reveal-ready .showcase__note {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.showcase.reveal-ready.is-visible .showcase__feature,
+.showcase.reveal-ready.is-visible .showcase__note {
+  opacity: 1;
+  transform: none;
+}
+
+.showcase.reveal-ready.is-visible .showcase__feature {
+  transition-delay: 0.3s;
+}
+.showcase.reveal-ready.is-visible .showcase__note {
+  transition-delay: 0.38s;
+}
+
+/* ------------------------------------------------------------------- run -- */
+
+/* Structure and mechanic after a supplied reference section (CRAV
+   "Takeaway"): a wavy divider bleeding the page colour in, one dashed SVG
+   path, a traveller driven along that path by scroll progress, and photo pins
+   pegged along it. Everything else is MD's — its four colours, Asar and
+   Palanquin, and stills of the actual run.
+
+   The reference sized every offset in `vw` because its section was full-bleed.
+   This one is an inset card like the rest of the page, so `vw` would drift
+   from the section's own box by the page padding. `container-type: inline-size`
+   plus `cqw` keeps the reference's numbers meaningful: 1cqw is 1% of THIS
+   section, which is what its measurements actually meant. */
+/* ---- pin ---- */
+
+/* The flight is longer than the section's own pass through the viewport, so
+   the last stretch of the route — Gulab jamun to Perth — used to whip past
+   as the section left the screen. This buys that time: the section sticks at
+   the bottom of the viewport for one more viewport of scroll, and the
+   progress mapping in the plane script reaches 1 exactly as the pin releases,
+   so the dabba lands on Perth on the final held frame.
+
+   Sticky, not a scroll lock. Nothing calls preventDefault: the scrollbar,
+   the keyboard and the trackpad all keep working normally — only the section
+   stays put while they do.
+
+   `bottom: 0`, not a negative `top`. Both pin an over-tall element at the
+   moment its bottom meets the viewport bottom, but a negative top has to
+   carry the section's own height in the offset, and that height is 132% of
+   its own width — which cqw cannot express from inside the section, since an
+   element is never its own query container. `bottom: 0` needs no height at
+   all. */
+
+/* Container so the sticky offset below can name the section's own height.
+   Nesting is fine: .run is a container too, and for .run's OWN properties a
+   cqw skips itself and resolves here — the same rule that made `height:
+   163cqw` fall back to the viewport when there was no ancestor container. */
+.run-pin {
+  container-type: inline-size;
+}
+
+/* The pin's scroll distance, and it must be a real element. A sticky box is
+   constrained to its containing block's CONTENT box, so `padding-bottom` on
+   the wrapper buys no room whatsoever — measured, both directions, zero
+   hold. Zero-height until JS opts in. */
+.run-pin__hold {
+  height: 0;
+}
+
+/* A negative `top`, not `bottom: 0`. `bottom` is the reverse-sticky
+   constraint: it shifts a box UP toward the viewport bottom, and this
+   section sits at the top of its wrapper with no upward room, so it never
+   engaged at all. `top` shifts DOWN, which is the direction with room.
+
+   100svh - 132cqw puts the held top exactly where the section's bottom meets
+   the viewport bottom. 132 is .run--desktop's own aspect-ratio denominator —
+   the two have to stay in step.
+
+   Both gates matter. Under 768 the desktop section is display:none, so the
+   hold would be a viewport of blank page with nothing pinned in it. And the
+   pin only reads right while the section is TALLER than the viewport: below
+   about 4/5 it fits, and the offset would go positive and pin it on the way
+   IN. `is-pinned` itself is added by the plane script, so no JS means no pin
+   and no dead scroll either — the same inversion the reveals use. */
+@media (min-width: 768px) and (min-aspect-ratio: 4 / 5) {
+  .run-pin.is-pinned .run--desktop {
+    position: sticky;
+    top: calc(100svh - 132cqw);
+  }
+
+  .run-pin.is-pinned .run-pin__hold {
+    height: 100svh;
+  }
+}
+
+.run {
+  container-type: inline-size;
+  position: relative;
+  overflow: hidden;
+  /* 24, not 96: the band above already ends on 96px of its own bottom padding,
+     so a matching top margin here read as ~192px of dead white. */
+  margin: 24px 0 0;
+  border-radius: var(--radius-hero);
+  /* Charcoal mixed 11% into white: a light grey that is still only the two
+     brand neutrals, no fifth colour. At this value --ink reads 10.1:1,
+     --ink-soft 5.8:1 and --accent-ink 5.3:1, so every piece of type in here
+     clears AA without a single hardcoded hex. */
+  background: color-mix(in srgb, var(--brand-charcoal) 11%, var(--brand-white));
+}
+
+/* aspect-ratio, NOT `height: 163cqw`. An element cannot be its own container
+   query container, so cqw on .run itself falls back to the viewport — which
+   made the section 163% of the *viewport* (2347px) while every pin inside it
+   sized against the section (1400px), leaving 65px of dead space at the
+   bottom. aspect-ratio is self-referential by definition. 100/163 is the
+   reference's own proportion. It is no longer 163: with the route now filling
+   the section (preserveAspectRatio="none") the ~260px of letterbox above and
+   below the path is gone, so the same route fits in 132 and the pin offsets
+   below were re-derived against that. */
+.run--desktop {
+  aspect-ratio: 100 / 132;
+}
+
+.run__wave {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  line-height: 0;
+  pointer-events: none;
+}
+
+.run__wave svg {
+  display: block;
+  width: 100%;
+  height: 14cqw;
+}
+
+/* The path and the traveller share one coordinate space, which is what lets
+   getPointAtLength() place the traveller in the same units the path is drawn
+   in — no mapping between SVG and CSS pixels. */
+.run__route {
+  position: absolute;
+  inset: 0;
+}
+
+.run__route svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.run__line {
+  fill: none;
+  /* Charcoal at 28%, now that the ground is light: the dashes read as a drawn
+     line without introducing a colour the palette does not have. */
+  stroke: rgba(55, 52, 53, 0.28);
+  stroke-width: 10;
+  stroke-dasharray: 42 42;
+  stroke-linecap: round;
+}
+
+/* An <image>, so nothing to fill — the drop shadow is what lifts it off the
+   grey and reads as height above the route. */
+.run__plane {
+  filter: drop-shadow(0 10px 18px rgba(55, 52, 53, 0.28));
+}
+
+.run__copy {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* The global .eyebrow is #ED3237, which is only 3.38:1 on this grey — fine
+   as large display type, not as a 15px tracked label. --accent-ink is the
+   token that exists for exactly this: 5.31:1 here. */
+.run__copy .eyebrow {
+  position: absolute;
+  top: 6cqw;
+  left: 5cqw;
+  color: var(--accent-ink);
+}
+
+/* 8.5cqw, not the reference's 15: that size belongs to Modak, a face built
+   for it. Asar is a text serif with a 0.658 cap height, and at 15cqw it
+   stops reading as a headline and starts reading as a mistake. */
+.run h2 {
+  position: absolute;
+  top: 8.5cqw;
+  left: 5cqw;
+  /* Wide enough that the <br>'s two lines stay two — at 6cqw Asar
+     "Mumbai to Perth." measures ~47cqw of ink, so 58 leaves headroom without
+     letting the line run the full section. */
+  width: 58cqw;
+  margin: 0;
+  font-size: 6cqw;
+  line-height: 1.02;
+  color: var(--ink);
+}
+
+/* 22.5cqw clears the headline: 8.5cqw top + two lines of 6cqw at 1.02
+   = 20.7cqw, plus ~2cqw of air. */
+.run .lede {
+  position: absolute;
+  top: 22.5cqw;
+  left: 5cqw;
+  width: 32cqw;
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+/* ---- pins ---- */
+
+.pin {
+  position: absolute;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2cqw;
+}
+
+.pin__label {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.pin__card {
+  width: 16cqw;
+  height: 19cqw;
+  border-radius: 1.4cqw;
+  overflow: hidden;
+  background: rgba(55, 52, 53, 0.06);
+}
+
+.pin__card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pin--l {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.pin--r {
+  align-items: flex-end;
+  text-align: right;
+}
+
+/* Pegged to the reference's own five offsets, in its own order down the
+   route. */
+/* Re-derived for the 132cqw section: each pin keeps its fraction of the
+   route's vertical run, which the removed letterbox shifted up. The last one
+   is held at 106 so its card (19cqw) and label clear the section's bottom
+   edge — .run has overflow: hidden and would crop it. */
+/* Scaled by 2176/2400 = 0.9067 when the route's viewBox grew to stop the
+   sprite clipping at the bottom: the same path point now renders that much
+   higher, so each pin moves with it. */
+.pin--mumbai {
+  right: 5cqw;
+  top: 27.2cqw;
+}
+.pin--biryani {
+  left: 35cqw;
+  top: 41.7cqw;
+}
+.pin--paneer {
+  right: 20cqw;
+  top: 56.2cqw;
+}
+.pin--jamun {
+  left: 15cqw;
+  top: 76.2cqw;
+}
+.pin--perth {
+  right: 14cqw;
+  top: 96.1cqw;
+}
+
+/* ---- entrance reveal ---- */
+
+/* `run-ready` is added by JS, and only when IntersectionObserver exists and
+   the reader has not asked for less motion — so with no JS every pin and line
+   of copy is simply already visible. Same inversion the rest of the page
+   uses. */
+.run.run-ready .run-rev {
+  opacity: 0;
+  transition:
+    opacity 0.7s cubic-bezier(0.2, 0.7, 0.3, 1),
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+/* A shorter, overshooting curve: these no longer fade in as a group, they
+   land one at a time as the plane reaches each one, and a pop reads as
+   arrival where a 0.7s ease reads as a fade. */
+.run.run-ready .pin.run-rev {
+  transform: scale(0.78);
+  transition:
+    opacity 0.34s ease-out,
+    transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.run.run-ready .run__copy .run-rev {
+  transform: translateY(2cqw);
+}
+
+.run.run-ready .run-rev.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---- mobile variant ---- */
+
+.run--mobile {
+  display: none;
+}
+
+.mrun {
+  display: flex;
+  flex-direction: column;
+  gap: 9cqw;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mrun__city {
+  display: flex;
+  flex-direction: column;
+  gap: 3cqw;
+}
+
+.mrun__city:nth-child(even) {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.mrun__note {
+  margin: 0;
+  max-width: 62cqw;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+/* ------------------------------------------------------- on-load reveal -- */
+
+/* Both of these are gated on .page-in, which the inline <head> script adds
+   only when JS runs and the reader has not asked for less motion. No class,
+   no animation — so the plain page is the fallback, same inversion the
+   scroll reveals use. `both` fill so the from-state applies before the delay
+   and the to-state sticks after. */
+
+/* The banner wipes in left to right. A moving mask rather than a clip-path,
+   because the brief was a *fade* in that direction and a clip edge is hard.
+   The gradient image is 2.5x the hero's width: at mask-position 100% the
+   element samples only the transparent tail, at 0% only the opaque head, so
+   animating between them sweeps the soft edge across once. */
+.page-in .hero {
+  -webkit-mask-image: linear-gradient(to right, #000 0 40%, rgba(0, 0, 0, 0) 72%);
+  mask-image: linear-gradient(to right, #000 0 40%, rgba(0, 0, 0, 0) 72%);
+  -webkit-mask-size: 250% 100%;
+  mask-size: 250% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  animation: banner-in 1.1s cubic-bezier(0.33, 0, 0.2, 1) both;
+}
+
+@keyframes banner-in {
+  from {
+    -webkit-mask-position: 100% 0;
+    mask-position: 100% 0;
+  }
+  to {
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+  }
+}
+
+/* The dish cards come in the other way — right to left. Each starts offset to
+   the right and the delays run backwards through the DOM, so the rightmost
+   card on screen lands first and the leftmost last. Cards 4-6 are off the
+   viewport at rest, which is why their delays are the short ones. */
+.page-in .rail__track .card {
+  animation: dish-in 0.6s cubic-bezier(0.33, 0, 0.2, 1) both;
+}
+
+@keyframes dish-in {
+  from {
+    opacity: 0;
+    transform: translateX(34px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.page-in .rail__track .card:nth-child(1) {
+  animation-delay: 0.55s;
+}
+.page-in .rail__track .card:nth-child(2) {
+  animation-delay: 0.47s;
+}
+.page-in .rail__track .card:nth-child(3) {
+  animation-delay: 0.39s;
+}
+.page-in .rail__track .card:nth-child(4) {
+  animation-delay: 0.31s;
+}
+.page-in .rail__track .card:nth-child(5) {
+  animation-delay: 0.23s;
+}
+.page-in .rail__track .card:nth-child(n + 6) {
+  animation-delay: 0.15s;
+}
+
+/* ---------------------------------------------------------------- footer -- */
+
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+  margin-top: 76px;
+  padding: 36px 0 64px;
+  border-top: 1px solid #e8e7e6;
+}
+
+.foot__logo {
+  height: 46px;
+  width: auto;
+  display: block;
+}
+
+.foot__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  font-size: 16.5px;
+  color: var(--ink-soft);
+  text-align: right;
+}
+
+.foot__meta a {
+  color: var(--accent);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.foot__meta a:hover {
+  text-decoration: underline;
+}
+
+/* ----------------------------------------------------------------- sheet -- */
+
+.sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.sheet[hidden] {
+  display: none;
+}
+
+.sheet__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(18, 15, 12, 0.62);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.sheet__panel {
+  position: relative;
+  width: min(520px, 100%);
+  max-height: 92vh;
+  overflow-y: auto;
+  padding: 36px 36px 32px;
+  border-radius: var(--radius-hero);
+  background: var(--brand-white);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+}
+
+.sheet__panel h2 {
+  font-size: 34px;
+}
+
+.sheet__x {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #f2f2f2;
+  color: #555;
+  cursor: pointer;
+}
+
+.sheet__x:hover {
+  background: #e7e7e7;
+}
+
+.sheet__x svg {
+  width: 20px;
+  height: 20px;
+}
+
+.sheet__lede {
+  margin: 14px 0 0;
+  font-size: 16.5px;
+  line-height: 26px;
+  color: var(--ink-soft);
+}
+
+.sheet__form {
+  margin-top: 24px;
+}
+
+.sheet__form label,
+.sheet__pref legend {
+  display: block;
+  margin: 18px 0 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.sheet__form .opt {
+  font-weight: 400;
+  color: #9a9a9a;
+}
+
+.sheet__form input[type="email"],
+.sheet__form input[type="tel"],
+.sheet__form select {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid #dcdcdc;
+  border-radius: 12px;
+  font: 400 17px/1 var(--font-body);
+  color: var(--ink);
+  background: var(--brand-white);
+}
+
+.sheet__form input:focus-visible,
+.sheet__form select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-color: var(--accent);
+}
+
+.sheet__phone {
+  display: flex;
+  gap: 10px;
+}
+
+.sheet__cc {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  height: 48px;
+  padding: 0 14px;
+  border-radius: 12px;
+  background: #f4f2f2;
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+.sheet__pref {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.sheet__pref legend {
+  padding: 0;
+}
+
+/* Wins over `.sheet__form label { display: block }`, which would otherwise
+   stack the two preference chips full-width. */
+.sheet__form .pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 8px 0 0 !important;
+  padding: 10px 16px;
+  border: 1px solid #dcdcdc;
+  border-radius: 999px;
+  font-weight: 500 !important;
+  cursor: pointer;
+}
+
+.sheet__form .pill:has(input:checked) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+
+.sheet__form .pill input {
+  accent-color: var(--accent);
+}
+
+.btn--block {
+  width: 100%;
+  margin-top: 26px;
+}
+
+.sheet__fine {
+  margin: 16px 0 0;
+  font-size: 15px;
+  line-height: 23px;
+  color: #8a8686;
+}
+
+.sheet__fine a {
+  color: var(--accent);
+}
+
+.sheet__done {
+  padding: 8px 0 4px;
+  text-align: center;
+}
+
+.sheet__tick {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  margin: 8px auto 0;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.sheet__tick svg {
+  width: 30px;
+  height: 30px;
+}
+
+.sheet__done h3 {
+  margin: 18px 0 0;
+  font-size: 28px;
+  color: var(--ink);
+}
+
+.sheet__done p {
+  margin: 12px auto 22px;
+  max-width: 34ch;
+  font-size: 16.5px;
+  line-height: 26px;
+  color: var(--ink-soft);
+}
+
+/* ------------------------------------------------------------ responsive -- */
+
+/* Desktop proportions hold down to ~1180px; below that the fixed 244px cards
+   simply scroll further and the copy steps down a size. */
+@media (max-width: 1180px) {
+  :root {
+    --radius-hero: 32px;
+  }
+
+  .nav {
+    left: 40px;
+    right: 36px;
+  }
+
+  .hero__copy {
+    left: 60px;
+    top: 150px;
+  }
+
+  /* The rail's left edge is at 42.51%, so the paragraph has to stop short of it —
+     a fixed 400px overlaps the cards from about 900px down. */
+  .intro {
+    max-width: 38%;
+  }
+
+  .hero__title {
+    font-size: 56px;
+    line-height: 78px;
+  }
+
+  .hero__sub {
+    font-size: 19px;
+    line-height: 28px;
+  }
+
+  .counter {
+    gap: 12px;
+  }
+
+  .counter__lead {
+    display: none;
+  }
+
+  .hero__copy .cta {
+    margin-top: 56px;
+  }
+
+  .card__text p {
+    font-size: 17px;
+    line-height: 22px;
+  }
+}
+
+/* Under 900px the carve stops earning its keep — the rail no longer fits beside
+   the hero — so the frame stops being a fixed-ratio canvas, the hero gets a
+   straight bottom edge, and the rail drops into normal flow below it. */
+@media (max-width: 900px) {
+  :root {
+    --page-pad: 16px;
+    --radius-hero: 24px;
+  }
+
+  .nav {
+    top: 22px;
+    left: 24px;
+    right: 20px;
+  }
+
+  .brand {
+    padding: 7px 12px;
+  }
+
+  .brand__logo {
+    height: 28px;
+  }
+
+  .hero__title {
+    font-size: clamp(34px, 9vw, 54px);
+    line-height: 1.24;
+  }
+
+  .hero__sub {
+    margin-top: 14px;
+    font-size: 17px;
+    line-height: 26px;
+  }
+
+  /* The hard breaks are set for the desktop measure; at this width they fight it.
+     The markup keeps a space around each one so removing them cannot fuse words. */
+  .hero__sub br,
+  .intro br {
+    display: none;
+  }
+
+  /* Phones keep days and hours; four tiles will not fit beside the logo. */
+  .tile--fine {
+    display: none;
+  }
+
+  .tile {
+    width: 46px;
+    padding: 6px 3px 5px;
+    border-radius: 11px;
+  }
+
+  .tile__num {
+    height: 21px;
+  }
+
+  .tile__cur,
+  .tile__prev {
+    font-size: 18px;
+  }
+
+  .tile__u {
+    font-size: 8.5px;
+    letter-spacing: 0.06em;
+  }
+
+  .tile--fine {
+    display: none;
+  }
+
+  .hero__copy .cta {
+    margin-top: 24px;
+    height: 50px;
+    padding: 0 58px 0 22px;
+    font-size: 16px;
+  }
+
+  .hero__copy .cta:hover {
+    padding: 0 22px 0 58px;
+  }
+
+  .hero__copy .cta .cta__chip {
+    top: 4px;
+    right: 4px;
+    width: 42px;
+    height: 42px;
+  }
+
+  .hero__copy .cta:hover .cta__chip {
+    right: calc(100% - 46px);
+  }
+
+  .btn__icon {
+    width: 28px;
+    height: 28px;
+  }
+
+}
+
+/* Phones: the wordmark and the pill have to share ~330px, so both give ground. */
+@media (max-width: 560px) {
+  .brand {
+    padding: 6px 10px;
+  }
+
+  .brand__logo {
+    height: 22px;
+  }
+
+}
+
+/* Sections below the hero collapse to one column well before the hero does. */
+@media (max-width: 1040px) {
+  h2 {
+    font-size: 38px;
+  }
+
+  .band {
+    grid-template-columns: 1fr;
+    gap: 44px;
+    padding: 72px 0 56px;
+  }
+
+  .art--tall:first-child {
+    height: 330px;
+  }
+
+  .art--tall,
+  .art--wide {
+    height: 156px;
+  }
+
+  /* Single column, headline/form first: the mosaic is decorative, and no
+     one should have to scroll past six photos to find the email field.
+     `order` does that without touching the DOM. The mosaic itself stays
+     two-up here — at this width it has the whole section to itself, so its
+     columns are no narrower than they were sharing with .showcase__main
+     above. */
+  .showcase {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 20px;
+  }
+
+  .showcase__main {
+    order: -1;
+  }
+}
+
+/* 767, not the page's usual 700: this is the width the reference itself swaps
+   its section at, and the route's serpentine geometry is unusable in a
+   portrait column well before 700. */
+@media (max-width: 767px) {
+  .run--desktop {
+    display: none;
+  }
+
+  .run--mobile {
+    display: block;
+    padding: 0 0 14cqw;
+  }
+
+  .run--mobile .run__copy {
+    position: static;
+    inset: auto;
+    margin-top: 22cqw;
+    padding: 0 6cqw;
+    pointer-events: auto;
+  }
+
+  .run--mobile .eyebrow,
+  .run--mobile h2,
+  .run--mobile .lede {
+    position: static;
+    top: auto;
+    left: auto;
+    width: auto;
+  }
+
+  .run--mobile h2 {
+    margin: 3cqw 0 0;
+    font-size: 9.5cqw;
+    line-height: 1.05;
+  }
+
+  .run--mobile .lede {
+    margin: 4cqw 0 0;
+  }
+
+  .mrun {
+    padding: 12cqw 6cqw 0;
+  }
+
+  .mrun .pin__card {
+    width: 62cqw;
+    height: 74cqw;
+    border-radius: 4cqw;
+  }
+}
+
+@media (max-width: 700px) {
+  /* Relative, so .rail__next anchors to the rail rather than to .frame — and the
+     desktop offsets have to be cleared, or `left` still shifts it 42% across. */
+  .rail {
+    position: relative;
+    left: auto;
+    right: auto;
+    top: auto;
+    margin-top: 22px;
+  }
+
+  .rail__track {
+    gap: 12px;
+  }
+
+  /* Two across at 390, the third peeking. Fixed px, not a fraction, because the
+     featured card's scoop is a px path and has to match the card it cuts. */
+  .card {
+    flex: 0 0 172px;
+    height: 200px;
+  }
+
+  .card--featured .card__surface {
+    clip-path: path(
+      "M22 0H98A22 22 0 0 1 120 22A34 34 0 0 0 150 56A22 22 0 0 1 172 78V178A22 22 0 0 1 150 200H22A22 22 0 0 1 0 178V22A22 22 0 0 1 22 0Z"
+    );
+  }
+
+  .card__badge {
+    top: 16px;
+    left: 16px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .card__badge svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  /* Same 72px as desktop — the base size already sits at the floor where the
+     curved run stays legible, so shrinking it for the narrower card would
+     only make the label unreadable. Only the inset changes. */
+  .card__jump {
+    top: 0;
+    right: -4px;
+  }
+
+  .card__text {
+    left: 16px;
+    right: 16px;
+    bottom: 14px;
+  }
+
+  .card__text h3 {
+    margin-bottom: 8px;
+    font-size: 15px;
+    line-height: 19px;
+  }
+
+  .card__text p {
+    font-size: 14.5px;
+    line-height: 20px;
+  }
+
+  .rail__next {
+    top: 100px;
+    right: 6px;
+  }
+
+  .intro {
+    font-size: 16.5px;
+    line-height: 26px;
+  }
+
+  /* Phones get the same idea in portrait: the hero keeps its carve, the paragraph
+     becomes a white panel tucked into it, and the dish rail follows below — which
+     is why .intro sits between .hero and .rail in the DOM. */
+  .stage {
+    padding-bottom: 0;
+  }
+
+  .frame {
+    aspect-ratio: auto;
+  }
+
+  .hero {
+    position: relative;
+    inset: auto;
+    aspect-ratio: 0.82;
+    /* Floor, because on a 360 phone the aspect ratio alone gives 400px and the
+       copy block — headline, a three-line subcopy and the button — needs 248 of
+       it, which pushed the headline up into the nav row. */
+    min-height: 470px;
+    height: auto;
+    /* Definite, and it has to be: with width auto, the min-height above wins and
+       the ratio then re-derives WIDTH from it — 470 x 0.82 = 385 inside a 358
+       content box, which is 11px of horizontal page scroll at 390. Pinning the
+       width leaves the ratio governing height only. */
+    width: 100%;
+    clip-path: url(#hero-cut-m);
+  }
+
+  /* Sits clear of the carve rather than hard on the hero's bottom edge. */
+  .hero__copy {
+    left: 28px;
+    right: 28px;
+    top: auto;
+    bottom: 23%;
+  }
+
+  /* 60% of the copy column, with min-width so the narrowest phones fall back to
+     the button's own content width rather than squeezing the label under the chip. */
+  .hero__copy .cta {
+    display: flex;
+    width: 60%;
+    min-width: fit-content;
+  }
+
+  /* Pulled up into the bite by a share of the frame's width — percentage margins
+     resolve against the container's width, and the bite's depth is a fixed share
+     of that width once the hero's aspect ratio is fixed. */
+  .intro {
+    position: relative;
+    z-index: 2;
+    width: 66%;
+    max-width: none;
+    margin: calc(-22% + 6px) 0 0 auto;
+    padding: 16px 18px 18px;
+    border-radius: 22px;
+    background: var(--brand-white);
+  }
+
+  h2 {
+    font-size: 32px;
+  }
+
+  .lede {
+    font-size: 17.5px;
+    line-height: 28px;
+  }
+
+  .stats {
+    gap: 26px;
+    flex-wrap: wrap;
+  }
+
+  .stats__n {
+    font-size: 34px;
+  }
+
+  .foot {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .foot__meta {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .sheet__panel {
+    padding: 28px 22px 26px;
+    border-radius: 28px;
+  }
+
+  .sheet__panel h2 {
+    font-size: 28px;
+  }
+
+  .showcase {
+    padding: 16px;
+    border-radius: 28px;
+  }
+
+  .showcase__hero,
+  .showcase__feature {
+    padding: 24px;
+  }
+
+  .showcase__row {
+    flex-direction: column;
+  }
+
+  /* flex-basis always sizes along the main axis, and the main axis just
+     became vertical — the desktop rule's "240px" switched from a minimum
+     width to a minimum HEIGHT, stretching the field into a tall empty box
+     above the button. 0 0 auto sizes it by content again. */
+  .showcase__field {
+    flex: 0 0 auto;
+  }
+
+  /* Inline-flex's own content-based width would leave the button off-centre
+     once it's the only thing on its row. */
+  .showcase__row .cta {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .showcase__feature {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .showcase__feature-img {
+    width: 100%;
+    height: 140px;
+  }
+
+  /* Both columns stay — collapsing to one would halve the board's width and
+     double its height for no gain, and the counter-scrolling pair is the
+     whole idea. A shorter viewport and tighter gap instead. */
+  .mosaic {
+    gap: 10px;
+    height: 420px;
+    border-radius: 20px;
+  }
+
+  .mosaic__track {
+    gap: 10px;
+    /* Must track the gap above, or the seam is off by half a gap again. */
+    padding-bottom: 10px;
+  }
+
+  .piece {
+    border-radius: 18px;
+  }
+
+  /* Tiles scale down with the narrower columns so each still reads as a
+     photograph rather than a letterbox strip. */
+  .piece--h-sm {
+    height: 104px;
+  }
+
+  .piece--h-md {
+    height: 124px;
+  }
+
+  .piece--h-lg {
+    height: 142px;
+  }
+
+  .piece--h-xl {
+    height: 176px;
+  }
+
+  .piece--object {
+    height: 124px;
+  }
+
+  .piece--object img {
+    width: min(84px, 100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile__prev {
+    display: none;
+  }
+
+  .tile__cur.is-turning {
+    animation: none;
+  }
+
+  /* Belt-and-suspenders: the JS already skips adding reveal-ready under
+     reduced motion, so this should never match — but if it ever does, show
+     everything immediately rather than leave it mid-transition or clipped. */
+  .reveal-ready .art {
+    clip-path: none;
+    transition: none;
+  }
+
+  .reveal-ready .mosaic__col,
+  .reveal-ready .showcase__hero > *,
+  .reveal-ready .showcase__feature,
+  .reveal-ready .showcase__note {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  /* Same inversion as the board: JS never adds run-ready under reduced
+     motion, so this should not match — but if it ever does, show every pin
+     and line rather than leaving them at scale(.88) and invisible. */
+  .run-ready .run-rev {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  /* Same inversion again: the plane script never adds is-pinned under
+     reduced motion, so this should not match — but if it ever does, hand the
+     scroll straight back rather than holding the reader on a frame whose
+     animation is switched off. Written at the gating rules' own specificity,
+     and after them, so it wins. */
+  .run-pin.is-pinned .run--desktop {
+    position: relative;
+  }
+
+  .run-pin.is-pinned .run-pin__hold {
+    height: 0;
+  }
+
+  .card__jump .card__jump-ring {
+    animation: none;
+  }
+
+  /* The board stops entirely. The track is two identical sets, so a halted
+     track still shows a full set of photographs from the top — nothing is
+     cut off or half-scrolled. The viewport keeps its height, so the layout
+     does not shift either.
+
+     Both selectors spelled out, not a bare `.mosaic__track`: the rules that
+     set the animation are `.mosaic__col--up .mosaic__track` and its --down
+     twin, and a single class cannot override two. Measured — with the short
+     selector the animation was still `running` under
+     --force-prefers-reduced-motion. */
+  .mosaic__col--up .mosaic__track,
+  .mosaic__col--down .mosaic__track {
+    animation: none;
+  }
+}
