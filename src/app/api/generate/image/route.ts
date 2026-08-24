@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { MODELS, fal } from "@/lib/fal";
+import { MODELS, getFal } from "@/lib/fal";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
@@ -27,6 +27,10 @@ export async function POST(request: Request) {
   const model = body.fast ? MODELS.foodImageFast : MODELS.foodImage;
 
   try {
+    /* Credentials are resolved here, not at import time: the module has to be
+       importable without FAL_KEY or `next build` cannot collect this route's
+       config. A missing key now surfaces as this request's 500. */
+    const fal = getFal();
     const result = await fal.subscribe(model, {
       input: {
         prompt,

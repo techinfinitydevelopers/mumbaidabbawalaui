@@ -2066,3 +2066,77 @@ Real Chrome at 1440x900, scrolled in 21 steps:
   and no unguarded rule hides a pin or grows the hold — so the pin and the
   hidden states cannot exist without the script that drives them.
 - Inline scripts pass `node --check`; temp probe files removed.
+
+---
+
+## 2026-08-24 — Hero CTA glides to the waitlist; Vercel build fixed
+
+### 1. The CTA glides instead of jumping
+The hero button was already a real anchor (`<a class="cta" href="#waitlist">`),
+so this needed no click handler at all — one declaration on `html`:
+
+```css
+html { scroll-behavior: smooth; }
+```
+
+`#waitlist` also gained `scroll-margin-top: var(--page-pad)`, so it lands with
+the page's own 20px of padding above it rather than flush against the viewport
+edge. Verified: the click lands at `4353`, leaving exactly `20px` above the
+section.
+
+Two things this deliberately does *not* touch:
+
+- **The dish rail.** `scroll-behavior` is not an inherited property, so the
+  rail's horizontal scroller stays `auto` (measured) — and it passes its own
+  `behavior` per `scrollBy` call anyway, with its own reduced-motion guard.
+- **Keyboard and no-JS behaviour.** It is still an anchor, so it works with
+  either off; the glide is purely additive.
+
+Under `prefers-reduced-motion: reduce` the root goes back to `auto` — measured
+`smooth` normally, `auto` with `--force-prefers-reduced-motion`. Chrome does not
+switch smooth scrolling off by itself, and a 4300px glide is exactly the kind of
+motion that setting is about.
+
+**Why the glide itself is not in the verification list:** neither harness can
+animate a scroll. The Browser pane's document reports
+`visibilityState: "hidden"`, so Chrome produces no animation frames for it —
+`behavior: "instant"` scrolls fine there while `"smooth"` moves **0px in 3.1s**;
+and headless under `--virtual-time-budget` stalls at **9px** (one frame, then
+virtual time races the compositor). So the declaration, the target, the landing
+position and the reduced-motion override are all measured; the interpolation
+between them is the browser's.
+
+Worth knowing: the glide is ~4300px and passes straight through the run
+section's pin, so the dabba's flight and all five pin pops happen during it.
+Arriving at the waitlist means everything behind it is already revealed.
+
+### 2. Vercel build failure — `FAL_KEY` required at build time
+```
+Error: Failed to collect configuration for /api/generate/image
+  [cause]: Error: FAL_KEY is missing. Add it to .env.local
+    at module evaluation (src/lib/fal.ts:6:9)
+```
+
+`src/lib/fal.ts` checked the key and called `fal.config()` at **module scope**.
+Next imports every route module during `next build` to collect its exported
+config (`runtime`, `maxDuration`), so the throw ran at build time and took the
+whole deploy with it — on any host without the variable.
+
+Requiring the key to *build* was wrong regardless of the host: nothing the site
+serves calls FAL. Every image and the hero clip are generated ahead of time by
+`new-WT/scripts/generate-assets.mjs` and committed. Only a live request to a
+generate route needs credentials.
+
+Fixed by making the client lazy — `getFal()` resolves the key and configures on
+first use, and both generate routes call it inside their existing `try`, so a
+missing key is now that request's error instead of a failed build. `MODELS` is
+untouched and still importable anywhere.
+
+**Verified by reproducing Vercel's environment exactly**: moved `.env.local`
+aside, ran `npm run build` with `FAL_KEY` unset. Compiles, type-checks, and
+lists both routes as dynamic functions (`ƒ /api/generate/image`,
+`ƒ /api/generate/video`). `.env.local` restored and confirmed present.
+
+Note this does not change what the routes need at runtime — if you ever want the
+generate endpoints live on Vercel, `FAL_KEY` still has to be set there. It
+should be a **rotated** key: the current one was pasted into plaintext chat.

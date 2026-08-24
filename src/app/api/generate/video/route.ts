@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { MODELS, fal } from "@/lib/fal";
+import { MODELS, getFal } from "@/lib/fal";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -31,6 +31,9 @@ export async function POST(request: Request) {
   }
 
   try {
+    /* See the image route: resolved per request so the module stays importable
+       without FAL_KEY, which `next build` requires. */
+    const fal = getFal();
     const result = await fal.subscribe(MODELS.scrollVideo, {
       input: {
         prompt,

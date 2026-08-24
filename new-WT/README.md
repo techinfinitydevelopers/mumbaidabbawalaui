@@ -53,6 +53,14 @@ spill on a lunchbox.
 This page is plain HTML and CSS, so the component is CSS (`.cta`, `.cta__label`,
 `.cta__chip`, `.cta--block`) rather than the reference's `.tsx`.
 
+The hero CTA is a real anchor to `#waitlist`, and it glides there on
+`html { scroll-behavior: smooth }` — **there is no click handler, and it does not
+need one.** `#waitlist` carries `scroll-margin-top: var(--page-pad)` so it lands
+with the page's own padding above it. `scroll-behavior` is not inherited, so the
+dish rail's horizontal scroller is untouched (it sets its own `behavior` per
+call). Reduced motion puts the root back to `auto`, since Chrome does not switch
+smooth scrolling off on its own and this is a ~4300px glide.
+
 ### Phones
 
 Under 700px the hero keeps the idea rather than the geometry: a **portrait card

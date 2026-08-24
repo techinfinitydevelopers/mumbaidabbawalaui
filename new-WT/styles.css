@@ -52,6 +52,21 @@ body {
   margin: 0;
 }
 
+/* The hero CTA and the logo are real anchors (`#waitlist`, `#top`), so one
+   declaration makes both glide instead of jump — no click handler, and the
+   links still work if this property is unsupported. Not inherited, so the
+   dish rail's own horizontal scroller is unaffected; it passes its own
+   `behavior` per call anyway. */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Lands the waitlist section with the page's own padding above it rather than
+   flush against the viewport edge. */
+#waitlist {
+  scroll-margin-top: var(--page-pad);
+}
+
 body {
   background: var(--brand-offwhite);
   padding: var(--page-pad);
@@ -2509,6 +2524,13 @@ h2 {
 
   .run-pin.is-pinned .run-pin__hold {
     height: 0;
+  }
+
+  /* Chrome does not switch smooth scrolling off for reduced motion on its
+     own, and a 4000px glide is exactly the kind of motion being asked about.
+     Anchors jump instead. */
+  html {
+    scroll-behavior: auto;
   }
 
   .card__jump .card__jump-ring {
