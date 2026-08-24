@@ -17,7 +17,7 @@ export const site = {
   /** Midnight, launch day, Perth time (AWST / UTC+8). Drives the countdown. */
   launchIso: "2026-09-14T00:00:00+08:00",
   launchNote: "Perth metro first. Suburbs open in order of demand.",
-  contact: "support@mumbaidabbawala.com.au",
+  contact: "hello@mumbaidabbawala.com.au",
 } as const;
 
 /** Scroll-sequence beats. `at` is the progress point (0–1) each headline owns. */

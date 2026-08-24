@@ -33,7 +33,7 @@ new-WT/
 | Since 1890 | 135 years / 5,000+ carriers / 200k+ lunches, and a three-image collage — the carrier full height, the dabba stack and the routing code beside it |
 | The run | A light-grey band carrying a dashed Mumbai-to-Perth route, a plane that flies it as you scroll, and five photo pins — Mumbai, three dishes, Perth. Structure and plane artwork from a supplied zip; palette, faces and photography are MD's |
 | The waitlist | A bento mosaic (six real photo/stat tiles) beside a headline card with the actual signup, a secondary highlight card, and a privacy note — then a modal for mobile (+61), Perth suburb and veg / non-veg — the brief's two-step signup |
-| Footer | The logo and `support@mumbaidabbawala.com.au`. No phone number anywhere, by design |
+| Footer | The logo and `hello@mumbaidabbawala.com.au`. No phone number anywhere, by design |
 
 The signup does not post anywhere: there is no backend behind this page, so the
 modal ends in a confirmation state. Wiring it up is a one-function change in the
