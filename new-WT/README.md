@@ -166,6 +166,27 @@ and not licensed to this project, the same standing caveat as the hero video.
 flying backwards and belly up. Check a sprite's orientation by rendering it,
 not by measuring where its ink sits.
 
+**Four of the five pins (Mumbai, Biryani, Paneer tikka, Perth) are die-cut
+sticker PNGs, not photographs.** Supplied as five 4500x4500 square images;
+one (Gulab jamun) carried a repeating `pngtree` watermark tiled across the
+whole frame and was excluded — that pin still runs its original photo,
+`dish-6.jpg`. The other four were checked at full zoom for the same problem,
+confirmed clean, then resized to 1000px (their alpha content bbox sits
+comfortably inside the crop window `object-fit: cover` applies at the pin
+card's aspect ratio, so nothing is clipped) and saved as `run-mumbai.png`,
+`run-biryani.png`, `run-paneer.png`, `run-perth.png` — new filenames, so the
+mosaic's own `dish-2.jpg`/`dish-4.jpg` (same dishes, different photos) are
+untouched.
+
+**This produces a visible, intentional-looking inconsistency**: four pins
+show a die-cut object floating on the card's pale placeholder background
+with real margin on every side, and the fifth is a full-bleed photo with no
+margin at all. That is the honest result of mixing sticker PNGs with
+photography in the same row, not a bug — left as-is rather than papering
+over it by cropping the stickers tighter than their own artwork intends.
+Their licensing is otherwise unconfirmed, the same standing caveat as
+`plane.webp` and the hero video.
+
 The five pins read **Mumbai → biryani → paneer tikka → gulab jamun → Perth**,
 so the route is the run leaving Mumbai with the food and landing in Australia.
 `run-mumbai` and `run-perth` were generated through the existing FAL pipeline

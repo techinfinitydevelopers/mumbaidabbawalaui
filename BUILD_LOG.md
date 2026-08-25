@@ -2140,3 +2140,64 @@ lists both routes as dynamic functions (`ƒ /api/generate/image`,
 Note this does not change what the routes need at runtime — if you ever want the
 generate endpoints live on Vercel, `FAL_KEY` still has to be set there. It
 should be a **rotated** key: the current one was pasted into plaintext chat.
+
+---
+
+## 2026-08-25 — Four run-section pins swapped for supplied artwork
+
+Request: swap the run section's images for five files in
+`~/Downloads/Archive (1)/` (Mumbai, Perth, Biryani, Paneer Tikka, Gulab Jamun
+— all 4500x4500 square PNGs).
+
+**One was unusable as supplied.** `Gulab Jamun.png` carries a repeating
+`pngtree` watermark tiled across the entire frame (confirmed at full zoom on
+both the bowl and the jamuns) — an unlicensed stock-site preview download, not
+a clean asset. The other four were checked the same way and are clean. Flagged
+to the user; they chose to swap the four clean ones and leave the Gulab jamun
+pin on its current photo (`dish-6.jpg`) until a licensed replacement exists.
+
+**Placement verified before touching anything.** Each PNG's alpha content
+bounding box was measured (`PIL.Image.getbbox()`): all four are centered
+within ~10px of the 4500x4500 canvas centre, with 240-340px of transparent
+margin on every side even after `object-fit: cover` crops the square down to
+the pin card's 16:19 aspect ratio. Nothing gets clipped — confirmed rather than
+assumed, the same discipline this project has used for every crop decision.
+
+Resized to 1000px (from 1.1-2.3MB down to 260-520KB each, still ample
+resolution for the ~230px card at retina) and saved as new files —
+`run-mumbai.png`, `run-biryani.png`, `run-paneer.png`, `run-perth.png` — rather
+than overwriting `dish-2.jpg`/`dish-4.jpg`, which the waitlist mosaic also
+uses for different photos of the same two dishes. The string-replace that
+wired them in was scoped by including `loading="lazy"` in the match target;
+without it, the first attempt matched 4 occurrences of the biryani/paneer
+`src`+`alt` pair instead of the intended 2 (the mosaic reuses the identical
+alt text), which would have silently repointed the mosaic's own tiles.
+
+Updated both the desktop pin list and the mobile `<ol class="mrun">` list —
+same five pins, same content, both variants of one section.
+
+**Result is a visible, real inconsistency, left in rather than hidden:** the
+four sticker PNGs float on the card's pale placeholder background with visible
+margin (die-cut, not full-bleed), while the Gulab jamun pin is still a
+full-bleed photo with none. That is what mixing sticker artwork with
+photography in the same row actually looks like — not a defect to paper over
+by cropping the stickers tighter than their own art intends.
+
+### Verified
+- All four new images load (`naturalWidth > 0`) at their new paths; Jamun
+  pin still resolves to `dish-6.jpg`.
+- Mosaic's `dish-2.jpg`/`dish-4.jpg` — both the real tiles and their
+  marquee-loop duplicates — untouched: re-grepped after the edit.
+- Headless screenshot at 1440px: all five pins render in the correct
+  position along the route, correctly labelled, no clipping on any of the
+  four die-cut images.
+- The Browser pane's `document.hidden: true` (a recurring quirk this
+  session) froze both smooth-scroll and the live screenshot compositor
+  during this check; DOM state (`getBoundingClientRect`, computed opacity,
+  `currentSrc`) was read directly instead of trusting the frozen frame, then
+  cross-checked against a headless Chrome screenshot for the actual visual.
+- No temp probe files left in the working tree.
+
+Licensing on the four kept images is unconfirmed — the watermark on the
+excluded fifth suggests the same stock source, flagged the same way as
+`plane.webp` and the hero video.
