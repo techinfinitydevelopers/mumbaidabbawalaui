@@ -31,7 +31,7 @@ new-WT/
 |---|---|
 | Hero | Logo, the **launch countdown in the nav row**, the positioning headline, the Mumbai numbers, "Join Waitlist", and the six-dish rail |
 | Since 1890 | 135 years / 5,000+ carriers / 200k+ lunches, and a three-image collage — the carrier full height, the dabba stack and the routing code beside it |
-| The run | A light-grey band carrying a dashed Mumbai-to-Perth route, a plane that flies it as you scroll, and five die-cut sticker pins, unlabelled on desktop — Mumbai, three dishes, Perth. Structure and plane artwork from a supplied zip; palette, faces and photography are MD's |
+| The run | A light-grey band carrying a dashed Mumbai-to-Perth route, a plane that flies it as you scroll, and six die-cut sticker pins, unlabelled on desktop — Mumbai, four dishes, Perth. Structure and plane artwork from a supplied zip; palette, faces and photography are MD's |
 | The waitlist | A bento mosaic (six real photo/stat tiles) beside a headline card with the actual signup, a secondary highlight card, and a privacy note — then a modal for mobile (+61), Perth suburb and veg / non-veg — the brief's two-step signup |
 | Footer | The logo, a **Stay Connected** block (Instagram, Facebook, LinkedIn, X as icon-only links — only channels whose URLs were supplied; no TikTok or YouTube for that reason) and **Contact** with `hello@mumbaidabbawala.com.au`. No phone number anywhere, by design |
 
@@ -184,6 +184,28 @@ way before use. Worth keeping the habit — check every supplied asset at full
 zoom, not just at thumbnail size, because a tiled watermark is invisible
 until you do.
 
+**Six pins, and the reveal runs both ways.** Scrolling back up un-pops each
+pin as the dabba retreats past it; the CSS transition already ran both
+directions, so reversing it was a matter of making the progress check
+bidirectional instead of one-shot. Verified by walking the section down and back
+up: pops accumulate mumbai -> biryani -> paneer -> jamun -> pulav -> perth and
+un-pop in exactly that reverse order.
+
+**`run-pulav.png` was rebuilt, not just imported.** It arrived as a `.jpeg` that
+was a transparent PNG *flattened onto its own checkerboard* — the grey/white
+checker was baked into the pixels, so dropping it in would have put a
+checkerboard rectangle on the page. Recovered by flood-filling the background
+inward **from the border**, which is what preserves the light rice grains and rim
+highlights *inside* the dish that a plain luminance threshold would have punched
+holes in. Then given the white die-cut edge the other five carry (measured:
+20-26px at a 1000px canvas; this one had 0). Two traps in generating that edge:
+PIL's `MaxFilter` is a **square** kernel, so dilating the scattered flying rice
+turned each speck into a white box — fixed by blurring and re-thresholding to
+round it off; and outlining every speck merged them into a white cloud above the
+bowl, so only the **largest connected component** gets an edge and the specks
+stay bare. Content is 69% of canvas, matching biryani (69%) and mumbai (69%),
+which also keeps it inside what `cover` crops.
+
 **The desktop route carries no pin labels.** They were removed (and the card
 went from 16x19 to 20x23.75cqw) because with the card background gone, each
 PNG's own transparent margin sat inside an invisible box and a label read as
@@ -322,6 +344,18 @@ curved around its ring — upright across the top, inverted across the bottom,
 a dot in the gap at each side (it was a circular arrow linking to `#legacy`;
 a visible label has to match what the control does, so it now scrolls the rail
 instead).
+
+**The rail also drags.** `.rail__track` carries `cursor: grab` (`grabbing`
+while held) with pointer-event drag-scrolling behind it — a grab cursor with no
+drag under it is a promise the page cannot keep. Three details it depends on:
+`scroll-snap-type` has to go to `none` for the duration (with `x mandatory` the
+browser re-snaps after every `scrollLeft` write and the drag feels stuck);
+`dragstart` is prevented, because the card photos are natively draggable and
+that fires before any distance threshold could; and it is **mouse-only**, since
+touch already has native momentum scrolling worth more than anything reimplemented
+here. The click that closes a drag is swallowed **once** — an earlier version
+re-derived that from the drag distance at click time, which went stale and left
+the ring badge permanently dead after the first drag.
 
 The ring is one circular `<path>` starting at 9 o'clock, so 25% along is
 12 o'clock and 75% is 6 o'clock; two `<textPath>` runs anchored `middle` at

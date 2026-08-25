@@ -2344,3 +2344,80 @@ marks (Instagram camera, Facebook f, LinkedIn in, X).
 - No horizontal overflow at any of those widths.
 - All four footer links keep their correct hrefs and have zero visible text.
 - Inline scripts pass `node --check`; temp probe files removed.
+
+---
+
+## 2026-08-25 — Rail drag, a sixth pin, and a reversible reveal
+
+### Grab cursor on the dish rail — plus the drag it implies
+Asked for a grab cursor on the rail. The rail had **no drag-scroll at all**
+(trackpad, touch and the arrow button only), so the cursor alone would have been
+a false affordance — it would advertise a grab that does nothing. Added both.
+
+Three things it turns on:
+- **`scroll-snap-type: none` while dragging.** With `x mandatory` the browser
+  re-snaps after every `scrollLeft` write, so pointer and rail fight each other
+  and the drag feels stuck. Restoring snap on release is also what settles the
+  rail neatly onto a card.
+- **`dragstart` prevented.** The card photos are natively draggable and that
+  fires before any distance threshold could, taking the pointer away mid-grab.
+- **Mouse only** (`e.pointerType !== "mouse"` bails). Touch already has native
+  momentum scrolling; hijacking it would make the rail worse on a phone.
+  Verified: a synthetic touch sequence starts no drag and moves nothing.
+
+**A bug I wrote and then caught.** The first version suppressed the click that
+closes a drag by re-checking the drag distance at click time. That variable was
+never reset on a press that *returns early* — which is every press on the ring
+badge or arrow — so after one drag the badge was **permanently dead**. Caught it
+because the test asserted the badge still scrolls the rail and got `0`. Now the
+suppression is decided at `pointerup`, consumed once, and cleared at the top of
+every `pointerdown` before any early return. Re-verified all five cases: drag
+works, the closing click is eaten, a later badge click fires, it scrolls the rail
+275px (one card), and a press with no movement suppresses nothing.
+
+### The pin reveal now runs backwards too
+Scrolling back up un-pops each pin as the dabba retreats past it. `passStops`
+went from one-shot (`done`) to a bidirectional on/off check; the CSS transition
+already ran both ways, so no new declarations. Walked the section down and back
+up in the browser: pops accumulate mumbai -> biryani -> paneer -> jamun ->
+pulav -> perth, and un-pop in exactly that reverse order back to none.
+
+### A sixth pin, between Gulab jamun and Perth
+Placed by **measuring the route, not by eye**: the path runs through (13.4,
+120.6) at p 0.808 and (23.6, 122.4) at p 0.828, so a card centred on (19, 114)
+sits ~7cqw above the line — the same slightly-above offset jamun (5cqw) and
+Perth (11cqw) already use. Resulting trigger progress is **0.817**, which keeps
+all six monotonic (0.160 / 0.268 / 0.525 / 0.700 / 0.817 / 0.933) so they fire
+in reading order. No pin overlaps another and none is clipped; the new one's
+bottom lands at 125.8cqw in a 132cqw section. Added to the phone list in the
+same slot, where that variant still uses labels and notes.
+
+### The supplied image needed rebuilding twice
+It arrived as `pulav.jpeg` — **a transparent PNG flattened onto its own
+checkerboard**, with the grey/white checker baked into the pixels. Dropped in
+as-is it would have shown a checkerboard rectangle.
+
+1. **Background removed by flood-filling inward from the border**, not by a
+   luminance threshold. The dish contains light rice grains and rim highlights
+   that a threshold would have punched holes through; only background connected
+   to an edge is eligible.
+2. **Then it still looked wrong on the page** — flagged as "fix this image". The
+   other five carry a white die-cut sticker edge; measured them (20-26px white
+   run at a 1000px canvas) against this one's **0**. Two traps generating it:
+   PIL's `MaxFilter` is a *square* kernel, so dilating the scattered flying rice
+   turned every speck into a white box (fixed by blurring and re-thresholding to
+   round the corners); and outlining every speck merged them into a white cloud
+   above the bowl, so only the **largest connected component** is outlined and
+   the specks stay bare. Final content is 69% of canvas — matching biryani and
+   mumbai, and comfortably inside what `object-fit: cover` crops.
+
+Licensing on it is unconfirmed, the same standing caveat as the other stickers.
+
+### Verified
+- Six pins on the route, six items in the phone list.
+- Triggers monotonic; no overlaps; nothing clipped at 1440.
+- Reveal symmetric down and up (walked 10 steps each way in the browser).
+- Rail: drag moves it 1:1, cursor `grab` -> `grabbing` -> `grab`, snap
+  `x mandatory` -> `none` -> `x mandatory`, touch untouched, badge still live.
+- `run-pulav.png` loads at 1000x1000, 602KB.
+- No horizontal overflow; inline scripts pass `node --check`; temp files removed.

@@ -408,6 +408,9 @@
         <div class="pin pin--l pin--jamun run-rev">
           <div class="pin__card"><img src="assets/run-jamun.png" alt="A bowl of gulab jamun, cut out against a plain ground" loading="lazy" /></div>
         </div>
+        <div class="pin pin--l pin--pulav run-rev">
+          <div class="pin__card"><img src="assets/run-pulav.png" alt="A bowl of pulav, cut out against a plain ground" loading="lazy" /></div>
+        </div>
         <div class="pin pin--r pin--perth run-rev">
           <div class="pin__card"><img src="assets/run-perth.png" alt="Perth's Bell Tower, cut out against a plain ground" loading="lazy" /></div>
         </div>
@@ -456,6 +459,11 @@
             <p class="pin__label">Gulab jamun</p>
             <div class="pin__card"><img src="assets/run-jamun.png" alt="A bowl of gulab jamun, cut out against a plain ground" loading="lazy" /></div>
             <p class="mrun__note">The tier nobody trades away.</p>
+          </li>
+          <li class="mrun__city run-rev">
+            <p class="pin__label">Pulav</p>
+            <div class="pin__card"><img src="assets/run-pulav.png" alt="A bowl of pulav, cut out against a plain ground" loading="lazy" /></div>
+            <p class="mrun__note">Rice tossed with peas and whole spices.</p>
           </li>
           <li class="mrun__city run-rev">
             <p class="pin__label">Perth</p>
@@ -1056,21 +1064,31 @@
                 at = pt.p;
               }
             }
-            return { el, at, done: el.classList.contains("is-in") };
+            return { el, at, on: el.classList.contains("is-in") };
           });
         };
 
+        /* Bidirectional: scrolling back up un-pops each pin as the dabba
+           retreats past it, so the section plays backwards rather than staying
+           fully revealed. The CSS transition already runs both ways, so the
+           reverse is the same curve in reverse — nothing extra to declare. */
         const passStops = (p) => {
           for (const st of stops) {
-            if (st.done || p < st.at) continue;
-            /* Reached by the dabba AND actually on screen. Geometry alone is
-               enough at desktop heights, but on a short viewport the lower
-               pins are reached while still below the fold, and a pop the
-               reader never saw is a pop wasted. This only ever delays one:
-               a pin scrolled clean past sits above the fold, which passes. */
-            if (st.el.getBoundingClientRect().top > innerHeight - 40) continue;
-            st.el.classList.add("is-in");
-            st.done = true;
+            if (p >= st.at) {
+              if (st.on) continue;
+              /* Reached by the dabba AND actually on screen. Geometry alone is
+                 enough at desktop heights, but on a short viewport the lower
+                 pins are reached while still below the fold, and a pop the
+                 reader never saw is a pop wasted. This only ever delays one:
+                 a pin scrolled clean past sits above the fold, which passes. */
+              if (st.el.getBoundingClientRect().top > innerHeight - 40) continue;
+              st.el.classList.add("is-in");
+              st.on = true;
+            } else {
+              if (!st.on) continue;
+              st.el.classList.remove("is-in");
+              st.on = false;
+            }
           }
         };
 
@@ -1179,6 +1197,77 @@
             });
           });
         }
+      })();
+
+      /* Drag-to-scroll for the dish rail, so the grab cursor on .rail__track
+         means something. Mouse only: touch already has native momentum
+         scrolling and hijacking it would make the rail worse on a phone. */
+      (() => {
+        const track = document.querySelector(".rail__track");
+        if (!track) return;
+
+        let startX = 0;
+        let startLeft = 0;
+        let dragging = false;
+        let moved = 0;
+        let suppressClick = false;
+
+        track.addEventListener("pointerdown", (e) => {
+          /* First line, before any early return: a fresh press always clears a
+             stale suppression. Without this, one drag left `moved` high for
+             good and the next click on the ring badge — a press that returns
+             early below — was swallowed, leaving the badge permanently dead. */
+          suppressClick = false;
+          if (e.pointerType !== "mouse" || e.button !== 0) return;
+          /* The featured card's ring badge and the arrow both live in here. */
+          if (e.target.closest("button, a")) return;
+          dragging = true;
+          moved = 0;
+          startX = e.clientX;
+          startLeft = track.scrollLeft;
+          track.classList.add("is-dragging");
+          /* Capture, so a pointer that leaves the rail mid-drag keeps
+             delivering moves rather than dropping the drag on the floor. */
+          track.setPointerCapture(e.pointerId);
+        });
+
+        track.addEventListener("pointermove", (e) => {
+          if (!dragging) return;
+          const dx = e.clientX - startX;
+          if (Math.abs(dx) > moved) moved = Math.abs(dx);
+          track.scrollLeft = startLeft - dx;
+        });
+
+        const stop = () => {
+          if (!dragging) return;
+          dragging = false;
+          /* Decided here, consumed once below — not re-derived from `moved` at
+             click time, which is what went stale. */
+          suppressClick = moved > 6;
+          track.classList.remove("is-dragging");
+        };
+
+        track.addEventListener("pointerup", stop);
+        track.addEventListener("pointercancel", stop);
+
+        /* The card photos are draggable by default, and a native image drag
+           starts before any distance threshold could fire — it would take the
+           pointer away mid-grab. */
+        track.addEventListener("dragstart", (e) => e.preventDefault());
+
+        /* A drag that happens to end over the badge must not also click it.
+           Capture phase, so this runs before the button's own handler, and
+           one-shot, so it only ever eats the click that closed the drag. */
+        track.addEventListener(
+          "click",
+          (e) => {
+            if (!suppressClick) return;
+            suppressClick = false;
+            e.preventDefault();
+            e.stopPropagation();
+          },
+          true,
+        );
       })();
 
       /* Counts the Since-1890 figures up when the band is reached. The markup

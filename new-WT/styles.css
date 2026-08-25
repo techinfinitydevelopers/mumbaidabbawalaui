@@ -500,6 +500,20 @@ img {
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
+  /* Six cards in a rail that fits three, so there is always something to drag
+     to. The drag itself is in index.html — a grab cursor with nothing behind
+     it is a promise the page cannot keep. */
+  cursor: grab;
+}
+
+/* Snap has to come OFF for the duration of a drag. With `x mandatory` the
+   browser re-snaps after every scrollLeft write, so the pointer and the rail
+   fight each other and the drag feels stuck. Restoring it on release is what
+   settles the rail onto a card. */
+.rail__track.is-dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  user-select: none;
 }
 
 .rail__track::-webkit-scrollbar {
@@ -1604,6 +1618,15 @@ h2 {
 .pin--jamun {
   left: 15cqw;
   top: 76.2cqw;
+}
+/* Placed by measuring the route rather than by eye: the path runs through
+   (13.4, 120.6) at p 0.808 and (23.6, 122.4) at p 0.828, so a card centred on
+   (19, 114) sits ~7cqw above the line — the same slightly-above offset jamun
+   (5cqw) and Perth (11cqw) use. Bottom lands at 125.9cqw in a 132cqw section,
+   and it clears jamun above it by 2.2cqw. */
+.pin--pulav {
+  left: 9cqw;
+  top: 102.1cqw;
 }
 .pin--perth {
   right: 14cqw;
