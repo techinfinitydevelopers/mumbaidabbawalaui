@@ -2297,3 +2297,50 @@ rendering differently on each platform.
 - `.pin__card` computed background is `rgba(0, 0, 0, 0)`; jamun pin resolves to
   `run-jamun.png`; mosaic's `dish-6.jpg` untouched.
 - Inline scripts pass `node --check`; temp probe files removed.
+
+---
+
+## 2026-08-25 — Run pins lose their labels and grow; footer socials become icons
+
+### Desktop pin labels removed, cards up 25%
+Annotated request: drop the label text from the run route and enlarge the art.
+
+- The five `<p class="pin__label">` were removed from the **desktop** pins only.
+  The phone list keeps its five — there a label heads a list item that also
+  carries a `.mrun__note`, so it is doing real work, whereas on the route it
+  was floating ~60px clear of its own sticker.
+- **Nothing is lost to a screen reader**: every sticker's `alt` already names
+  its subject ("The Gateway of India in Mumbai…", "A bowl of gulab jamun…"),
+  and no JS referenced `.pin__label`. Checked before deleting.
+- `.pin__card` 16 x 19cqw -> **20 x 23.75cqw** (222x263 -> 277x329px at a 1385
+  section). The 16:19 ratio is held on purpose so `cover` keeps cropping the
+  same 7.9% per side that each sticker's transparent margin absorbs.
+
+**A string-replace trap worth remembering:** removing the labels by matching
+`'          <p class="pin__label">Mumbai</p>'` (10-space indent) hit **two**
+occurrences, not one — the phone list's 12-space line *contains* the 10-space
+string as a substring, so a naive `str.count`/`replace` would have stripped the
+phone headings too. Fixed by comparing whole lines for equality instead.
+
+### Footer socials are now brand icons
+The four text links became icon-only links. Because the visible name is gone and
+an `<svg>` is not an accessible name, **each anchor carries an `aria-label`**
+("Mumbai Dabbawala on Instagram") with `aria-hidden="true"` on the mark. Hit
+area is 38px around a 20px icon — an icon-only control needs more than its ink.
+Hover/focus is an `--accent-soft` tint rather than an underline, since there is
+no text left to underline.
+
+The marks are inline SVG in `currentColor`, so they inherit the footer's red and
+need no image assets. Verified by rendering, not by trusting the path data: each
+`getBBox()` fills its viewBox, and a 5x crop confirms all four read as the real
+marks (Instagram camera, Facebook f, LinkedIn in, X).
+
+### Verified
+- Desktop `.pin__label` count is **0** at every width; phone list still **5**.
+- No pin is cropped by the section's `overflow: hidden` at any of
+  1440 / 1180 / 1040 / 900 / 768 / 767 / 700 / 560 / 390 / 320, and no pin
+  overlaps another (checked pairwise: Perth's bottom lands at 119.8cqw in a
+  132cqw section).
+- No horizontal overflow at any of those widths.
+- All four footer links keep their correct hrefs and have zero visible text.
+- Inline scripts pass `node --check`; temp probe files removed.

@@ -31,9 +31,9 @@ new-WT/
 |---|---|
 | Hero | Logo, the **launch countdown in the nav row**, the positioning headline, the Mumbai numbers, "Join Waitlist", and the six-dish rail |
 | Since 1890 | 135 years / 5,000+ carriers / 200k+ lunches, and a three-image collage — the carrier full height, the dabba stack and the routing code beside it |
-| The run | A light-grey band carrying a dashed Mumbai-to-Perth route, a plane that flies it as you scroll, and five die-cut sticker pins — Mumbai, three dishes, Perth. Structure and plane artwork from a supplied zip; palette, faces and photography are MD's |
+| The run | A light-grey band carrying a dashed Mumbai-to-Perth route, a plane that flies it as you scroll, and five die-cut sticker pins, unlabelled on desktop — Mumbai, three dishes, Perth. Structure and plane artwork from a supplied zip; palette, faces and photography are MD's |
 | The waitlist | A bento mosaic (six real photo/stat tiles) beside a headline card with the actual signup, a secondary highlight card, and a privacy note — then a modal for mobile (+61), Perth suburb and veg / non-veg — the brief's two-step signup |
-| Footer | The logo, a **Stay Connected** block (Instagram, Facebook, LinkedIn, X — only channels whose URLs were supplied; no TikTok or YouTube for that reason) and **Contact** with `hello@mumbaidabbawala.com.au`. No phone number anywhere, by design |
+| Footer | The logo, a **Stay Connected** block (Instagram, Facebook, LinkedIn, X as icon-only links — only channels whose URLs were supplied; no TikTok or YouTube for that reason) and **Contact** with `hello@mumbaidabbawala.com.au`. No phone number anywhere, by design |
 
 The signup does not post anywhere: there is no backend behind this page, so the
 modal ends in a confirmation state. Wiring it up is a one-function change in the
@@ -184,11 +184,13 @@ way before use. Worth keeping the habit — check every supplied asset at full
 zoom, not just at thumbnail size, because a tiled watermark is invisible
 until you do.
 
-**Known consequence of the transparent card:** each PNG's own transparent
-top/bottom margin now sits inside an invisible box, so a `pin__label` reads
-as ~60px clear of the art it labels rather than tight to it. Fixable by
-trimming the PNGs to their content bbox, which also scales the art up ~1.6x
-— left alone as a taste call rather than resized unasked.
+**The desktop route carries no pin labels.** They were removed (and the card
+went from 16x19 to 20x23.75cqw) because with the card background gone, each
+PNG's own transparent margin sat inside an invisible box and a label read as
+~60px clear of the art it named. The phone list keeps its five `pin__label`
+headings — there they head a list item that also carries a `.mrun__note`, so
+they are doing real work. Nothing is lost to a screen reader either way: every
+sticker's `alt` names its subject ("The Gateway of India in Mumbai...").
 
 Sticker licensing is unconfirmed, the same standing caveat as `plane.webp`
 and the hero video.

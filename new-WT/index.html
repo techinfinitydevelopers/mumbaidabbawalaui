@@ -397,23 +397,18 @@
         </div>
 
         <div class="pin pin--r pin--mumbai run-rev">
-          <p class="pin__label">Mumbai</p>
           <div class="pin__card"><img src="assets/run-mumbai.png" alt="The Gateway of India in Mumbai, cut out against a plain ground" loading="lazy" /></div>
         </div>
         <div class="pin pin--l pin--biryani run-rev">
-          <p class="pin__label">Biryani</p>
           <div class="pin__card"><img src="assets/run-biryani.png" alt="A clay handi of biryani, cut out against a plain ground" loading="lazy" /></div>
         </div>
         <div class="pin pin--r pin--paneer run-rev">
-          <p class="pin__label">Paneer tikka</p>
           <div class="pin__card"><img src="assets/run-paneer.png" alt="Paneer tikka skewers, cut out against a plain ground" loading="lazy" /></div>
         </div>
         <div class="pin pin--l pin--jamun run-rev">
-          <p class="pin__label">Gulab jamun</p>
           <div class="pin__card"><img src="assets/run-jamun.png" alt="A bowl of gulab jamun, cut out against a plain ground" loading="lazy" /></div>
         </div>
         <div class="pin pin--r pin--perth run-rev">
-          <p class="pin__label">Perth</p>
           <div class="pin__card"><img src="assets/run-perth.png" alt="Perth's Bell Tower, cut out against a plain ground" loading="lazy" /></div>
         </div>
         </section>
@@ -652,11 +647,40 @@
         <div class="foot__social">
           <p class="foot__h">Stay Connected</p>
           <p>The countdown is on. Follow the journey.</p>
+          <!-- Icon-only, so each link carries an aria-label: with the visible
+               name gone the mark is the only thing left, and an <svg> is not an
+               accessible name. -->
           <ul class="foot__links">
-            <li><a href="https://www.instagram.com/mumbai_dabbawala/" target="_blank" rel="noopener">Instagram</a></li>
-            <li><a href="https://www.facebook.com/MumbaiDabbawala/" target="_blank" rel="noopener">Facebook</a></li>
-            <li><a href="https://in.linkedin.com/company/mumbai-dabbawala" target="_blank" rel="noopener">LinkedIn</a></li>
-            <li><a href="https://x.com/mumbaidabbawala" target="_blank" rel="noopener">X</a></li>
+            <li>
+              <a href="https://www.instagram.com/mumbai_dabbawala/" target="_blank" rel="noopener" aria-label="Mumbai Dabbawala on Instagram">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="5.2" fill="none" stroke="currentColor" stroke-width="1.9" />
+                  <circle cx="12" cy="12" r="4.1" fill="none" stroke="currentColor" stroke-width="1.9" />
+                  <circle cx="17.3" cy="6.7" r="1.2" fill="currentColor" />
+                </svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.facebook.com/MumbaiDabbawala/" target="_blank" rel="noopener" aria-label="Mumbai Dabbawala on Facebook">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="currentColor" d="M15.12 5.32h2.24V1.42A29.4 29.4 0 0 0 14.09 1.25c-3.23 0-5.44 2.03-5.44 5.76v3.21H5.4v4.36h3.25V24h4.36V14.58h3.24l.5-4.36h-3.74V7.44c0-1.26.34-2.12 2.11-2.12z" />
+                </svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://in.linkedin.com/company/mumbai-dabbawala" target="_blank" rel="noopener" aria-label="Mumbai Dabbawala on LinkedIn">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="currentColor" d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05a3.74 3.74 0 0 1 3.37-1.85c3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z" />
+                </svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://x.com/mumbaidabbawala" target="_blank" rel="noopener" aria-label="Mumbai Dabbawala on X">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="currentColor" d="M18.9 1.6h3.68l-8.04 9.19L24 22.4h-7.4l-5.8-7.58-6.63 7.58H.49l8.6-9.83L0 1.6h7.59l5.4 7.14L18.9 1.6zm-1.29 18.6h2.04L6.49 3.69H4.3l13.31 16.51z" />
+                </svg>
+              </a>
+            </li>
           </ul>
         </div>
 
