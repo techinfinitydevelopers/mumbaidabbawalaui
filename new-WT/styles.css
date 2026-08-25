@@ -1512,12 +1512,15 @@ h2 {
   color: var(--ink);
 }
 
-/* 22.5cqw clears the headline: 8.5cqw top + two lines of 6cqw at 1.02
-   = 20.7cqw, plus ~2cqw of air. */
+/* 18.5cqw clears the headline: 8.5cqw top + two lines of 4cqw at 1.02
+   = 16.7cqw, plus ~1.8cqw of air. Re-tightened from 22.5, which was spaced
+   for the old 6cqw heading and left an 81px hole once the type came down.
+   The 1cqw indent past the eyebrow and headline (both at 5cqw) is
+   deliberate. */
 .run .lede {
   position: absolute;
-  top: 22.5cqw;
-  left: 5cqw;
+  top: 18.5cqw;
+  left: 6cqw;
   width: 32cqw;
   margin: 0;
   color: var(--ink-soft);
