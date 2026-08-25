@@ -689,6 +689,29 @@
                 </svg>
               </a>
             </li>
+            <!-- TikTok: same placeholder treatment as YouTube below — mark
+                 only, no anchor, until the profile URL exists. -->
+            <li>
+              <span class="foot__pending" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 1 1-1.82-2.47v-3.1a5.69 5.69 0 1 0 4.91 5.63V9.01a7.35 7.35 0 0 0 4.28 1.37V7.3a4.29 4.29 0 0 1-3.22-1.48z" />
+                </svg>
+              </span>
+            </li>
+            <!-- YouTube: a <span>, not an <a>, until the channel URL exists. An
+                 anchor with no destination is a dead control on a live page, so
+                 this shows the mark and nothing else. Dimmed so it does not
+                 read as one of the working four, and aria-hidden because there
+                 is nothing here to act on yet. To activate: swap the span for
+                 the same <a href … aria-label="Mumbai Dabbawala on YouTube">
+                 wrapper the others use and drop the class. -->
+            <li>
+              <span class="foot__pending" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path fill="currentColor" fill-rule="evenodd" d="M21.58 7.19c-.23-1.29-1.3-2.24-2.58-2.38C17.09 4.6 14.55 4.5 12 4.5s-5.09.1-7 .31C3.72 4.95 2.65 5.9 2.42 7.19 2.19 8.5 2.1 10.2 2.1 12s.09 3.5.32 4.81c.23 1.29 1.3 2.24 2.58 2.38 1.91.21 4.45.31 7 .31s5.09-.1 7-.31c1.28-.14 2.35-1.09 2.58-2.38.23-1.31.32-3.01.32-4.81s-.09-3.5-.32-4.81ZM10 15.5v-7l6 3.5-6 3.5Z" />
+                </svg>
+              </span>
+            </li>
           </ul>
         </div>
 

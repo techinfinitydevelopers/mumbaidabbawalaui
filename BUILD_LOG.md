@@ -2421,3 +2421,33 @@ Licensing on it is unconfirmed, the same standing caveat as the other stickers.
   `x mandatory` -> `none` -> `x mandatory`, touch untouched, badge still live.
 - `run-pulav.png` loads at 1000x1000, 602KB.
 - No horizontal overflow; inline scripts pass `node --check`; temp files removed.
+
+---
+
+## 2026-08-25 — TikTok and YouTube marks added as placeholders
+
+Both were requested with "link baadme deti hu" — icon now, URL later.
+
+Added as **`<span>`s, not `<a>`s**. An anchor with no destination is a dead
+control, and this page is live. Each renders its mark at `opacity: .42` with
+`cursor: default` and `aria-hidden="true"`, so the row reads as four working
+icons plus two visibly pending ones — not six identical links where two do
+nothing. Activation is a one-line swap, spelled out in a comment beside each.
+
+TikTok verification stayed inconclusive and is worth recording: all three
+candidate handles (`@mumbaidabbawala`, `@mumbai_dabbawala`,
+`@mumbaidabbawala.official`) return a byte-identical ~106KB generic shell with
+no `uniqueId`, `nickname` or `followerCount` in it. Identical responses for
+three *different* handles is proof of bot-blocking, not of existence — which is
+exactly why no URL was guessed for it.
+
+YouTube's glyph needs `fill-rule="evenodd"` so the play triangle knocks out of
+the rounded rect instead of filling over it. Verified by rendering, not by
+trusting the path.
+
+### Verified
+- Six `<li>` in `.foot__links`: 4 links (opacity 1, `cursor: pointer`) and
+  2 pending (opacity 0.42, `cursor: default`), in the brief's own order.
+- Both new glyphs have sane `getBBox()` ink and a 5x crop confirms they read as
+  the real TikTok note and YouTube play button.
+- Inline scripts pass `node --check`; temp files removed.
