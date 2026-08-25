@@ -150,10 +150,10 @@
             </header>
 
             <div class="hero__copy">
-              <h1 class="hero__title">Mumbai's Legend<br />Comes to Perth</h1>
+              <h1 class="hero__title">A 135-Year-Old Legend<br />Is Coming to Perth.</h1>
               <p class="hero__sub">
-                200,000 home-cooked lunches a day, delivered by hand<br />
-                in Mumbai since 1890.
+                135+ years. Millions of deliveries. One legendary legacy.<br />
+                Now, Mumbai Dabbawala is coming to Perth.
               </p>
               <a class="cta" href="#waitlist">
                 <span class="cta__label">Join The Waitlist</span>
@@ -388,7 +388,7 @@
 
         <div class="run__copy">
           <p class="eyebrow run-rev">The run</p>
-          <h2 class="run-rev">One lunch run,<br />Mumbai to Perth.</h2>
+          <h2 class="run-rev">From Mumbai to Perth.<br />The Dabba Story Continues.</h2>
           <p class="lede run-rev">
             Five thousand carriers move 200,000 home-cooked lunches across
             Mumbai every working morning, routed by nothing but a code painted
@@ -410,7 +410,7 @@
         </div>
         <div class="pin pin--l pin--jamun run-rev">
           <p class="pin__label">Gulab jamun</p>
-          <div class="pin__card"><img src="assets/dish-6.jpg" alt="Gulab jamun soaking in rose syrup" loading="lazy" /></div>
+          <div class="pin__card"><img src="assets/run-jamun.png" alt="A bowl of gulab jamun, cut out against a plain ground" loading="lazy" /></div>
         </div>
         <div class="pin pin--r pin--perth run-rev">
           <p class="pin__label">Perth</p>
@@ -435,7 +435,7 @@
 
         <div class="run__copy">
           <p class="eyebrow run-rev">The run</p>
-          <h2 id="run-m-title" class="run-rev">One lunch run, Mumbai to Perth.</h2>
+          <h2 id="run-m-title" class="run-rev">From Mumbai to Perth. The Dabba Story Continues.</h2>
           <p class="lede run-rev">
             200,000 home-cooked lunches a day, routed by a code painted on
             each lid. The same run opens in Perth on 14 September 2026.
@@ -459,7 +459,7 @@
           </li>
           <li class="mrun__city run-rev">
             <p class="pin__label">Gulab jamun</p>
-            <div class="pin__card"><img src="assets/dish-6.jpg" alt="Gulab jamun soaking in rose syrup" loading="lazy" /></div>
+            <div class="pin__card"><img src="assets/run-jamun.png" alt="A bowl of gulab jamun, cut out against a plain ground" loading="lazy" /></div>
             <p class="mrun__note">The tier nobody trades away.</p>
           </li>
           <li class="mrun__city run-rev">
@@ -585,12 +585,9 @@
         <div class="showcase__main">
           <div class="showcase__hero">
             <p class="eyebrow">The waitlist</p>
-            <h2>The first run<br />starts with you.</h2>
+            <h2>Don't Just Watch History.<br />Be Part of It.</h2>
             <p class="lede">
-              Mumbai's dabbawalas have delivered lunch on time, every time,
-              since 1890. This September the same network reaches Perth —
-              join the list and we'll email you the moment your suburb
-              opens.
+              Join the waitlist and be first through the door when we launch.
             </p>
 
             <form class="showcase__form" id="signup" novalidate>
@@ -648,8 +645,36 @@
       <!-- ------------------------------------------------------------ footer -- -->
       <footer class="foot">
         <img class="foot__logo" src="assets/logo.png" alt="Mumbai Dabbawala — since 1890" />
+
+        <!-- Only channels whose URLs were supplied. TikTok and YouTube are
+             deliberately absent: no URL was given for either, and guessing a
+             handle risks pointing at somebody else's account. -->
+        <div class="foot__social">
+          <p class="foot__h">Stay Connected</p>
+          <p>The countdown is on. Follow the journey.</p>
+          <ul class="foot__links">
+            <li><a href="https://www.instagram.com/mumbai_dabbawala/" target="_blank" rel="noopener">Instagram</a></li>
+            <li><a href="https://www.facebook.com/MumbaiDabbawala/" target="_blank" rel="noopener">Facebook</a></li>
+            <li><a href="https://in.linkedin.com/company/mumbai-dabbawala" target="_blank" rel="noopener">LinkedIn</a></li>
+            <li><a href="https://x.com/mumbaidabbawala" target="_blank" rel="noopener">X</a></li>
+          </ul>
+        </div>
+
         <div class="foot__meta">
-          <a href="mailto:hello@mumbaidabbawala.com.au">hello@mumbaidabbawala.com.au</a>
+          <p class="foot__h">Contact</p>
+          <a href="mailto:hello@mumbaidabbawala.com.au">
+            <!-- An inline SVG rather than the brief's ✉️ emoji: this page draws
+                 every other icon this way (see .showcase__lock), and an emoji
+                 would be the only one on the page, rendering differently on
+                 every platform. -->
+            <span class="foot__env" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <rect x="3.2" y="5.6" width="17.6" height="12.8" rx="2.2" stroke="currentColor" stroke-width="1.6" />
+                <path d="M4.2 7.4 12 13l7.8-5.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+            hello@mumbaidabbawala.com.au
+          </a>
           <span>Mumbai since 1890 · Perth from 14 September 2026</span>
         </div>
       </footer>

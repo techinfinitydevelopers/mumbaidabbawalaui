@@ -1471,6 +1471,16 @@ h2 {
   pointer-events: none;
 }
 
+/* Pushes the eyebrow, headline and lede 50px clear of the wavy divider.
+   Scoped to the desktop variant on purpose: this box is `inset: 0` here, so
+   with `top` and `bottom` both set the margin resolves by shrinking the box
+   and carrying every absolutely-positioned child down with it. The phone
+   variant makes the same element `position: static` with its own
+   `margin-top: 22cqw`, which this must not fight. */
+.run--desktop .run__copy {
+  margin-top: 50px;
+}
+
 /* The global .eyebrow is #ED3237, which is only 3.38:1 on this grey — fine
    as large display type, not as a 15px tracked label. --accent-ink is the
    token that exists for exactly this: 5.31:1 here. */
@@ -1488,12 +1498,16 @@ h2 {
   position: absolute;
   top: 8.5cqw;
   left: 5cqw;
-  /* Wide enough that the <br>'s two lines stay two — at 6cqw Asar
-     "Mumbai to Perth." measures ~47cqw of ink, so 58 leaves headroom without
-     letting the line run the full section. */
+  /* Wide enough that the <br>'s two lines stay two. Measured at the 4cqw
+     below: "From Mumbai to Perth." needs 39.7cqw and "The Dabba Story
+     Continues." needs 46.7cqw, so 58 leaves ~24% slack — enough that a
+     fallback serif (if Asar fails to load) still sets both lines flat.
+     It briefly needed 72 when this was 6cqw; the smaller size gave that
+     back. */
   width: 58cqw;
   margin: 0;
-  font-size: 6cqw;
+  /* Desktop only in effect: the phone variant overrides this with 9.5cqw. */
+  font-size: 4cqw;
   line-height: 1.02;
   color: var(--ink);
 }
@@ -1529,12 +1543,18 @@ h2 {
   white-space: nowrap;
 }
 
+/* No background: all five pins are die-cut PNGs now, so the card is purely a
+   sizing box and the art sits straight on the section's grey. `overflow` and
+   the radius stay because they still clip the box — and `object-fit: cover`
+   is deliberate over `contain`: cover crops 7.9% off each side, while every
+   sticker carries at least 13% transparent margin there (measured), so
+   nothing is cut and the art renders at the taller 19cqw scale rather than
+   the narrower 16cqw one. */
 .pin__card {
   width: 16cqw;
   height: 19cqw;
   border-radius: 1.4cqw;
   overflow: hidden;
-  background: rgba(55, 52, 53, 0.06);
 }
 
 .pin__card img {
@@ -1726,7 +1746,7 @@ h2 {
 
 .foot {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 32px;
   flex-wrap: wrap;
@@ -1759,6 +1779,67 @@ h2 {
 
 .foot__meta a:hover {
   text-decoration: underline;
+}
+
+/* The footer is now three blocks across, so it aligns to the top rather than
+   centring a 46px logo against a taller column. */
+.foot__social {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 16.5px;
+  color: var(--ink-soft);
+}
+
+.foot__social p {
+  margin: 0;
+}
+
+/* Charcoal, not the global .eyebrow's red: two red labels shouting across the
+   footer would outweigh the wordmark sitting beside them. */
+.foot__h {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.foot__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.foot__links a {
+  color: var(--accent);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.foot__links a:hover,
+.foot__links a:focus-visible {
+  text-decoration: underline;
+}
+
+/* Sits the envelope on the text's own baseline-ish centre without knocking the
+   line box taller. */
+.foot__env {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  margin-right: 5px;
+  vertical-align: -2px;
+}
+
+.foot__env svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 /* ----------------------------------------------------------------- sheet -- */
@@ -2388,6 +2469,12 @@ h2 {
   .foot__meta {
     align-items: flex-start;
     text-align: left;
+  }
+
+  /* Stacked, so the two labels need air between the blocks rather than the
+     row gap that separated them side by side. */
+  .foot__social {
+    gap: 4px;
   }
 
   .sheet__panel {

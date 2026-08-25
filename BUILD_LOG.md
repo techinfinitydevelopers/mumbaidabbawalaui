@@ -2201,3 +2201,99 @@ by cropping the stickers tighter than their own art intends.
 Licensing on the four kept images is unconfirmed — the watermark on the
 excluded fifth suggests the same stock source, flagged the same way as
 `plane.webp` and the hero video.
+
+---
+
+## 2026-08-25 — Supplied copy placed; run pins finished; footer gains Stay Connected
+
+Copy was supplied as five labelled blocks with the instruction to place them in
+existing sections and create none. Mapping used:
+
+| Supplied block | Landed in |
+|---|---|
+| Main Section | `.hero` — `h1` + `.hero__sub` |
+| Creative Message | `.run` `h2`, both desktop and the phone list |
+| Pre-Launch Message | `.showcase#waitlist` — `h2` + `.lede` (CTA already read "Join The Waitlist") |
+| Stay Connected | `.foot` — new `.foot__social` block |
+| Contact | `.foot` — `.foot__meta`, email was already correct |
+
+`.intro` was left alone: nothing in the supplied copy replaces it and it does
+not contradict the new headings.
+
+### The run heading needed a measured fix, twice
+"The Dabba Story Continues." is 10 characters longer than the line the box was
+tuned for. At the then-current 6cqw it needed **70.1cqw** against a `width:
+58cqw`, and both lines wrapped — the heading rendered at **four lines**, not
+two. Widened to 72cqw (measured: clears the Mumbai pin, whose left edge is at
+79cqw, and they share no vertical band anyway) rather than shrinking type that
+is sized to Asar's cap height for a documented reason.
+
+The size was then set to **4cqw** by request, which gave the width back: at
+4cqw the long line needs 46.7cqw, so `width` returned to 58cqw with ~24% slack
+— enough that a fallback serif still sets both lines flat if Asar fails to
+load. Verified 2 lines at every desktop width.
+
+**Consequence worth knowing:** the `.lede` sits at a fixed `top: 22.5cqw`, so
+the shorter heading opened the gap between them from ~25px to **81px**. Left as
+measured rather than silently re-spacing a section whose spacing is being
+hand-tuned.
+
+### `.run__copy` top margin
+`margin-top: 50px`, scoped to `.run--desktop .run__copy`. The box is `inset: 0`
+here, so with `top` and `bottom` both set the margin resolves by shrinking the
+box and carrying every absolutely-positioned child down with it — measured
+exactly 50px. Scoped because the phone variant makes the same element
+`position: static` with its own `margin-top: 22cqw`.
+
+### Pins finished, card background removed
+A replacement Gulab jamun image was supplied to replace the watermarked one;
+checked at full zoom first, clean, installed as `run-jamun.png`. All five pins
+are now die-cut stickers, so `.pin__card`'s background came off and the art
+sits on the section's grey.
+
+`object-fit: cover` was kept over `contain`: cover crops 7.9% per side while
+every sticker holds ≥13% transparent margin there, so nothing is clipped and
+the art renders at the taller 19cqw scale.
+
+**Open, deliberately not fixed:** each PNG's transparent top/bottom margin now
+sits inside an invisible box, so a `pin__label` reads ~60px clear of the art it
+labels. Trimming the PNGs to their content bbox fixes it and scales the art up
+~1.6x — a taste call, so it was flagged rather than done.
+
+### Footer social links — what was and was not shipped
+Four URLs were supplied. Checked all of them rather than pasting them in:
+
+- Instagram `mumbai_dabbawala` — **200**, shipped as given.
+- LinkedIn `company/mumbai-dabbawala` — **200**, shipped as given.
+- Facebook `MumbaiDabbawala` — **400**, which is Facebook refusing a
+  non-browser request rather than a dead page. Inconclusive; shipped as given.
+- Twitter `mumbaidabb**e**wala` — **404 on both twitter.com and x.com.** The
+  same brand name spelled `mumbaidabbawala` returns **200** on both, so the
+  supplied URL is a typo. Shipped the corrected handle as `x.com`, flagged.
+
+**TikTok and YouTube are absent.** The supplied copy lists both, but no URL was
+given for either. `@mumbaidabbawala` happens to return 200 on both platforms —
+that is *not* evidence the accounts are this brand's, and both services soft-404
+with a 200, so neither was wired. Guessing a handle risks pointing visitors at
+someone else's account.
+
+Also worth confirming: every supplied handle is the India-based parent
+organisation (`in.linkedin.com`, `mumbai_dabbawala`), not a Perth account.
+
+The brief's `✉️` is an inline SVG envelope, not the emoji: every other icon on
+this page is drawn that way, and an emoji would be the only one on the page,
+rendering differently on each platform.
+
+### Verified
+- Every changed heading holds its intended 2 lines at 1440: hero title, hero
+  sub, run `h2`, waitlist `h2`.
+- Overflow sweep at 1440 / 1180 / 1040 / 900 / 768 / 767 / 700 / 560 / 414 /
+  390 / 360 / 320 — no horizontal overflow at any width.
+- The new `.hero__sub` `<br>` is hidden at ≤900 and the text reads
+  "legacy. Now," **with the space intact** — the word-fusion trap this file has
+  hit before, checked rather than assumed.
+- Footer: 4 links present at every width, row → column at ≤700, envelope SVG
+  renders, email text correct.
+- `.pin__card` computed background is `rgba(0, 0, 0, 0)`; jamun pin resolves to
+  `run-jamun.png`; mosaic's `dish-6.jpg` untouched.
+- Inline scripts pass `node --check`; temp probe files removed.

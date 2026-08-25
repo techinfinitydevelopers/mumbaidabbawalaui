@@ -31,9 +31,9 @@ new-WT/
 |---|---|
 | Hero | Logo, the **launch countdown in the nav row**, the positioning headline, the Mumbai numbers, "Join Waitlist", and the six-dish rail |
 | Since 1890 | 135 years / 5,000+ carriers / 200k+ lunches, and a three-image collage — the carrier full height, the dabba stack and the routing code beside it |
-| The run | A light-grey band carrying a dashed Mumbai-to-Perth route, a plane that flies it as you scroll, and five photo pins — Mumbai, three dishes, Perth. Structure and plane artwork from a supplied zip; palette, faces and photography are MD's |
+| The run | A light-grey band carrying a dashed Mumbai-to-Perth route, a plane that flies it as you scroll, and five die-cut sticker pins — Mumbai, three dishes, Perth. Structure and plane artwork from a supplied zip; palette, faces and photography are MD's |
 | The waitlist | A bento mosaic (six real photo/stat tiles) beside a headline card with the actual signup, a secondary highlight card, and a privacy note — then a modal for mobile (+61), Perth suburb and veg / non-veg — the brief's two-step signup |
-| Footer | The logo and `hello@mumbaidabbawala.com.au`. No phone number anywhere, by design |
+| Footer | The logo, a **Stay Connected** block (Instagram, Facebook, LinkedIn, X — only channels whose URLs were supplied; no TikTok or YouTube for that reason) and **Contact** with `hello@mumbaidabbawala.com.au`. No phone number anywhere, by design |
 
 The signup does not post anywhere: there is no backend behind this page, so the
 modal ends in a confirmation state. Wiring it up is a one-function change in the
@@ -166,26 +166,32 @@ and not licensed to this project, the same standing caveat as the hero video.
 flying backwards and belly up. Check a sprite's orientation by rendering it,
 not by measuring where its ink sits.
 
-**Four of the five pins (Mumbai, Biryani, Paneer tikka, Perth) are die-cut
-sticker PNGs, not photographs.** Supplied as five 4500x4500 square images;
-one (Gulab jamun) carried a repeating `pngtree` watermark tiled across the
-whole frame and was excluded — that pin still runs its original photo,
-`dish-6.jpg`. The other four were checked at full zoom for the same problem,
-confirmed clean, then resized to 1000px (their alpha content bbox sits
-comfortably inside the crop window `object-fit: cover` applies at the pin
-card's aspect ratio, so nothing is clipped) and saved as `run-mumbai.png`,
-`run-biryani.png`, `run-paneer.png`, `run-perth.png` — new filenames, so the
-mosaic's own `dish-2.jpg`/`dish-4.jpg` (same dishes, different photos) are
+**All five pins are die-cut sticker PNGs, not photographs**, so
+`.pin__card` carries no background — the art sits straight on the section's
+grey. Supplied as 4500x4500 squares and resized to 1000px. `object-fit:
+cover` is kept over `contain` deliberately: cover crops 7.9% off each side
+while every sticker holds at least 13% transparent margin there (measured
+via `PIL.Image.getbbox()`), so nothing is clipped and the art renders at the
+taller 19cqw scale rather than the narrower 16cqw one. Saved under new
+filenames (`run-mumbai/biryani/paneer/jamun/perth.png`) so the mosaic's own
+`dish-2.jpg`/`dish-4.jpg`/`dish-6.jpg` — same dishes, different photos — are
 untouched.
 
-**This produces a visible, intentional-looking inconsistency**: four pins
-show a die-cut object floating on the card's pale placeholder background
-with real margin on every side, and the fifth is a full-bleed photo with no
-margin at all. That is the honest result of mixing sticker PNGs with
-photography in the same row, not a bug — left as-is rather than papering
-over it by cropping the stickers tighter than their own artwork intends.
-Their licensing is otherwise unconfirmed, the same standing caveat as
-`plane.webp` and the hero video.
+**The first Gulab jamun file supplied was rejected**: it carried a repeating
+`pngtree` watermark tiled across the entire frame, visible at full zoom on
+both the bowl and the jamuns. A replacement was supplied and checked the same
+way before use. Worth keeping the habit — check every supplied asset at full
+zoom, not just at thumbnail size, because a tiled watermark is invisible
+until you do.
+
+**Known consequence of the transparent card:** each PNG's own transparent
+top/bottom margin now sits inside an invisible box, so a `pin__label` reads
+as ~60px clear of the art it labels rather than tight to it. Fixable by
+trimming the PNGs to their content bbox, which also scales the art up ~1.6x
+— left alone as a taste call rather than resized unasked.
+
+Sticker licensing is unconfirmed, the same standing caveat as `plane.webp`
+and the hero video.
 
 The five pins read **Mumbai → biryani → paneer tikka → gulab jamun → Perth**,
 so the route is the run leaving Mumbai with the food and landing in Australia.
