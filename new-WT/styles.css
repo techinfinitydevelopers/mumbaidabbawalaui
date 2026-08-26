@@ -173,17 +173,19 @@ img {
 .brand {
   display: flex;
   align-items: center;
-  padding: 8px 15px;
+  padding: 8px 18px;
   border-radius: var(--radius-btn);
   background: var(--brand-white);
   box-shadow: 0 8px 26px rgba(0, 0, 0, 0.26);
   text-decoration: none;
 }
 
-/* 34px inside the chip keeps the whole lockup — vertical "MUMBAI", the dabba mark
-   and the "Since 1890" line — legible while the chip stays inside the nav row. */
+/* 48px, up from 34: at 34 the chip stood 50px tall against a 70px headline and
+   read as an afterthought. 48 puts the chip at 64px, which is the countdown's
+   own height (63px) — the two ends of the nav row now match instead of one
+   dwarfing the other, and both stay centred on the same line. */
 .brand__logo {
-  height: 34px;
+  height: 48px;
   width: auto;
   display: block;
 }
@@ -239,13 +241,42 @@ img {
   margin-left: auto;
 }
 
+/* Up from 13px/600/74% white. The old treatment was the quietest thing in the
+   nav row next to the tiles it introduces; 74% white over a photograph is also
+   weak contrast for 13px type. The live dot is what makes it read as a running
+   clock rather than a static label. */
 .counter__lead {
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.74);
-  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.55);
+  color: rgba(255, 255, 255, 0.96);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6);
+}
+
+.counter__pulse {
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 0 rgba(237, 50, 55, 0.75);
+  animation: counter-pulse 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes counter-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(237, 50, 55, 0.75);
+  }
+  70% {
+    box-shadow: 0 0 0 11px rgba(237, 50, 55, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(237, 50, 55, 0);
+  }
 }
 
 .counter__tiles {
@@ -476,8 +507,41 @@ img {
   color: rgba(255, 255, 255, 0.92);
 }
 
+/* Scoped to the hero on purpose: the same `.cta` is the waitlist form's submit
+   button, which sits in a row beside an email field and must not grow with it.
+
+   The margin drops 105 -> 90 because the CTA cannot grow downward. Measured,
+   the old 56px button ended 6px above the hero's carve edge (567 against
+   `--cut-v` at 573), so the extra 10px of height had to come out of the gap
+   above. Bottom now lands at 562, keeping 11px of clearance. */
 .hero__copy .cta {
-  margin-top: 105px;
+  margin-top: 90px;
+  height: 66px;
+  padding: 0 80px 0 32px;
+  font-size: 20px;
+}
+
+/* The paddings trade exactly, same as the base rule — that is what stops the
+   box resizing on hover. */
+.hero__copy .cta:hover {
+  padding: 0 32px 0 80px;
+}
+
+.hero__copy .cta .cta__chip {
+  top: 6px;
+  right: 6px;
+  width: 54px;
+  height: 54px;
+}
+
+.hero__copy .cta .cta__chip svg {
+  width: 26px;
+  height: 26px;
+}
+
+/* 60 = the chip's 54 plus its 6px inset, so it lands with the air it had. */
+.hero__copy .cta:hover .cta__chip {
+  right: calc(100% - 60px);
 }
 
 /* ------------------------------------------------------------------ rail -- */
@@ -2195,7 +2259,7 @@ h2 {
   }
 
   .brand__logo {
-    height: 28px;
+    height: 36px;
   }
 
   .hero__title {
@@ -2281,7 +2345,7 @@ h2 {
   }
 
   .brand__logo {
-    height: 22px;
+    height: 28px;
   }
 
 }
@@ -2691,6 +2755,12 @@ h2 {
   }
 
   .card__jump .card__jump-ring {
+    animation: none;
+  }
+
+  /* One class, same as the rule that sets it, and later in the file — the
+     specificity trap this file has hit four times. */
+  .counter__pulse {
     animation: none;
   }
 

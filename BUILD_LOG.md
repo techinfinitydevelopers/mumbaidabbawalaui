@@ -2630,3 +2630,73 @@ So the row is 4 AU links, 1 India-org link, 1 pending.
 ### Verified
 - All five hrefs read back correctly from the DOM with `rel="noopener"` and
   `target="_blank"` intact; TikTok still `opacity: 0.42` and non-clickable.
+
+---
+
+## 2026-08-26 — Client feedback: logo, hero CTA, countdown label
+
+### 1. Logo up 34px -> 48px
+At 34 the chip stood 50px tall against a 70px headline and read as an
+afterthought. 48px puts the chip at **64px — the countdown's own height
+(63px)**, so the two ends of the nav row now match instead of one dwarfing the
+other, and both stay centred on the same line. Scaled at the lower breakpoints
+too (28 -> 36 at ≤900, 22 -> 28 at ≤560).
+
+### 2. Hero CTA up 56px -> 66px, 18px -> 20px type
+Chip 46 -> 54 with its inset 5 -> 6, so the hover travel became
+`calc(100% - 60px)`; the paddings still trade exactly, which is what stops the
+box resizing on hover.
+
+**Scoped to `.hero__copy .cta`, not `.cta`.** The same class is the waitlist
+form's submit button, which sits in a row beside an email field — growing that
+would have broken a layout nobody asked about.
+
+**It could not grow downward.** Measured first: the old 56px button ended
+**6px** above the hero's carve edge (567 against `--cut-v` at 573). The extra
+height came out of the gap above instead (`margin-top` 105 -> 90), which leaves
+11px of clearance — more than it had before. At 1024 clearance goes 27 -> 17px,
+still positive.
+
+### 3. Countdown label
+Was the quietest thing in the row it introduces: 13px/600 at 74% white over a
+photograph, which is also weak contrast at that size. Now 15px/700 at 96%, with
+a **live accent pulse dot** so it reads as a running clock rather than a static
+label. Reduced motion stops the pulse, written at the same one-class
+specificity and later in the file — the trap this stylesheet has hit four times.
+
+Left alone: the tiles themselves ("the timer is fine"), and the label's
+existing `display: none` below 1180 where the row has no space for it.
+
+### 4. Social
+Read as confirmation, not an instruction: TikTok stays a placeholder pending its
+link, and X stays pointed at the India account since that is the only one that
+exists. No change.
+
+### A pre-existing bug found while measuring, NOT fixed
+**Between roughly 701px and 815px the hero copy overflows the hero** — the CTA
+is almost entirely cut off and the sub-heading is clipped. iPad portrait (768)
+sits squarely in it.
+
+Cause: the hero's height scales with width (447px at 900 down to 349px at 710)
+while the copy stack is fixed in px — title `top: 150`, 54px/67 type, and a
+50px CTA put the stack's bottom at 424px regardless. Below 800 the sub also
+wraps a third line, adding 26px. Spill runs +45px at 768 to +75px at 710. Below
+700 the phone layout takes over and it is fine again; above ~820 the hero is
+tall enough.
+
+**Confirmed identical before and after this change** (+45 at 768 either way),
+so nothing here regressed it. Not fixed because the two ways out — shrinking
+the type through that band, or raising the phone hero's breakpoint from 700 to
+~815 so tablets get the portrait treatment — are both design calls rather than
+repairs, and neither was asked for.
+
+### Verified
+- Logo 48/36/28 across breakpoints; brand chip 64px vs counter 63px at 1440.
+- CTA 66px/20px with 11px clearance below; hover paddings still trade.
+- Label 15px/700/96% white; pulse animating, and `animation: none` under
+  `--force-prefers-reduced-motion`.
+- `scrollWidth - clientWidth` is **0** at 1440 / 1180 / 1024 / 900 / 768 / 700 /
+  560 — no horizontal overflow. (An earlier `-15 -> 0` reading was scrollbar
+  accounting in `innerWidth`, not overflow.)
+- Nav never collides: gap between logo chip and countdown 249px at its tightest
+  (560px wide).
