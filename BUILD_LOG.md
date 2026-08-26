@@ -2601,3 +2601,32 @@ editing five `generate-assets.mjs` entries too or the next run recreates them.
   images load, all three carry alt text.
 - Band layout holds at 1440 / 1180 / 900 / 768 / 700 / 560 with no horizontal
   overflow; the ≤900 block's smaller slot sizes still fit.
+
+---
+
+## 2026-08-26 — Social links repointed to the Australian accounts
+
+Instagram, Facebook and LinkedIn moved off the India parent organisation onto
+AU accounts:
+
+| | was | now |
+|---|---|---|
+| Instagram | `mumbai_dabbawala` | `mumbaidabbawalaau` |
+| Facebook | `MumbaiDabbawala` | `profile.php?id=61592772927793` |
+| LinkedIn | `in.linkedin.com/company/mumbai-dabbawala` | `www.linkedin.com/company/mumbaidabbawalaau` |
+
+**All three verified in a real browser, because every command-line check was
+inconclusive** — Instagram served its JS shell, LinkedIn returned **999** and
+Facebook **400**. Those are anti-bot responses, not "missing", and treating
+either as a failure would have been as wrong as treating a 200 as proof.
+Loading them properly gave real page titles: "Mumbai Dabbawala | Australia
+(@mumbaidabbawalaau)", "Mumbai Dabbawala | Australia | LinkedIn", and
+"Mumbaidabbawalaau | Facebook".
+
+**X is now the only non-AU link** (`x.com/mumbaidabbawala`, the India org) — no
+Australian handle has been supplied for it. TikTok remains the one placeholder.
+So the row is 4 AU links, 1 India-org link, 1 pending.
+
+### Verified
+- All five hrefs read back correctly from the DOM with `rel="noopener"` and
+  `target="_blank"` intact; TikTok still `opacity: 0.42` and non-clickable.
