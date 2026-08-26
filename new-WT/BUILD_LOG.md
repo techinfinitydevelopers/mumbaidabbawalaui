@@ -126,3 +126,83 @@ the carve starts eating the subcopy's right end.
 - `cta bottom − hero bottom` negative and `scrollWidth − clientWidth` **0** at all of them.
 - **901 and 1440 unchanged**: nav readout 240 / 392px wide, copy readout measures 0×0. No desktop rule was touched.
 - Rendered and read at **320, 390, 744**.
+
+---
+
+## 2026-08-26 — The run's mechanic ported to mobile, without the pin
+
+Asked for after the "sirf batao" answer: build it, drop the pin.
+
+Under 768 the stages still flow as a column — the desktop serpentine has nowhere
+to go in portrait — but the mechanic now comes across: dashed route, the dabba
+flying it on scroll, each stage popping as the dabba arrives and un-popping on
+the way back up. **No pin**, by decision: a phone would be held for a whole
+viewport it cannot skip.
+
+### Most of it was already portable
+
+`initRunRoute` is the old IIFE turned into a function called twice. The progress
+mapping, the tangent, the nearest-point stop matching and the bidirectional
+reveals were **already layout-agnostic** — the traveller maps the route's viewBox
+to the section's box proportionally, and each pin's `at` is found at runtime by
+sampling the path and taking the closest point to that pin's measured centre.
+`buildPath` is the only argument that differs between the two calls. Two other
+existing contracts did the rest of the work: each variant's `read()` already
+returns false while its own section is `display: none`, and the section-wide
+observer already skipped `.run-rev.pin`, so adding `pin` to each `<li>` was
+enough to move it onto the traveller.
+
+### The path is built, not authored
+
+A fixed `d` cannot work here: the column reflows with the width and each note
+wraps differently, so the cards are not at a fixed fraction of the section's
+height the way the desktop pins' `cqw` coordinates are. `rebuild()` writes the
+viewBox in the section's own CSS pixels — mapping 1:1 — and lays a Catmull-Rom
+curve through the cards, converted to cubics with each control point a sixth
+along the neighbours' chord.
+
+**Two points per stage, not one.** Through the card centres alone it rendered as
+a near-straight diagonal: measured, the centres only alternate between 37% and
+63% of the width across 384px of vertical travel per stage. Each card is now
+followed by a waypoint thrown to the far flank — 88% for a left stage, 12% for a
+right one — and the flank is chosen by where the note is *not*, since a note sits
+under its own card and the opposite side of that band is empty. That bought both
+the amplitude and a clear channel for the text; the straight version crossed the
+note on nearly every stage.
+
+**The dabba flies in a second overlay above the cards** (z-index 5 against their
+4, line at 1). The route runs through the card centres, so with one shared box
+the dabba is hidden behind a card at exactly the moment it arrives at one.
+Desktop shares a box because its cards are a fifth of the frame; here they are
+two thirds of the column.
+
+### The bug the Browser pane caught
+
+The page shipped `viewBox="0 0 0.0 1879.0"` — a path collapsed onto x=0, a
+vertical line up the section's left edge with the dabba stuck on it. Two causes,
+both fixed:
+
+1. **`rebuild` had no zero-width guard.** A box read mid-load as `0 x 1879` was written straight out. It now bails and leaves `builtW` alone so the path stays marked stale.
+2. **The ResizeObserver was load-bearing and shouldn't have been.** Observer callbacks come from the rendering lifecycle, which a hidden tab does not run — the same trap this script's own comment already records for rAF and IntersectionObserver. In the pane it fired once at a mid-load box and never again. `read()` now compares the section's box against the box the path was built for and re-measures on any difference, so the **first scroll repairs it** regardless of what the observer delivered. Confirmed: on load the path was built for a 2609px box, one scroll took it to 2679 — matching the section exactly.
+
+Also removed a `first`-callback skip I had added to the observer. It looks free —
+init has already measured — but the first callback is only guaranteed to carry
+the size at observe *time*, not to arrive before the next change. Delivered late
+it carries the new size, gets skipped, and nothing fires again because nothing
+moves again.
+
+### Verified
+- **viewBox → px scale exactly 1.0000 × 1.0000**, and every card centre within 0.5–3.3px of the route (residual is the sampling grid, not error). Route and flight overlays' viewBoxes identical.
+- **Every pin reachable**, computed from `read()`'s own formula against the measured geometry, at 390×844 and 375×667: progress reaches exactly **1.0000** on the last frame, and each pin's card is above the fold when the dabba gets there — the one exception, pin 6 at 375×667, sits 1px low and clears 0.002 of progress later, which is what the on-screen gate is for.
+- Right instance active per width: at **1440 and 800** the desktop route is live (viewBox 1728×2400, length 8956) and the phone route inert (length 0, no transform); at **390** the reverse. No console errors at any width, no horizontal overflow.
+- Reduced motion: `is-pinned` false, `run-ready` absent, all six pins at **opacity 1, transform none**. Normal: opacity 0, `scale(0.78)`, waiting for the traveller.
+- Rendered and read the whole section at 390 and 405, at flight fractions 0.30 / 0.47 / 0.62 / 0.72.
+
+### What I could not verify
+**A real scroll, in either harness.** The Browser pane reports
+`document.visibilityState: "hidden"` and rAF never fires there, so the traveller
+cannot move; headless clamps the top-level window to ~500px and its scroll stalls
+under virtual time. So the motion itself is unproven by direct observation — what
+is proven is that the geometry feeding it is correct, that every pin is reachable
+under the page's own progress formula, and that the formula is unchanged shared
+code already shipping on desktop.

@@ -473,15 +473,55 @@
         <div class="run-pin__hold" aria-hidden="true"></div>
       </div>
 
-      <!-- The reference swaps in a different section under 768; same here —
-           the route's serpentine geometry has nowhere to go in a portrait
-           column, so the stages become a plain ordered list. -->
-      <section class="run run--mobile" aria-labelledby="run-m-title">
+      <!-- The reference swaps in a different section under 768; same here — the
+           desktop route's serpentine has nowhere to go in a portrait column, so
+           the stages flow as an ordered list instead of being pegged to fixed
+           coordinates.
+
+           The MECHANIC still comes across, though: a dashed route, the dabba
+           flying it on scroll, and each stage popping as the dabba reaches it.
+           What does not come across is the pin — a phone would be held for a
+           whole viewport it cannot skip, which is where readers leave. The page
+           keeps scrolling and the flight is paced against the column instead.
+
+           The route's path is not authored, it is BUILT from the cards' measured
+           centres (see the run script). A fixed `d` cannot work here: the column
+           reflows with the width, the note under each card wraps differently, so
+           the cards' positions are not a fixed fraction of the section's height
+           the way the desktop pins' coordinates are. -->
+      <section class="run run--mobile" id="run-m" aria-labelledby="run-m-title">
     <div class="run__wave" aria-hidden="true">
       <svg viewBox="0 0 1536 300" preserveAspectRatio="none">
         <path fill="var(--brand-offwhite)" d="M1536,0 H-1 V136.5 S184.32,63.5 460.8,156.5 S860.16,105 1121.28,137 S1413.12,105 1536,105 V0" />
       </svg>
     </div>
+
+        <!-- viewBox and `d` are both written by the script, in this section's own
+             CSS pixels — so the mapping from route units to pixels is 1:1 and
+             the curve lands exactly on the cards rather than near them. The
+             sprite is 76 units where the desktop's is 259, because a unit here
+             is a pixel and there it is a 1728th of the section's width. -->
+        <div class="run__route mrun__route" aria-hidden="true">
+          <svg viewBox="0 0 390 2000" preserveAspectRatio="none">
+            <path id="mrun-path" class="run__line" d="" />
+          </svg>
+        </div>
+
+        <!-- The dabba rides in its OWN overlay, above the cards, where on desktop
+             it shares the route's box and passes behind them. It has to: the
+             route is drawn through the card centres, so the dabba is behind a
+             card at exactly the moment it arrives at one — the moment worth
+             seeing. Desktop gets away with it because its cards are a fifth of
+             the frame; here they are two thirds of the column. The line stays
+             underneath, which is what keeps dashes off the photographs. The
+             script syncs this viewBox with the route's. -->
+        <div class="run__route mrun__flight" aria-hidden="true">
+          <svg viewBox="0 0 390 2000" preserveAspectRatio="none">
+            <g id="mrun-plane" class="run__plane">
+              <image href="assets/plane.webp" x="-38" y="-40" width="76" height="80" />
+            </g>
+          </svg>
+        </div>
 
         <div class="run__copy">
           <p class="eyebrow run-rev">The run</p>
@@ -492,32 +532,32 @@
           </p>
         </div>
         <ol class="mrun">
-          <li class="mrun__city run-rev">
+          <li class="mrun__city run-rev pin">
             <p class="pin__label">Mumbai</p>
             <div class="pin__card"><img src="assets/run-mumbai.png" alt="The Gateway of India in Mumbai, cut out against a plain ground" loading="lazy" /></div>
             <p class="mrun__note">Where the run starts. 5,000 carriers, every working morning.</p>
           </li>
-          <li class="mrun__city run-rev">
+          <li class="mrun__city run-rev pin">
             <p class="pin__label">Biryani</p>
             <div class="pin__card"><img src="assets/run-biryani.png" alt="A clay handi of biryani, cut out against a plain ground" loading="lazy" /></div>
             <p class="mrun__note">Sealed in the clay handi it was cooked in.</p>
           </li>
-          <li class="mrun__city run-rev">
+          <li class="mrun__city run-rev pin">
             <p class="pin__label">Paneer tikka</p>
             <div class="pin__card"><img src="assets/run-paneer.png" alt="Paneer tikka skewers, cut out against a plain ground" loading="lazy" /></div>
             <p class="mrun__note">Blistered over flame, packed while still hot.</p>
           </li>
-          <li class="mrun__city run-rev">
+          <li class="mrun__city run-rev pin">
             <p class="pin__label">Gulab jamun</p>
             <div class="pin__card"><img src="assets/run-jamun.png" alt="A bowl of gulab jamun, cut out against a plain ground" loading="lazy" /></div>
             <p class="mrun__note">The tier nobody trades away.</p>
           </li>
-          <li class="mrun__city run-rev">
+          <li class="mrun__city run-rev pin">
             <p class="pin__label">Pulav</p>
             <div class="pin__card"><img src="assets/run-pulav.png" alt="A bowl of pulav, cut out against a plain ground" loading="lazy" /></div>
             <p class="mrun__note">Rice tossed with peas and whole spices.</p>
           </li>
-          <li class="mrun__city run-rev">
+          <li class="mrun__city run-rev pin">
             <p class="pin__label">Perth</p>
             <div class="pin__card"><img src="assets/run-perth.png" alt="Perth's Bell Tower, cut out against a plain ground" loading="lazy" /></div>
             <p class="mrun__note">From 14 September 2026, the same run lands here.</p>
@@ -1117,18 +1157,33 @@
          file's house style: a passive scroll listener rather than rAF-driven
          polling, since IntersectionObserver and rAF are both suspended while
          the tab is hidden and this page has already been bitten by that. */
-      (() => {
-        const section = document.getElementById("run");
-        const path = document.getElementById("run-path");
-        const plane = document.getElementById("run-plane");
+      /* Two routes run off this one function: the desktop serpentine, whose
+         path is authored, and the phone column's, whose path is BUILT from the
+         cards' own positions. Everything else — the progress mapping, the
+         tangent, the nearest-point stop matching, the bidirectional reveals —
+         was already layout-agnostic, so neither variant needed its own copy.
+         `buildPath` is the only difference between the two calls. */
+      const initRunRoute = (sectionId, pathId, planeId, buildPath) => {
+        const section = document.getElementById(sectionId);
+        const path = document.getElementById(pathId);
+        const plane = document.getElementById(planeId);
         if (!section || !path || !plane) return;
+        const svg = path.ownerSVGElement;
+        /* The phone variant flies its dabba in a second overlay so it can sit
+           above the cards; on desktop both are in the one SVG and this is it. */
+        const planeSvg = plane.ownerSVGElement;
         /* The scroll TRACK is the pin wrapper, not the section. Once the
            section sticks its own rect stops moving, so progress read off it
            would freeze with the dabba still short of Perth — the wrapper
            keeps scrolling for the whole pin. */
         const track = section.closest(".run-pin") || section;
 
-        const LEN = path.getTotalLength();
+        /* let, not const: a rebuilt path is a different length. */
+        let LEN = path.getTotalLength();
+        /* The box the current path was built for. Any difference from it means
+           the path is stale — see read(). */
+        let builtW = 0;
+        let builtH = 0;
         const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
         let target = 0;
         let current = 0;
@@ -1139,6 +1194,18 @@
           /* Zero height means the desktop section is display:none — the phone
              variant is showing — so there is nothing to drive. */
           if (!r.height) return false;
+          /* Self-healing, and the reason the ResizeObserver below is an
+             optimisation rather than the mechanism. Observer callbacks are
+             delivered from the rendering lifecycle, which a hidden tab does not
+             run — the same trap this script's own comment already records for
+             rAF and IntersectionObserver. In a hidden tab the observer fired
+             once at a mid-load box and then never again, and the collapsed path
+             was what the reader got. Comparing against the box the path was
+             actually built for means the first scroll repairs it no matter what
+             the observer did or did not deliver. */
+          if (buildPath && (Math.abs(r.width - builtW) > 0.5 || Math.abs(r.height - builtH) > 0.5)) {
+            measureStops();
+          }
           const t = track.getBoundingClientRect();
           /* Progress 0 once the section has genuinely arrived — its top at 60%
              of the viewport, so the eyebrow and headline are already readable
@@ -1177,13 +1244,95 @@
            proportion of the viewBox), and take the closest sample to the pin's
            centre. 2D, not just y — the route doubles back, so matching on y
            alone would pair a pin with the wrong crossing. */
-        const VB_W = 1728;
-        const VB_H = 2400;
+        /* Read, not hardcoded: the phone route rewrites its own viewBox to the
+           section's pixel box on every measure, so these have to follow it. */
+        let VB_W = svg.viewBox.baseVal.width;
+        let VB_H = svg.viewBox.baseVal.height;
         let stops = [];
+
+        /* The card, not the whole pin. On desktop a .pin IS its card, so this
+           changes nothing there; in the phone column the <li> also carries a
+           label and a note, and its box centre sits well below the photograph
+           the route is supposed to touch. */
+        const anchorOf = (el) => (el.querySelector(".pin__card") || el).getBoundingClientRect();
+
+        /* Draw the route THROUGH the cards instead of hoping a fixed `d` passes
+           near them. Catmull-Rom converted to cubics — for each span the two
+           control points are a sixth of the way along the neighbours' chord,
+           which is the standard conversion and gives a curve that actually
+           interpolates its points rather than being pulled off them the way a
+           plain quadratic chain is.
+
+           The end points are doubled so the first and last spans have a
+           neighbour to take a tangent from, and the head and tail sit outside
+           the section so the dabba flies in from above and leaves below rather
+           than starting and stopping dead on the first and last card. The
+           section's `overflow: hidden` clips both. */
+        const rebuild = (s) => {
+          /* Two points per stage, not one. Through the card centres alone the
+             curve came out a near-straight diagonal: the centres only alternate
+             between 37% and 63% of the width — a 26% swing across 384px of
+             vertical travel per stage — which Catmull-Rom renders as a line with
+             a wobble, not a route.
+
+             So each card is followed by a waypoint thrown to the far side, and
+             the side is chosen by where the note is NOT. A stage's note is
+             aligned under its own card, so the opposite flank of that band is
+             empty: 88% for a left stage, 12% for a right one. The lobe lands in
+             that empty flank, which is what both gives the serpentine its
+             amplitude and keeps the dashes off the words — the straight version
+             crossed the note on nearly every stage. */
+          const pts = [];
+          for (const el of section.querySelectorAll(".pin")) {
+            const r = anchorOf(el);
+            const cx = r.left - s.left + r.width / 2;
+            pts.push({ x: cx, y: r.top - s.top + r.height / 2 });
+            const note = el.querySelector(".mrun__note");
+            if (!note) continue;
+            const n = note.getBoundingClientRect();
+            pts.push({
+              x: s.width * (cx > s.width / 2 ? 0.12 : 0.88),
+              y: n.top - s.top + n.height / 2,
+            });
+          }
+          /* A zero width writes a path collapsed onto x=0 — a vertical line up
+             the section's left edge with the dabba stuck on it. Measured that
+             exactly: the box read 0 x 1879 mid-load and the page then shipped
+             it, because nothing measured again. Bail instead, and leave builtW
+             alone so read() keeps treating the path as stale. */
+          if (!s.width || pts.length < 2) return;
+
+          const vb = `0 0 ${s.width.toFixed(1)} ${s.height.toFixed(1)}`;
+          svg.setAttribute("viewBox", vb);
+          if (planeSvg !== svg) planeSvg.setAttribute("viewBox", vb);
+          VB_W = s.width;
+          VB_H = s.height;
+          builtW = s.width;
+          builtH = s.height;
+
+          const head = { x: s.width * 0.5, y: -s.height * 0.05 };
+          const tail = { x: s.width * 0.5, y: s.height * 1.05 };
+          const q = [head, head, ...pts, tail, tail];
+          const f = (n) => n.toFixed(1);
+          let d = `M${f(head.x)} ${f(head.y)}`;
+          for (let i = 1; i < q.length - 2; i += 1) {
+            const p0 = q[i - 1];
+            const p1 = q[i];
+            const p2 = q[i + 1];
+            const p3 = q[i + 2];
+            d += ` C${f(p1.x + (p2.x - p0.x) / 6)} ${f(p1.y + (p2.y - p0.y) / 6)}`;
+            d += ` ${f(p2.x - (p3.x - p1.x) / 6)} ${f(p2.y - (p3.y - p1.y) / 6)}`;
+            d += ` ${f(p2.x)} ${f(p2.y)}`;
+          }
+          path.setAttribute("d", d);
+        };
 
         const measureStops = () => {
           const s = section.getBoundingClientRect();
           if (!s.height) return;
+          if (buildPath) rebuild(s);
+          LEN = path.getTotalLength();
+          if (!LEN) return;
           const N = 320;
           const pts = [];
           for (let i = 0; i <= N; i += 1) {
@@ -1191,7 +1340,7 @@
             pts.push({ p: i / N, x: (q.x / VB_W) * s.width, y: (q.y / VB_H) * s.height });
           }
           stops = [...section.querySelectorAll(".pin")].map((el) => {
-            const r = el.getBoundingClientRect();
+            const r = anchorOf(el);
             const cx = r.left - s.left + r.width / 2;
             const cy = r.top - s.top + r.height / 2;
             let at = 0;
@@ -1232,6 +1381,10 @@
         };
 
         const place = (p) => {
+          /* An unbuilt path has no length, and getPointAtLength would put the
+             dabba at the origin — visible in the corner until the first
+             measure. */
+          if (!LEN) return;
           const d = clamp(p, 0, 1) * LEN;
           const a = path.getPointAtLength(d);
           const b = path.getPointAtLength(clamp(d + 12, 0, LEN));
@@ -1275,7 +1428,37 @@
           current = target;
           place(current);
         });
-      })();
+
+        /* resize alone is not enough for a BUILT path. The desktop route's pins
+           are absolute cqw coordinates, so only the section's own size moves
+           them; the phone column's cards move whenever the notes rewrap — which
+           happens after the webfonts land, well after this runs, with no resize
+           event to announce it. A stale path then misses the cards by the
+           difference. Rebuilding sets the viewBox and `d` on an absolutely
+           positioned overlay, which cannot change the section's size, so there
+           is no feedback loop to guard against. */
+        if (buildPath && "ResizeObserver" in window) {
+          /* No skip on the first callback, deliberately. Skipping it looks like
+             a free optimisation — init has already measured — but the first
+             callback is only guaranteed to carry the size at observe TIME, not
+             to arrive before the next change. Delivered late it carries the new
+             size, gets skipped, and nothing fires again because nothing moves
+             again: the path stays stale for the life of the page. Measured that
+             exact failure. A redundant rebuild costs six rects and a string. */
+          new ResizeObserver(() => {
+            if (!read()) return;
+            measureStops();
+            current = target;
+            place(current);
+          }).observe(section);
+        }
+      };
+
+      /* Both are always in the DOM; each one's read() returns false while its
+         own section is display:none, so only the variant on screen is driven,
+         and crossing 767 hands over on the next resize. */
+      initRunRoute("run", "run-path", "run-plane", false);
+      initRunRoute("run-m", "mrun-path", "mrun-plane", true);
 
       /* Per-element entrance reveal for the run's pins and copy. Separate from
          revealOnScroll above because that one is a single-shot trigger for a

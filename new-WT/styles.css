@@ -2488,6 +2488,38 @@ h2 {
     height: 74cqw;
     border-radius: 4cqw;
   }
+
+  /* Each stage is a .pin now, so the traveller reveals it instead of the
+     section-wide observer (which skips .run-rev.pin by design). The one thing
+     that has to go is `.pin`'s absolute positioning — these stay in the column's
+     flow. The z-index is what keeps card, label and note above the route. */
+  .mrun__city.pin {
+    position: relative;
+    z-index: 4;
+  }
+
+  /* A route unit is a pixel here, where on desktop it is a 1728th of the
+     section's width — so the desktop's 10/42 would render a 10px rope with 42px
+     dashes. Scaled to what the same line looks like at this size, and dropped
+     from 28% to 20% charcoal because down here the line runs behind the notes
+     rather than through open space. */
+  .mrun__route .run__line {
+    stroke-width: 5;
+    stroke-dasharray: 13 13;
+    stroke: rgba(55, 52, 53, 0.2);
+  }
+
+  /* 1 under the cards' 4, 5 over them — the line goes behind, the dabba in
+     front. Both boxes are the same `inset: 0` overlay; only the stacking and
+     what they carry differ. */
+  .mrun__route {
+    z-index: 1;
+  }
+
+  .mrun__flight {
+    z-index: 5;
+    pointer-events: none;
+  }
 }
 
 /* 901-1023: the narrowest widths that still get the desktop carve, and the last

@@ -215,6 +215,46 @@ handler needed no changes across any of the three.
 
 ### The run
 
+**Both variants fly the same route now.** Under 768 the stages still flow as a
+column rather than being pegged to fixed coordinates — the desktop serpentine has
+nowhere to go in portrait — but the mechanic came across: a dashed route, the
+dabba flying it on scroll, each stage popping as the dabba reaches it, and
+un-popping on the way back up. What did **not** come across is the pin. A phone
+would be held for a whole viewport it cannot skip, which is where readers leave;
+the page keeps scrolling and the flight is paced against the column instead.
+
+Three things made that cheap, and they were all already true:
+
+- `initRunRoute` is one function called twice. The progress mapping, the tangent, the nearest-point stop matching and the bidirectional reveals were **already layout-agnostic** — the traveller maps the route's viewBox to the section's box proportionally, and each pin's `at` is found at runtime by sampling the path and taking the closest point to the pin's measured centre. Nothing was hardcoded, so neither variant needed its own copy. `buildPath` is the only argument that differs.
+- Each variant's `read()` returns false while its own section is `display: none`, so only the one on screen is driven and crossing 767 hands over.
+- `.run-rev:not(.pin)` already excluded pins from the section-wide observer, so adding `pin` to each `<li>` was enough to move it onto the traveller.
+
+**The phone route's `d` is built, not authored.** A fixed path cannot work: the
+column reflows with the width and each note wraps differently, so the cards are
+not at a fixed fraction of the section's height the way the desktop pins'
+coordinates are. `rebuild()` writes the viewBox in the section's own CSS pixels
+(so the mapping is 1:1) and lays a Catmull-Rom curve — converted to cubics, each
+control point a sixth along the neighbours' chord — through the cards.
+
+Two points per stage, not one. Through card centres alone the curve came out a
+near-straight diagonal: the centres only alternate between 37% and 63% of the
+width across 384px of vertical travel per stage. So each card is followed by a
+waypoint thrown to the far flank — 88% for a left stage, 12% for a right one —
+chosen by where the note is **not**, since a note is aligned under its own card
+and the opposite flank of that band is empty. That is what gives the serpentine
+its amplitude *and* keeps the dashes off the words; the straight version crossed
+the note on nearly every stage.
+
+The dabba rides a **second overlay above the cards** (`z-index` 5 against their
+4, the line at 1). It has to: the route runs through the card centres, so the
+dabba is behind a card at exactly the moment it arrives at one. Desktop gets away
+with sharing one box because its cards are a fifth of the frame; here they are
+two thirds of the column.
+
+A route unit is a pixel here where on desktop it is a 1728th of the section's
+width, so the line's `stroke-width: 10` / `dasharray: 42 42` and the sprite's 259
+units are all rescaled — 5/13 and 76.
+
 Structure and mechanic come from a supplied zip (a replica of CRAV's
 "Takeaway" section): a wavy divider bleeding the page colour in, one dashed
 SVG path, a traveller placed along it by scroll progress via
