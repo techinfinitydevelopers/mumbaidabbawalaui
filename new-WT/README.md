@@ -17,7 +17,8 @@ new-WT/
   styles.css            hero styles annotated with their reference px, then the
                         sections below, which have no reference and are built
                         from the hero's own vocabulary
-  assets/               logo, hero, six dishes, legacy stills, Perth, see below
+  assets/               logo, hero, six dishes, legacy stills, the run's sticker
+                        pins, 20 network photographs (net-*), see below
   scripts/
     generate-assets.mjs rebuilds the imagery — FAL for the hero, Perth and the
                         lid code; public/food and public/img for the rest
@@ -32,7 +33,7 @@ new-WT/
 | Hero | Logo, the **launch countdown in the nav row**, the positioning headline, the Mumbai numbers, "Join Waitlist", and the six-dish rail |
 | Since 1890 | 135 years / 5,000+ carriers / 200k+ lunches, and a three-image collage — the carrier full height, the dabba stack and the routing code beside it |
 | The run | A light-grey band carrying a dashed Mumbai-to-Perth route, a plane that flies it as you scroll, and six die-cut sticker pins, unlabelled on desktop — Mumbai, four dishes, Perth. Structure and plane artwork from a supplied zip; palette, faces and photography are MD's |
-| The waitlist | A bento mosaic (six real photo/stat tiles) beside a headline card with the actual signup, a secondary highlight card, and a privacy note — then a modal for mobile (+61), Perth suburb and veg / non-veg — the brief's two-step signup |
+| The waitlist | A bento mosaic (31 photographs across two counter-scrolling columns) beside a headline card with the actual signup, a secondary highlight card, and a privacy note — then a modal for mobile (+61), Perth suburb and veg / non-veg — the brief's two-step signup |
 | Footer | The logo, a **Stay Connected** block (Instagram, Facebook, LinkedIn and X as icon-only links; **TikTok and YouTube are dimmed `<span>` placeholders** — no anchor until their URLs exist, since a link with no destination is a dead control on a live page. Activate either by wrapping it in the same `<a href … aria-label>` the others use and dropping `.foot__pending`) and **Contact** with `hello@mumbaidabbawala.com.au`. No phone number anywhere, by design |
 
 The signup does not post anywhere: there is no backend behind this page, so the
