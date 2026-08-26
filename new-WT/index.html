@@ -1150,8 +1150,8 @@
          cards' own positions. Everything else — the progress mapping, the
          tangent, the nearest-point stop matching, the bidirectional reveals —
          was already layout-agnostic, so neither variant needed its own copy.
-         `buildPath` is the only difference between the two calls. */
-      const initRunRoute = (sectionId, pathId, planeId, buildPath) => {
+         The options are the only difference between the two calls. */
+      const initRunRoute = (sectionId, pathId, planeId, { buildPath, ease, start }) => {
         const section = document.getElementById(sectionId);
         const path = document.getElementById(pathId);
         const plane = document.getElementById(planeId);
@@ -1209,13 +1209,19 @@
              flown, and the dabba dropped ~96px below the fold and came back.
              Starting later keeps the whole flight on screen.
 
-             Both lines read START. They have to: with the start moved to 0.6
-             and travel still carrying the old 0.85's remainder, progress
-             topped out at 0.914 when the pin released — so the last 9% of the
-             route, Perth's pin included, simply never ran. */
-          const START = 0.6;
-          const startTop = innerHeight * START;
-          const travel = Math.max(t.height - innerHeight * (1 - START), 1);
+             Both lines read it. They have to: with the start moved to 0.6 and
+             travel still carrying the old 0.85's remainder, progress topped out
+             at 0.914 when the pin released — so the last 9% of the route,
+             Perth's pin included, simply never ran.
+
+             The phone passes 1.0 instead, which spreads the same flight over the
+             section's whole pass rather than its height minus 0.4 of a viewport:
+             2325px of scroll instead of 1987, so 17% slower per pixel. The
+             reason 0.6 exists does not apply down here — the phone route's first
+             fifth runs straight down through the copy above the first card, so
+             there is no dip to keep on screen. */
+          const startTop = innerHeight * start;
+          const travel = Math.max(t.height - innerHeight * (1 - start), 1);
           target = clamp((startTop - t.top) / travel, 0, 1);
           return true;
         };
@@ -1403,8 +1409,21 @@
           passStops(p);
         };
 
+        /* How hard the dabba chases the scroll. It is the only real speed
+           control there is: the route's length and the scroll it is mapped over
+           are both fixed by the column's own geometry, and on the phone that
+           works out at 3083px of path over 1987px of scroll — 1.55px of flight
+           per pixel of page, which is why the sprite outran the reader. Making
+           it genuinely 1:1 would need another ~1100px of column, i.e. 276px
+           between cards, which is a page of white space.
+
+           So the phone lags instead: 0.055 against the desktop's 0.12 means the
+           dabba trails a flick and glides in after it rather than tracking it
+           frame for frame. Same distance, half the apparent speed. Pins pop off
+           the smoothed value, so they land as the dabba actually arrives rather
+           than when the scroll says it should have. */
         const loop = () => {
-          current += (target - current) * 0.12;
+          current += (target - current) * ease;
           place(current);
           if (Math.abs(target - current) > 0.0002) requestAnimationFrame(loop);
           else {
@@ -1467,8 +1486,8 @@
       /* Both are always in the DOM; each one's read() returns false while its
          own section is display:none, so only the variant on screen is driven,
          and crossing 767 hands over on the next resize. */
-      initRunRoute("run", "run-path", "run-plane", false);
-      initRunRoute("run-m", "mrun-path", "mrun-plane", true);
+      initRunRoute("run", "run-path", "run-plane", { buildPath: false, ease: 0.12, start: 0.6 });
+      initRunRoute("run-m", "mrun-path", "mrun-plane", { buildPath: true, ease: 0.055, start: 1 });
 
       /* Per-element entrance reveal for the run's pins and copy. Separate from
          revealOnScroll above because that one is a single-shot trigger for a

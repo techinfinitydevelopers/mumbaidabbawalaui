@@ -272,3 +272,51 @@ and by checking the file, not the script's own output.
 - Desktop untouched at 1440: viewBox 1728×2400, path length 8956, phone route inert.
 - Reduced motion: all six pins opacity 1, transform none. No console errors, no horizontal overflow.
 - Rendered and read the whole section at 390.
+
+---
+
+## 2026-08-26 — Mobile run: the dabba slowed down
+
+Asked for: "thodi speed kam". Two levers, because there are only two.
+
+The route's length and the scroll it maps over are both consequences of the
+column's geometry, so neither is free to change. Measured at 390: **3083px of
+path over 1987px of scroll — 1.55px of flight per pixel of page**, which is why
+the sprite outran the reader.
+
+### `start` 0.6 → 1 (phone only)
+
+`travel = H − innerHeight × (1 − start)`. At `start: 1` the flight spreads over
+the section's whole pass instead of its height minus 0.4 of a viewport: **2325px
+of scroll instead of 1987**, so 1.33px of path per pixel — a **15% real
+reduction** in the sustained rate.
+
+The reason 0.6 exists on desktop does not apply here. It was set from 0.85
+because at 0.85 the desktop section is still low on screen while the route's
+first dip is being flown, and the dabba dropped ~96px below the fold and came
+back. The phone route's first fifth runs straight down through the copy above the
+first card — there is no dip to keep on screen.
+
+### `ease` 0.12 → 0.055 (phone only)
+
+The lerp in `loop()`. At 0.055 the dabba trails **17.2× the per-frame step**
+against the desktop's 7.3×, and a flick glides for **2.52s** rather than 1.12s.
+
+Worth being precise about what this does and does not buy: during a *sustained*
+slow scroll the sprite moves at the mapped rate whatever `ease` is — the lag is a
+constant offset, not a slower speed. So `ease` buys the flick-and-watch case,
+which is most of mobile reading, and `start` buys the sustained case. Together, a
+flick reads at roughly half the old speed.
+
+Pins pop off the smoothed value, so they now land as the dabba actually arrives
+rather than when the scroll says it should have.
+
+### What is not available
+Going genuinely 1:1 (path length = scroll length) needs another ~1100px of
+column, i.e. **276px between cards**. That is a page of white space, so it is not
+on the table. Any further slowdown is bought at that exchange rate.
+
+### Verified
+- **Every pin still reachable** under the new mapping at **390×844, 375×667, 360×640, 430×932**: progress reaches exactly 1.0000 in every case and all six cards are above the fold when the dabba arrives — margin 17–39px, consistent because the section's height and the card spacing both scale with width.
+- Desktop instance unchanged at 1440: `start: 0.6`, `ease: 0.12`, viewBox 1728×2400, path 8956.
+- Phone route still in sync (viewBox = section box exactly), no console errors, no horizontal overflow.

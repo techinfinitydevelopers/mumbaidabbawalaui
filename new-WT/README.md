@@ -262,6 +262,32 @@ There are no stage labels or notes on the phone route — just the six die-cut
 images on the line, the way the desktop pins are. Each image's `alt` carries the
 identification.
 
+**Speed.** `initRunRoute`'s options carry `ease` and `start`, and between them
+they are the only speed controls there are — the route's length and the scroll it
+maps over are both consequences of the column's geometry.
+
+| | desktop | phone |
+| --- | --- | --- |
+| `start` | 0.6 | **1** |
+| `ease` | 0.12 | **0.055** |
+
+`start: 1` spreads the flight over the section's whole pass rather than its height
+minus 0.4 of a viewport — 2325px of scroll instead of 1987 at 390, so **1.33px of
+path per pixel of page instead of 1.55**. The reason 0.6 exists (at 0.85 the
+desktop dabba dipped below the fold on the route's first dip) does not apply here:
+the phone route's first fifth runs straight down through the copy above the first
+card.
+
+`ease` is the lerp in `loop()` — how hard the dabba chases the scroll. At 0.055
+it trails 17.2× the per-frame step against the desktop's 7.3×, and a flick glides
+for 2.5s rather than 1.1s. That is where most of the felt slowdown comes from: a
+sustained slow scroll moves the sprite at the mapped rate whatever `ease` is, so
+`ease` buys the flick-and-watch case, `start` buys the sustained one.
+
+Going genuinely 1:1 would need another ~1100px of column — 276px between cards —
+which is a page of white space, so it is not on the table. More slowdown means
+more gap, at that exchange rate.
+
 The dabba rides a **second overlay above the cards** (`z-index` 5 against their
 4, the line at 1). It has to: the route runs through the card centres, so the
 dabba is behind a card at exactly the moment it arrives at one. Desktop gets away
