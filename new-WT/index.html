@@ -533,34 +533,22 @@
         </div>
         <ol class="mrun">
           <li class="mrun__city run-rev pin">
-            <p class="pin__label">Mumbai</p>
             <div class="pin__card"><img src="assets/run-mumbai.png" alt="The Gateway of India in Mumbai, cut out against a plain ground" loading="lazy" /></div>
-            <p class="mrun__note">Where the run starts. 5,000 carriers, every working morning.</p>
           </li>
           <li class="mrun__city run-rev pin">
-            <p class="pin__label">Biryani</p>
             <div class="pin__card"><img src="assets/run-biryani.png" alt="A clay handi of biryani, cut out against a plain ground" loading="lazy" /></div>
-            <p class="mrun__note">Sealed in the clay handi it was cooked in.</p>
           </li>
           <li class="mrun__city run-rev pin">
-            <p class="pin__label">Paneer tikka</p>
             <div class="pin__card"><img src="assets/run-paneer.png" alt="Paneer tikka skewers, cut out against a plain ground" loading="lazy" /></div>
-            <p class="mrun__note">Blistered over flame, packed while still hot.</p>
           </li>
           <li class="mrun__city run-rev pin">
-            <p class="pin__label">Gulab jamun</p>
             <div class="pin__card"><img src="assets/run-jamun.png" alt="A bowl of gulab jamun, cut out against a plain ground" loading="lazy" /></div>
-            <p class="mrun__note">The tier nobody trades away.</p>
           </li>
           <li class="mrun__city run-rev pin">
-            <p class="pin__label">Pulav</p>
             <div class="pin__card"><img src="assets/run-pulav.png" alt="A bowl of pulav, cut out against a plain ground" loading="lazy" /></div>
-            <p class="mrun__note">Rice tossed with peas and whole spices.</p>
           </li>
           <li class="mrun__city run-rev pin">
-            <p class="pin__label">Perth</p>
             <div class="pin__card"><img src="assets/run-perth.png" alt="Perth's Bell Tower, cut out against a plain ground" loading="lazy" /></div>
-            <p class="mrun__note">From 14 September 2026, the same run lands here.</p>
           </li>
         </ol>
       </section>
@@ -1271,30 +1259,52 @@
         const rebuild = (s) => {
           /* Two points per stage, not one. Through the card centres alone the
              curve came out a near-straight diagonal: the centres only alternate
-             between 37% and 63% of the width — a 26% swing across 384px of
-             vertical travel per stage — which Catmull-Rom renders as a line with
-             a wobble, not a route.
+             between 37% and 63% of the width across one stage of vertical
+             travel, which Catmull-Rom renders as a line with a wobble, not a
+             route. So each card is followed by a waypoint thrown to the far
+             flank — 85% below a left card, 15% below a right one — and the lobe
+             it makes is what gives the serpentine its amplitude.
 
-             So each card is followed by a waypoint thrown to the far side, and
-             the side is chosen by where the note is NOT. A stage's note is
-             aligned under its own card, so the opposite flank of that band is
-             empty: 88% for a left stage, 12% for a right one. The lobe lands in
-             that empty flank, which is what both gives the serpentine its
-             amplitude and keeps the dashes off the words — the straight version
-             crossed the note on nearly every stage. */
+             The gutter is measured between the two CARDS, not from whatever sits
+             between them. It used to key off each stage's note, and when the
+             labels and notes came out that selector stopped matching: every lobe
+             silently dropped and the route flattened straight back to the
+             diagonal the lobes exist to fix. Nothing errored, it just quietly
+             looked worse. The cards are the one thing the route is about, so
+             anchoring to them cannot go stale that way. */
+          const cards = [...section.querySelectorAll(".pin")].map((el) => {
+            const card = el.querySelector(".pin__card") || el;
+            const r = card.getBoundingClientRect();
+            /* The rect is the TRANSFORMED box, and an unrevealed pin carries
+               `scale(0.78)` — so it reads 173x207 where the card is really
+               222x265. The centre survives that (the scale is about the
+               element's own centre, measured: y is identical popped or not), but
+               the edges do not, and the edges are what the gutter is measured
+               from. offsetHeight is the layout box and ignores transforms.
+
+               As it happens the midpoint of two equally-scaled cards' facing
+               edges comes out the same either way — but that is an accident of
+               the six cards being the same height, not something to rely on. */
+            const cy = r.top - s.top + r.height / 2;
+            const h = card.offsetHeight || r.height;
+            return {
+              cx: r.left - s.left + r.width / 2,
+              cy,
+              top: cy - h / 2,
+              bottom: cy + h / 2,
+            };
+          });
+
           const pts = [];
-          for (const el of section.querySelectorAll(".pin")) {
-            const r = anchorOf(el);
-            const cx = r.left - s.left + r.width / 2;
-            pts.push({ x: cx, y: r.top - s.top + r.height / 2 });
-            const note = el.querySelector(".mrun__note");
-            if (!note) continue;
-            const n = note.getBoundingClientRect();
+          cards.forEach((c, i) => {
+            pts.push({ x: c.cx, y: c.cy });
+            const next = cards[i + 1];
+            if (!next) return;
             pts.push({
-              x: s.width * (cx > s.width / 2 ? 0.12 : 0.88),
-              y: n.top - s.top + n.height / 2,
+              x: s.width * (c.cx > s.width / 2 ? 0.15 : 0.85),
+              y: (c.bottom + next.top) / 2,
             });
-          }
+          });
           /* A zero width writes a path collapsed onto x=0 — a vertical line up
              the section's left edge with the dabba stuck on it. Measured that
              exactly: the box read 0 x 1879 mid-load and the page then shipped

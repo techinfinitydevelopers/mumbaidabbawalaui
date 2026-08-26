@@ -238,12 +238,29 @@ control point a sixth along the neighbours' chord — through the cards.
 
 Two points per stage, not one. Through card centres alone the curve came out a
 near-straight diagonal: the centres only alternate between 37% and 63% of the
-width across 384px of vertical travel per stage. So each card is followed by a
-waypoint thrown to the far flank — 88% for a left stage, 12% for a right one —
-chosen by where the note is **not**, since a note is aligned under its own card
-and the opposite flank of that band is empty. That is what gives the serpentine
-its amplitude *and* keeps the dashes off the words; the straight version crossed
-the note on nearly every stage.
+width across one stage of vertical travel. So each card is followed by a waypoint
+in the gutter below it, thrown to the far flank — 85% below a left card, 15%
+below a right one — and the lobe that makes is what gives the serpentine its
+amplitude.
+
+**The gutter is measured between the two cards**, not from whatever sits between
+them. It used to key off each stage's note, and when the stage labels and notes
+were removed that selector stopped matching: every lobe silently dropped and the
+route flattened straight back to the diagonal the lobes exist to fix. Nothing
+errored — it just quietly looked worse.
+
+One trap in measuring the cards: `getBoundingClientRect` returns the
+**transformed** box, and an unrevealed pin carries `scale(0.78)`, so a card reads
+173×207 where it is really 222×265. The centre survives that (the scale is about
+the element's own centre — measured, the centre y is identical popped or not) but
+the edges do not, and the edges are what the gutter is measured from, so the
+heights come from `offsetHeight`. As it happens the midpoint of two
+equally-scaled cards' facing edges works out the same either way; that is an
+accident of the six cards being the same height, not something to rely on.
+
+There are no stage labels or notes on the phone route — just the six die-cut
+images on the line, the way the desktop pins are. Each image's `alt` carries the
+identification.
 
 The dabba rides a **second overlay above the cards** (`z-index` 5 against their
 4, the line at 1). It has to: the route runs through the card centres, so the

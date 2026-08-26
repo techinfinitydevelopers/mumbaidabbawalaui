@@ -206,3 +206,69 @@ under virtual time. So the motion itself is unproven by direct observation — w
 is proven is that the geometry feeding it is correct, that every pin is reachable
 under the page's own progress formula, and that the formula is unchanged shared
 code already shipping on desktop.
+
+---
+
+## 2026-08-26 — Stage labels and notes off the mobile run
+
+Annotated: every stage label (`MUMBAI` … `PERTH`) and every note boxed in red.
+Both gone from the markup — not hidden in CSS — the same way the desktop pins'
+labels went. The six die-cut images now sit on the route on their own, which is
+what the desktop pins have always been. Each image's `alt` still carries the
+identification, so nothing is lost to a screen reader.
+
+`.pin__label` and `.mrun__note` were mobile-only, so both CSS rules went with
+them.
+
+### The part that was not just deletion
+
+**The route's lobes were keyed to the notes.** Each waypoint was placed at the
+vertical centre of a stage's note, on the flank the note did not occupy. Delete
+the notes and `el.querySelector(".mrun__note")` stops matching, the `continue`
+fires for every stage, and **every lobe silently drops** — the route flattens
+straight back to the near-straight diagonal the lobes were added to fix two
+commits ago. No error, it just looks worse.
+
+Re-anchored to the cards: the waypoint now sits in the gutter between one card's
+bottom edge and the next card's top, thrown to 85% (below a left card) or 15%
+(below a right one). The cards are the one thing the route is about, so that
+cannot go stale the same way.
+
+`.mrun`'s gap went **9cqw → 16cqw**. With the labels and notes gone a stage *is*
+its card, so that gap is the entire vertical room a lobe has: at 9 the gutter was
+32px against a 161px horizontal throw, which is a corner rather than a curve.
+
+Net effect on the column: **3244px → 2325px** at 390 (the gap costs +125, the
+text saved ~520; the 3244 reading was an intermediate state where the gap had
+gone up but the text had not yet come out — see below).
+
+### A measurement worth keeping
+
+`getBoundingClientRect` returns the **transformed** box, and an unrevealed pin
+carries `scale(0.78)` from the pop transition — so a card reads 173×207 where it
+is really 222×265 (measured both: 62cqw × 74cqw of 358 = 222.0 × 264.9 exactly,
+so the CSS was never wrong). I nearly chased that as a broken rule.
+
+The centre survives the scale — measured, centre y is identical popped or not —
+so the route's control points were already exact. The edges do not survive it,
+and the edges are what the gutter is measured from, so heights now come from
+`offsetHeight`. The midpoint of two equally-scaled cards' facing edges happens to
+come out the same either way; that is an accident of the six cards being the same
+height, not something to rely on.
+
+### Process note
+
+This edit took three attempts because I kept asserting on long quoted comment
+prose I had written minutes earlier and mis-remembered. Two runs died on the
+assert and wrote nothing, and because a *later* block in the same script did
+land, the output read like a success. Fixed by locating the region with two short
+anchors and splicing between them instead of matching a twenty-line string —
+and by checking the file, not the script's own output.
+
+### Verified
+- No `pin__label` or `mrun__note` anywhere in markup, styles or script. `li children: 1` for all six.
+- Route rebuilt at **320, 390, 700**: viewBox equals the section box exactly in every case (scale 1.0000 × 1.0000), route and flight overlays identical.
+- **Every pin still reachable** at 390×844 — progress reaches 1.0000 and all six cards are above the fold when the dabba arrives.
+- Desktop untouched at 1440: viewBox 1728×2400, path length 8956, phone route inert.
+- Reduced motion: all six pins opacity 1, transform none. No console errors, no horizontal overflow.
+- Rendered and read the whole section at 390.

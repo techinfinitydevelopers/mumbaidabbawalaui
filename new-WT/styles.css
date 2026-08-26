@@ -1633,16 +1633,6 @@ h2 {
   gap: 1.2cqw;
 }
 
-.pin__label {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink);
-  white-space: nowrap;
-}
-
 /* No background: all five pins are die-cut PNGs now, so the card is purely a
    sizing box and the art sits straight on the section's grey. `overflow` and
    the radius stay because they still clip the box — and `object-fit: cover`
@@ -1754,10 +1744,14 @@ h2 {
   display: none;
 }
 
+/* 9cqw -> 16cqw. The stage labels and notes are gone, so a stage IS its card
+   and this gap is the entire vertical room the route has to make a lobe in.
+   At 9 the gutter was 32px against a 161px horizontal throw — a corner, not a
+   curve. */
 .mrun {
   display: flex;
   flex-direction: column;
-  gap: 9cqw;
+  gap: 16cqw;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1772,14 +1766,6 @@ h2 {
 .mrun__city:nth-child(even) {
   align-items: flex-end;
   text-align: right;
-}
-
-.mrun__note {
-  margin: 0;
-  max-width: 62cqw;
-  font-size: 16px;
-  line-height: 1.45;
-  color: var(--ink-soft);
 }
 
 /* ------------------------------------------------------- on-load reveal -- */
