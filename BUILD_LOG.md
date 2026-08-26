@@ -2805,3 +2805,40 @@ screenshot is not optional for anything the carve touches.
 
 Untouched: index.html (the `<br>` edit was reverted), the run section, the
 waitlist mosaic, the footer.
+
+---
+
+## 2026-08-26 — `.card__jump` down to 50px on phones
+
+Asked for as CSS: `top: 0; right: -4px; width: 50px; height: 50px` in the `≤700`
+block. The first two were already there; the sizes are new.
+
+It replaces a comment claiming the opposite — "same 72px as desktop, the base
+size already sits at the floor where the curved run stays legible". Two things
+that comment had wrong:
+
+**The badge was proportionally far bigger on phones, not the same.** 72px on a
+172px card is **41.9%** of the card; on desktop 72 on 244 is **29.5%**. At 50px
+the phone badge is **29.1%** — so this change does not break the composition, it
+lines the two up for the first time. It also means the featured card's clip-path
+needed nothing: that notch was derived by scaling the desktop path by the *card*
+ratio (0.705 — every number checks out: 46→34, 30→22, 170→120, 214.8→150), so it
+was always cut for a badge at desktop's proportion. 50px is finally that badge.
+Rendered both and compared: the clearance ring reads the same on each.
+
+**The label's run was 76% of the half-arc, not the 87% the comment claimed.** So
+there was headroom, which matters because the ring text is sized in viewBox units
+and therefore shrinks with the badge: 11.5 units renders 8.28px at 72 but only
+**5.75px at 50** — under the ~6.2px this same file had already called illegible.
+Took it to **13.5**, which renders 6.75px and fills 89.3% of the half-arc,
+leaving 6.4 units of gap at each end against the dots' 2.6 radius.
+
+It cannot get back to 8.28px: that needs 16.6 units, and the run would then be
+110% of the arc it has to sit on. 6.75px is the ceiling at this diameter — worth
+knowing if the badge is ever asked to go smaller again, because below ~44px the
+label stops being text and becomes texture.
+
+### Verified
+- Badge 50×50 at 390, inset `top 0 / right −4` as specified; 72×72 and −5 still at 1440.
+- Ring run 106.7 of a 119.4 half-arc (89.3%), rendered font 6.75px.
+- Rendered and read the rail at **390 and 1440**, side by side, for the notch.

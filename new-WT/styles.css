@@ -2636,12 +2636,22 @@ h2 {
     height: 19px;
   }
 
-  /* Same 72px as desktop — the base size already sits at the floor where the
-     curved run stays legible, so shrinking it for the narrower card would
-     only make the label unreadable. Only the inset changes. */
   .card__jump {
     top: 0;
     right: -4px;
+    width: 50px;
+    height: 50px;
+  }
+
+  /* The ring's label is sized in viewBox units, so it shrinks with the badge:
+     at 50px the desktop's 11.5 renders 5.75px, below the ~6.2px this file
+     already called illegible once. Measured, the run only uses 76% of the
+     half-arc, so there is room to take it up — 13.5 renders 6.75px and fills
+     89%, which leaves 6.4 units of gap at each end against the dots' 2.6. It
+     cannot get back to the desktop's 8.28px: that would need 16.6 units, and
+     the run would then be 110% of the arc it has to fit on. */
+  .card__jump-ring text {
+    font-size: 13.5px;
   }
 
   .card__text {
