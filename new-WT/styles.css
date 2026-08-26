@@ -1031,12 +1031,18 @@ h2 {
 /* Durations differ per column because the two tracks are different lengths —
    matching the seconds would make the shorter column visibly faster. These
    land both near ~34px/s, slow enough to read a photograph as it passes. */
+/* Durations are a function of track length, not a taste setting: the eye reads
+   SPEED, and these two tracks are different heights. 46s/54s ran the old 1894px
+   and 2172px tracks at 20.6 and 20.1 px/s. The tracks are now 5602px and 5880px
+   with the network photographs added, so the same speeds need 136s and 146s —
+   left at 46s the board would have scrolled three times too fast. Re-derive
+   these whenever tiles are added or removed. */
 .mosaic__col--up .mosaic__track {
-  animation: mosaic-up 46s linear infinite;
+  animation: mosaic-up 136s linear infinite;
 }
 
 .mosaic__col--down .mosaic__track {
-  animation: mosaic-down 54s linear infinite;
+  animation: mosaic-down 146s linear infinite;
 }
 
 /* Pausing on hover is what makes it feel like a board rather than a

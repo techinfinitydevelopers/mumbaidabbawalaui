@@ -2451,3 +2451,50 @@ trusting the path.
 - Both new glyphs have sane `getBBox()` ink and a 5x crop confirms they read as
   the real TikTok note and YouTube play button.
 - Inline scripts pass `node --check`; temp files removed.
+
+---
+
+## 2026-08-26 — 20 real network photographs into the waitlist mosaic
+
+Twenty documentary photographs of the organisation (uniformed carriers with
+tiffin crates, visitor groups, the exhibition room, station scenes) were
+supplied. They were first requested for the **run section**; that was walked
+back after I flagged the mismatch — the route is six hand-placed die-cut
+sticker pins in a fixed-height box, and 20 rectangular photos neither fit it
+(9 of 20 generated positions overlapped where the path doubles back) nor match
+the treatment. The mosaic is the section already built for many photographs.
+
+- **47.7MB of PNG became 1.3MB of JPEG** (65KB average). Each keeps its own
+  aspect at a 600px long edge rather than being pre-cropped square — tiles are
+  279px wide and `object-fit: cover` does the cropping, so pre-cropping would
+  throw away pixels the taller tiles use.
+- Split 10 per column, height classes varied to keep the masonry rhythm.
+- **Durations re-derived, which is the part that is easy to miss.** Duration is
+  a function of track length: 46s/54s ran the old 1894/2172px tracks at 20.6
+  and 20.1 px/s. The tracks are now 5602/5880px, so the same speeds need
+  **136s and 146s** — left alone the board would have run three times too fast.
+  Verified back to 20.6 and 20.1 px/s exactly.
+- **The duplicate half of each track is now generated from the real half**
+  rather than hand-written. The seamless `-50%` loop depends on the two sets
+  being identical, and 31 tiles per column is past the point where keeping that
+  in sync by hand is safe. Dupes are emitted from the reals with `aria-hidden`
+  added and every `alt` emptied, so each photograph is announced once.
+
+The user confirmed usage rights before publishing; the photographs show
+identifiable people, which is why that was asked rather than assumed.
+
+### Also: the orphan deletion finally deployed
+`run-mumbai.jpg` / `run-perth.jpg` were committed as deleted last turn but the
+deploy was interrupted, so the live site was still serving both (checked: 200).
+This deploy carries it.
+
+### Verified
+- 31 unique photographs, 62 tiles, real/dupe halves mirrored.
+- Speeds exactly 20.6 and 20.1 px/s; `padding-bottom == gap` still true at
+  every width, including where the ≤700 block overrides the gap to 10px — the
+  documented seam trap.
+- Alt audit: no duplicate carries alt text, no real tile lacks it.
+- No broken images anywhere on the page; no horizontal overflow at 1440 / 1180
+  / 1040 / 900 / 768 / 700 / 560, nor at 414 / 390 / 360 / 320 via the iframe
+  harness (headless Chrome clamps its own window near 500px).
+- Reduced motion: both tracks `animation-name: none`, `transform: none`.

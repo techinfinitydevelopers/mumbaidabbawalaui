@@ -96,9 +96,10 @@ functional contract carried through unchanged (`#waitlist`, `form#signup`,
 `input#email`, `#route-err`, `#route-note`, `.signup--bad`) so the submit
 handler needed no changes across any of the three.
 
-- **The mosaic is two counter-scrolling image columns** — eleven
-  photographs, no cards, the left column travelling up and the right down
-  inside a fixed-height `overflow: hidden` window. It began as a static
+- **The mosaic is two counter-scrolling image columns** — **31**
+  photographs (11 generated stills plus 20 real photographs of the
+  organisation, `net-01`..`net-20`), no cards, the left column travelling up
+  and the right down inside a fixed-height `overflow: hidden` window. It began as a static
   masonry board (CSS `columns`); that had to go when the columns needed to
   animate independently, which multi-column cannot do.
 - **Each track holds its tiles twice** and animates to exactly `-50%`, so the
@@ -113,8 +114,19 @@ handler needed no changes across any of the three.
   padding too; keep the two equal.
 - A `mask-image` gradient fades both ends so tiles enter and leave rather
   than being chopped; hover and `:focus-within` pause both tracks; durations
-  differ per column (46s / 54s) because the tracks are different lengths and
-  matching the seconds would make the shorter one visibly faster.
+  differ per column (**136s / 146s**) because the tracks are different lengths
+  and matching the seconds would make the shorter one visibly faster.
+- **Duration is a function of track length, so it has to be re-derived every
+  time tiles change.** 46s/54s ran the original 1894px and 2172px tracks at
+  20.6 and 20.1 px/s. Adding the 20 network photographs took the tracks to
+  5602px and 5880px — left alone, the board would have scrolled three times too
+  fast. Same speeds now need 136s and 146s. Measure the track, divide half its
+  height by the old speed.
+- **The duplicate set is generated from the real set, not maintained by hand.**
+  The `-50%` loop only lands seamlessly if the two halves are identical, and 31
+  tiles per column is well past what is safe to keep in sync manually — the
+  dupes are emitted from the reals with `aria-hidden` added and every `alt`
+  emptied.
 - **`prefers-reduced-motion` must override with the full selector**
   (`.mosaic__col--up .mosaic__track`, not `.mosaic__track`) — a single class
   loses to the two-class rule that sets the animation, and the board keeps
