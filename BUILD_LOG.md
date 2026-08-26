@@ -2498,3 +2498,42 @@ This deploy carries it.
   / 1040 / 900 / 768 / 700 / 560, nor at 414 / 390 / 360 / 320 via the iframe
   harness (headless Chrome clamps its own window near 500px).
 - Reduced motion: both tracks `animation-name: none`, `transform: none`.
+
+---
+
+## 2026-08-26 — The mosaic drops its generated stills
+
+All eleven AI-generated tiles came out of the waitlist mosaic, leaving the
+twenty real photographs. Ten per column, 40 tiles with the duplicate halves.
+
+**The files mostly stay, because nine of the eleven are used elsewhere** —
+`dish-1`..`dish-6` in the hero dish rail and `legacy-carrier`/`legacy-stack`/
+`legacy-code` in the Since-1890 band. Checked before touching anything; deleting
+the files rather than the tiles would have blown holes in two other sections.
+Confirmed after the edit that the rail still renders 6 cards and the band 3.
+
+**`legacy-code.jpg` was the mosaic's only `piece--object`** — the single
+pink-tinted tile that echoed the reference's one colour block. That treatment is
+gone from the page with it, and `.piece--object`'s three rule blocks are now
+unused CSS. Left in place rather than stripped, since restoring the tile is a
+one-line change if it is wanted back.
+
+**Durations re-derived for the second time in two turns, in the opposite
+direction.** 136s/146s were correct for 5602/5880px tracks. With the generated
+tiles gone both tracks are 3708px, where those durations ran **33% too slow**
+(13.6 and 12.7 px/s against the reference 20.6/20.1). Now 90s/92s, measured
+back to 20.6 and 20.2. Both columns are the same height now — each holds ten
+tiles of the same height-class multiset — so the differing durations are what
+stop them travelling in lockstep.
+
+**Newly orphaned, not deleted:** `legacy-lunch.jpg` (132KB) and
+`legacy-rush.jpg` (240KB) were mosaic-only and now have zero references. Flagged
+rather than removed — they are real content that may be wanted elsewhere, and
+deleting them means editing their `generate-assets.mjs` entries too or the next
+run recreates them.
+
+### Verified
+- 40 tiles, 20 unique, all `net-*`; zero `piece--object` tiles remain.
+- Speeds 20.6 and 20.2 px/s; `padding-bottom == gap` still true.
+- Alt audit clean; no broken images; no horizontal overflow.
+- Hero dish rail still 6 cards, Since-1890 band still 3 images.

@@ -33,7 +33,7 @@ new-WT/
 | Hero | Logo, the **launch countdown in the nav row**, the positioning headline, the Mumbai numbers, "Join Waitlist", and the six-dish rail |
 | Since 1890 | 135 years / 5,000+ carriers / 200k+ lunches, and a three-image collage — the carrier full height, the dabba stack and the routing code beside it |
 | The run | A light-grey band carrying a dashed Mumbai-to-Perth route, a plane that flies it as you scroll, and six die-cut sticker pins, unlabelled on desktop — Mumbai, four dishes, Perth. Structure and plane artwork from a supplied zip; palette, faces and photography are MD's |
-| The waitlist | A bento mosaic (31 photographs across two counter-scrolling columns) beside a headline card with the actual signup, a secondary highlight card, and a privacy note — then a modal for mobile (+61), Perth suburb and veg / non-veg — the brief's two-step signup |
+| The waitlist | A bento mosaic (20 real photographs across two counter-scrolling columns) beside a headline card with the actual signup, a secondary highlight card, and a privacy note — then a modal for mobile (+61), Perth suburb and veg / non-veg — the brief's two-step signup |
 | Footer | The logo, a **Stay Connected** block (Instagram, Facebook, LinkedIn and X as icon-only links; **TikTok and YouTube are dimmed `<span>` placeholders** — no anchor until their URLs exist, since a link with no destination is a dead control on a live page. Activate either by wrapping it in the same `<a href … aria-label>` the others use and dropping `.foot__pending`) and **Contact** with `hello@mumbaidabbawala.com.au`. No phone number anywhere, by design |
 
 The signup does not post anywhere: there is no backend behind this page, so the
@@ -97,10 +97,13 @@ functional contract carried through unchanged (`#waitlist`, `form#signup`,
 `input#email`, `#route-err`, `#route-note`, `.signup--bad`) so the submit
 handler needed no changes across any of the three.
 
-- **The mosaic is two counter-scrolling image columns** — **31**
-  photographs (11 generated stills plus 20 real photographs of the
-  organisation, `net-01`..`net-20`), no cards, the left column travelling up
-  and the right down inside a fixed-height `overflow: hidden` window. It began as a static
+- **The mosaic is two counter-scrolling image columns** — **20 real
+  photographs of the organisation** (`net-01`..`net-20`), ten per column, no
+  cards, the left column travelling up and the right down inside a
+  fixed-height `overflow: hidden` window. The eleven generated stills it began
+  with were removed once real photography existed; six of those files are still
+  live in the hero dish rail and three in the Since-1890 band, so only
+  `legacy-lunch.jpg` and `legacy-rush.jpg` fell out of use entirely. It began as a static
   masonry board (CSS `columns`); that had to go when the columns needed to
   animate independently, which multi-column cannot do.
 - **Each track holds its tiles twice** and animates to exactly `-50%`, so the
@@ -115,12 +118,14 @@ handler needed no changes across any of the three.
   padding too; keep the two equal.
 - A `mask-image` gradient fades both ends so tiles enter and leave rather
   than being chopped; hover and `:focus-within` pause both tracks; durations
-  differ per column (**136s / 146s**) because the tracks are different lengths
-  and matching the seconds would make the shorter one visibly faster.
+  differ per column (**90s / 92s**) so the two do not travel in lockstep.
 - **Duration is a function of track length, so it has to be re-derived every
-  time tiles change.** 46s/54s ran the original 1894px and 2172px tracks at
-  20.6 and 20.1 px/s. Adding the 20 network photographs took the tracks to
-  5602px and 5880px — left alone, the board would have scrolled three times too
+  time tiles change — this has bitten twice.** The reference speeds are 20.6
+  and 20.1 px/s. 46s/54s ran the original 1894/2172px tracks; adding the
+  network photographs took them to 5602/5880px (136s/146s); removing the
+  generated tiles brought both to 3708px, where those same durations ran 33%
+  too *slow* at 13.6 and 12.7 px/s. Half the track height over the target speed
+  is the duration. Adding tiles alone would have scrolled three times too
   fast. Same speeds now need 136s and 146s. Measure the track, divide half its
   height by the old speed.
 - **The duplicate set is generated from the real set, not maintained by hand.**
