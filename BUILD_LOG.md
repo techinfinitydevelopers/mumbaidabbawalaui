@@ -2930,3 +2930,85 @@ never crosses it — and unchanged 10.0px at 560/700.
 - `.intro`: ceiling→panel 0.0 (≤499) / 10.0 (≥560), panel never over the photograph, right edge flush with the frame, at 320/390/430/499/560/700.
 - Desktop untouched at 1440: authored path, 8956 long, `start: 0.6`, `ease: 0.12`, phone route inert.
 - Rendered and read the top of the run section — copy fully clear of the dashes.
+
+---
+
+## 2026-08-26 — A real speed limit for the mobile dabba (third pass)
+
+"Plane abhi bhi slow nahi — jab tak me scroll kar rahi hu tab tak wo chala ja
+raha hai." That is precisely the case `ease` cannot touch, and I should have said
+so before touching `ease` a second time: **a proportional lerp reaches a steady
+state where the sprite's speed equals the scroll's speed.** The lag is a constant
+offset. Lowering `ease` delays the sprite; it does not slow it. Only a flick — the
+scroll stopping, the lerp catching up — ever looked slower.
+
+### The lever that actually works: `maxPps`
+
+A hard velocity cap in `loop()` — the most path the dabba may cover per second,
+whatever the scroll does. **850 px/s**, dt-based rather than per-frame (a
+per-frame cap would mean twice the speed on a 120Hz phone) and dt clamped at 50ms
+so a frame dropped behind a tab switch cannot let the sprite jump.
+
+| scroll | before (ratio 1.296, no cap) | now (1.178, cap 850) | |
+| --- | --- | --- | --- |
+| 400 px/s | 518 px/s | 471 px/s | 1.10× slower |
+| 600 px/s | 778 | 707 | 1.10× |
+| 900 px/s | 1166 | 850 | 1.37× |
+| 1500 px/s | 1944 | 850 | **2.29×** |
+| 2500 px/s | 3240 | 850 | **3.81×** |
+| 4000 px/s | 5184 | 850 | **6.10×** |
+
+Chosen so reading pace never hits the cap — no lag for anyone reading — and
+flicks get clipped, which is the complaint.
+
+Checked the obvious objection first: does a cap leave the flight unfinished?
+**Perth's pin already popped after the section had left at any scroll ≥600px/s,
+uncapped.** So on-screen completion was never a property of this section for a
+normal reader, and the cap worsens it in degree, not kind. The on-screen gate
+still fires those pins (a card above the fold passes the gate).
+
+### Two levers that look real and are not
+
+**`start` > 1 — pre-rolling the flight before the section arrives.** Free by
+inspection: the pre-roll happens inside the off-canvas lead-in, so nothing visible
+changes. Measured, it is exactly zero. Aligning the pins to their visibility point
+forces the lead-in's share of the path to match the pre-roll's share of the
+scroll, so `start` and `HEAD_X` trade one for one: `start 1.45` needs `HEAD_X 3.1`
+and lands at ratio **1.277** against **1.276** for `start 1 / HEAD_X 1.95` — with
+worse alignment. Reverted.
+
+**`.mrun`'s gap** — already recorded last pass: the route is built through the
+cards, so a taller gutter lengthens the path by what it adds to the travel.
+
+Same conservation in both cases. Worth stating as the rule: **travel the route
+traverses is not travel.**
+
+### The one exception, and the third change
+
+Scroll *after* the route ends is genuine travel — but only if the tail stops
+following the section. It was `s.height * 1.05`, proportional, so closing space
+lengthened the path too. Now pegged to the last card: `lastCard.bottom + 0.55 ×
+width`. That makes `.run--mobile`'s bottom padding **14cqw → 52cqw** real travel:
+ratio 1.296 → 1.236, and the Perth card stops sitting hard against the section's
+edge.
+
+### And the lobes, since it was asked three times
+
+Flank **0.85 → 0.78**. Ratio 1.236 → **1.178**. Rendered and read it: the lobes
+are gentler but it still reads as a route rather than a diagonal. This is the
+lever that costs the design something, which is why it went last and only part of
+the way — 0.70 and 0.65 were measured (1.174, 1.145 at the old tail) and left on
+the table.
+
+### Verified
+- Ratio at 320 / 390 / 430 / 700: **1.160 / 1.178 / 1.198 / 1.229**.
+- Copy block clear at all four: **0 of 1201 path samples inside it**.
+- All six pins pop on arrival at 390×844 (`at` vs visible: 0.199/0.199 … 0.886), progress reaches exactly 1.0000, every pin reachable.
+- Desktop untouched at 1440: authored path 8956, phone route inert. Reduced motion: six pins at opacity 1, transform none.
+- `.intro` tuck unchanged by any of this: ceiling→panel 0.0px at 390, 10.0px at 700.
+
+The loop itself still cannot be driven in either harness — rAF is suspended in
+the Browser pane (`document.hidden` is permanently true there) and scroll stalls
+under headless virtual time. The cap's numbers above come from simulating the
+shipped six-line expression against scroll traces, which is a transcription
+check, not an end-to-end one. Said plainly so it is not mistaken for the latter.

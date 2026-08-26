@@ -1151,7 +1151,7 @@
          tangent, the nearest-point stop matching, the bidirectional reveals —
          was already layout-agnostic, so neither variant needed its own copy.
          The options are the only difference between the two calls. */
-      const initRunRoute = (sectionId, pathId, planeId, { buildPath, ease, start }) => {
+      const initRunRoute = (sectionId, pathId, planeId, { buildPath, ease, start, maxPps }) => {
         const section = document.getElementById(sectionId);
         const path = document.getElementById(pathId);
         const plane = document.getElementById(planeId);
@@ -1314,7 +1314,7 @@
             const next = cards[i + 1];
             if (!next) return;
             pts.push({
-              x: s.width * (c.cx > s.width / 2 ? 0.15 : 0.85),
+              x: s.width * (c.cx > s.width / 2 ? 0.22 : 0.78),
               y: (c.bottom + next.top) / 2,
             });
           });
@@ -1352,7 +1352,14 @@
             x: s.width * HEAD_X,
             y: Math.min(copyBottom + 26, cards[0].top - 26),
           };
-          const tail = { x: s.width * 0.5, y: s.height * 1.05 };
+          /* Anchored to the last card, not to 1.05 of the section's height. That
+             difference is the one real speed lever left: a proportional tail
+             follows the section, so closing space below the last card lengthens
+             the path by what it adds to the scroll and the ratio does not budge —
+             the same conservation that kills `start`. Fixed to the card, the
+             padding is travel the route never traverses. */
+          const lastCard = cards[cards.length - 1];
+          const tail = { x: s.width * 0.5, y: lastCard.bottom + s.width * 0.55 };
           const q = [head, head, ...pts, tail, tail];
           const f = (n) => n.toFixed(1);
           let d = `M${f(head.x)} ${f(head.y)}`;
@@ -1453,12 +1460,39 @@
            per-frame step at 0.04, and much past that the dabba stops feeling
            attached to the scroll and starts feeling broken. Further slowdown
            has to come from the ratio, not from here. */
-        const loop = () => {
-          current += (target - current) * ease;
+        /* `ease` alone could never fix "it keeps moving while I keep scrolling",
+           and it is worth being exact about why: a proportional lerp reaches a
+           steady state where the sprite's speed EQUALS the scroll's speed and the
+           lag is a constant offset. Lowering it delays the sprite, it does not
+           slow it. Only a flick — where the scroll stops and the lerp has to
+           catch up — ever looked slower.
+
+           `maxPps` is a real speed limit: the most path the dabba may cover in a
+           second, whatever the scroll is doing. At 900 against a ~3040px route
+           the flight cannot take less than 3.4s, so a 1500px/s scroll moves it at
+           900px/s instead of 1950. A reader scrolling at reading pace never hits
+           the cap and sees no lag; a flick gets clipped, which is the case being
+           complained about.
+
+           dt-based, not per-frame, or the cap would mean twice the speed on a
+           120Hz phone. Clamped at 50ms so a frame dropped behind a tab switch
+           cannot let the sprite jump. */
+        let last = 0;
+        const loop = (now) => {
+          const t = typeof now === "number" ? now : last;
+          const dt = last ? Math.min(t - last, 50) : 16.7;
+          last = t;
+          let step = (target - current) * ease;
+          if (maxPps && LEN) {
+            const cap = (maxPps * dt) / 1000 / LEN;
+            step = Math.max(-cap, Math.min(cap, step));
+          }
+          current += step;
           place(current);
           if (Math.abs(target - current) > 0.0002) requestAnimationFrame(loop);
           else {
             ticking = false;
+            last = 0;
             place(target);
           }
         };
@@ -1518,7 +1552,19 @@
          own section is display:none, so only the variant on screen is driven,
          and crossing 767 hands over on the next resize. */
       initRunRoute("run", "run-path", "run-plane", { buildPath: false, ease: 0.12, start: 0.6 });
-      initRunRoute("run-m", "mrun-path", "mrun-plane", { buildPath: true, ease: 0.04, start: 1 });
+      initRunRoute("run-m", "mrun-path", "mrun-plane", {
+        buildPath: true,
+        ease: 0.04,
+        /* 1, not more. Pre-rolling the flight before the section arrives looks
+           like free travel — it happens inside the off-canvas lead-in, so nothing
+           visible changes — but it is not. Measured: start 1.45 needs HEAD_X 3.1
+           to keep the pins popping on arrival, and that lead-in puts the path
+           back to 3453. Ratio 1.277 against 1.276 at start 1 / HEAD_X 1.95, with
+           worse alignment. `start` and `HEAD_X` trade exactly. */
+        start: 1,
+        /* Path pixels per second, the phone's actual speed limit. */
+        maxPps: 850,
+      });
 
       /* Per-element entrance reveal for the run's pins and copy. Separate from
          revealOnScroll above because that one is a single-shot trigger for a
