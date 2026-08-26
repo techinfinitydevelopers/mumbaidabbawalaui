@@ -2700,3 +2700,21 @@ repairs, and neither was asked for.
   accounting in `innerWidth`, not overflow.)
 - Nav never collides: gap between logo chip and countdown 249px at its tightest
   (560px wide).
+
+---
+
+## 2026-08-26 — X removed from the footer
+
+The only Twitter/X account is India-only, so it came out rather than sending a
+Perth audience to it. The whole `<li>` went, not just the href — an icon with no
+link is the placeholder treatment, and this is a removal, not a pending link.
+
+The row is now **four AU links** (Instagram, Facebook, LinkedIn, YouTube) plus
+the one TikTok placeholder. Every link that exists points at an
+`mumbaidabbawalaau` account; nothing points at the India organisation any more.
+
+Also updated the YouTube comment, which had named X as the last India-org link.
+
+### Verified
+- 5 marks in the row: 4 links with AU hrefs, 1 pending.
+- No `x.com` or `twitter` reference left anywhere in the page, styles or docs.
