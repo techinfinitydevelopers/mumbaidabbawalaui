@@ -2596,16 +2596,16 @@ h2 {
     margin-top: 26px;
   }
 
-  /* 13%, not the phones' 22%: the bite is 20% of the hero's HEIGHT, and both
-     the depth and this pull resolve against width, so the ceiling on the pull
-     is 20/ratio — 15.6% here against 24.4% at 0.82. Overshoot and the panel
-     stops tucking into the bite and starts covering the photograph. */
+  /* Same form as the phones', with this band's own ratio and floor. The old
+     `-13%` was a share of the width and undershot for the same reason: at 744
+     the bite is 124px and the pull was 85, so 39px of bite sat empty above the
+     panel. Stating the height directly cannot drift. */
   .intro {
     position: relative;
     z-index: 2;
     width: 58%;
     max-width: none;
-    margin: calc(-13% + 6px) 0 0 auto;
+    margin: calc(10px - max(620px, 78.125%) * 0.2) 0 0 auto;
     padding: 20px 24px 22px;
     border-radius: 24px;
     background: var(--brand-white);
@@ -2751,15 +2751,29 @@ h2 {
     min-width: fit-content;
   }
 
-  /* Pulled up into the bite by a share of the frame's width — percentage margins
-     resolve against the container's width, and the bite's depth is a fixed share
-     of that width once the hero's aspect ratio is fixed. */
+  /* Pulled up into the bite. The pull has to be a share of the hero's HEIGHT,
+     because that is what the bite is — the carve's step sits at y=0.8, so the
+     bite is 0.2 of the height, full stop.
+
+     It used to be `-22%`, a share of the frame's WIDTH, and the two only agree
+     while the hero's height comes from its aspect ratio. Below ~499px it does
+     not: `min-height` pins the hero at 570 while the width keeps shrinking, so
+     the pull shrinks and the bite does not. Measured at a 400px viewport: bite
+     114px, pull 71.7px, leaving **42px of unused bite** above the panel — and
+     since the panel is #FFFFFF on a #FEFEFE page, that gap is indistinguishable
+     from the panel itself and reads as dead space over the text.
+
+     So state the hero's height instead of a proxy for it: it is
+     `max(min-height, width / 0.82)`, and 100% here is the same frame width the
+     hero measures against. 10px is deliberate clearance — at 0 the panel's top
+     corner meets the carve's inner corner, which pinches, and any rounding
+     spills white onto the photograph. */
   .intro {
     position: relative;
     z-index: 2;
     width: 66%;
     max-width: none;
-    margin: calc(-22% + 6px) 0 0 auto;
+    margin: calc(10px - max(570px, 121.95%) * 0.2) 0 0 auto;
     padding: 16px 18px 18px;
     border-radius: 22px;
     background: var(--brand-white);
