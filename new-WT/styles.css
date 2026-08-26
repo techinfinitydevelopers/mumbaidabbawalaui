@@ -2268,20 +2268,25 @@ h2 {
     height: 36px;
   }
 
-  /* 8.4vw with a 30px floor, down from 9vw/34px: at 360 the old floor set the
-     headline at 34px, which made "Is Coming to Perth." 276px wide inside a 257px
-     copy column — so it broke to a FOURTH line, the stack grew to 370px, and the
-     first line landed 34px inside the logo row. 8.4vw gives 30.2px at 360, which
-     fits that line whole. The clamp still tops out at 54. */
+  /* 7.2vw / 26px floor / 46px ceiling, asked for smaller after 8.4vw/30/54.
+     Worth knowing what the smaller size buys beyond taste: at 390 it puts the
+     whole of "A 135-Year-Old Legend" on one line (284px in a 302px column,
+     against 321 at the old size), so the headline goes from three lines to the
+     two it is written as, and the stack loses 52px. The 26px floor holds that
+     for 320 too — where the line does still wrap, but the smaller subcopy has
+     already paid for it. */
   .hero__title {
-    font-size: clamp(30px, 8.4vw, 54px);
+    font-size: clamp(26px, 7.2vw, 46px);
     line-height: 1.24;
   }
 
+  /* 15.5/23 from 17/26. The line-height comes down with the size rather than
+     staying put: 26 on 15.5 is 1.68, which reads as a list of separate lines
+     instead of a paragraph at this measure. */
   .hero__sub {
     margin-top: 14px;
-    font-size: 17px;
-    line-height: 26px;
+    font-size: 15.5px;
+    line-height: 23px;
   }
 
   /* The hard breaks are set for the desktop measure; at this width they fight it.
@@ -2296,55 +2301,61 @@ h2 {
     display: none;
   }
 
-  /* Phones keep days and hours; four tiles will not fit beside the logo. */
-  .tile--fine {
-    display: none;
+  /* All four tiles on phones now, minutes and seconds included. They fit by
+     giving up width, not by the logo giving up any: at 360 the nav is 284px and
+     the brand chip takes 135 of it, so the four tiles and their gaps have to
+     live inside 149 — 4x32 + 3x4 = 140, with 9px of air left. The digits stay
+     at 15px, which is the smallest size the turnover animation still reads at.
+
+     (The 320-class exception is at the bottom of this file: 244px of nav minus
+     the same 135px chip leaves 109, and four legible tiles do not fit in it.) */
+  .counter__tiles {
+    gap: 4px;
   }
 
   .tile {
-    width: 46px;
-    padding: 6px 3px 5px;
-    border-radius: 11px;
+    width: 32px;
+    padding: 5px 2px 4px;
+    border-radius: 10px;
   }
 
   .tile__num {
-    height: 21px;
+    height: 18px;
   }
 
   .tile__cur,
   .tile__prev {
-    font-size: 18px;
+    font-size: 15px;
   }
 
   .tile__u {
-    font-size: 8.5px;
-    letter-spacing: 0.06em;
+    font-size: 7.5px;
+    letter-spacing: 0.04em;
   }
 
-  .tile--fine {
-    display: none;
-  }
-
+  /* 44px tall from 50, label 15 from 16, chip 36 from 42 — asked for smaller.
+     The paddings still trade exactly (50/20 against 20/50), which is what keeps
+     the box from resizing when the chip slides across on hover. */
   .hero__copy .cta {
     margin-top: 24px;
-    height: 50px;
-    padding: 0 58px 0 22px;
-    font-size: 16px;
+    height: 44px;
+    padding: 0 50px 0 20px;
+    font-size: 15px;
   }
 
   .hero__copy .cta:hover {
-    padding: 0 22px 0 58px;
+    padding: 0 20px 0 50px;
   }
 
   .hero__copy .cta .cta__chip {
     top: 4px;
     right: 4px;
-    width: 42px;
-    height: 42px;
+    width: 36px;
+    height: 36px;
   }
 
   .hero__copy .cta:hover .cta__chip {
-    right: calc(100% - 46px);
+    right: calc(100% - 40px);
   }
 
   .btn__icon {
@@ -2650,13 +2661,11 @@ h2 {
        copy block — headline, a three-line subcopy and the button — needs 248 of
        it, which pushed the headline up into the nav row.
 
-       470 -> 520 after the CTA grew to 50px: the stack measured 296.5 at 390 and
-       the room between the nav's bottom edge and the carve was 297, so the
-       headline was landing 9.6px INSIDE the logo row. The carve fixes the floor
-       of that gap (the copy cannot cross y=0.8 of the hero, and `bottom: 23%`
-       already sits only 14px clear of it), so the height is the only place the
-       clearance can come from. 520 buys 39px at 390 and 23px at 360. */
-    min-height: 520px;
+       Went 470 -> 520 when a 50px CTA pushed the headline 9.6px INSIDE the logo
+       row, and back to 470 once the headline, subcopy and button all came down a
+       size: the stack is 221px at 390 against the 296.5 it was, so 470 now
+       leaves 76px of clearance where 520 would leave 114 and read as a gap. */
+    min-height: 470px;
     height: auto;
     /* Definite, and it has to be: with width auto, the min-height above wins and
        the ratio then re-derives WIDTH from it — 470 x 0.82 = 385 inside a 358
@@ -2839,13 +2848,44 @@ h2 {
   }
 }
 
-/* 320-class phones only. Even on the widened column above, 26.9px leaves
-   "Is Coming to Perth." breaking to a fourth line and the headline 13px inside
-   the logo row; 8vw = 25.6px at 320 holds the line whole. Kept off 360+, where
-   the clamp's 8.4vw is already comfortable. */
+/* Above 400 there is room to give the tiles back some presence: at 402 the nav
+   is 326px and the chip 135, so 4x40 + 3x6 = 178 fits the 191 that is left, and
+   everything wider than that only gains. Below it, the 32px tiles above hold. */
+@media (min-width: 401px) and (max-width: 900px) {
+  .counter__tiles {
+    gap: 6px;
+  }
+
+  .tile {
+    width: 40px;
+    padding: 6px 3px 5px;
+  }
+
+  .tile__num {
+    height: 20px;
+  }
+
+  .tile__cur,
+  .tile__prev {
+    font-size: 17px;
+  }
+
+  .tile__u {
+    font-size: 8px;
+  }
+}
+
+/* 320-class phones are the one width that cannot carry minutes and seconds. The
+   nav is 244px, the brand chip takes 135 of it — the chip being the size the
+   client asked for — and four tiles inside the remaining 109 would be 22px wide
+   with 10px digits. Days and hours stay, which is the reading that matters at a
+   glance anyway.
+
+   The headline needs no exception here any more: the clamp's 26px floor puts
+   "Is Coming to Perth." at 208px inside a 248px column. */
 @media (max-width: 340px) {
-  .hero__title {
-    font-size: 8vw;
+  .tile--fine {
+    display: none;
   }
 }
 

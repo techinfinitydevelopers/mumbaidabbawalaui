@@ -78,12 +78,25 @@ that fixed each one:
 
 | Width | Hero height from | The stack's problem, and the lever |
 | --- | --- | --- |
-| ≤340 | `min-height: 520px` | `Is Coming to Perth.` broke to a 4th line; `font-size: 8vw` (25.6px) holds it whole |
-| ≤380 | `min-height: 520px` | 28px insets left a 232px column for a 245px line; insets go to 20px, column to 248 |
-| ≤700 | ratio 0.82, floor 520 | 470 floor + a 50px CTA put the headline 9.6px inside the logo row; floor to 520 |
+| ≤380 | `min-height: 470px` | 28px insets left a 232px column for a 245px line; insets go to 20px, column to 248 |
+| ≤700 | ratio 0.82, floor 470 | went to 520 when a 50px CTA put the headline 9.6px inside the logo row, back to 470 once the type came down a size |
 | 701–900 | ratio **1.28**, floor 520 | the desktop carve used to run here: 359px of hero against a 440px stack, CTA 65px *below* the hero |
 | 901–1023 | ratio 1.941 (desktop) | 448 against 506; the chamfer sliced the CTA's chip off. Headline 48/62 and a 56px CTA give back 50px |
 | ≥1024 | ratio 1.941 (desktop) | clear on its own — measured, which is where the band above stops |
+
+Phone type is `clamp(26px, 7.2vw, 46px)` for the headline, 15.5/23 for the
+subcopy and a 44px CTA. The sizes are what the client asked for, but the headline
+one earns its keep twice: at 390 it puts the whole of `A 135-Year-Old Legend` on
+one line (284px in a 302px column), so the headline is the two lines it is
+written as rather than three, and the stack drops from 296.5px to 221.
+
+**The countdown runs all four tiles down to 360.** They fit by giving up width,
+not by the logo giving any back: at 360 the nav is 284px and the brand chip takes
+135, so four tiles and three gaps have to live inside 149 — `4×32 + 3×4 = 140`,
+with 9px spare. Above 400 they go to 40px and 6px gaps. At **≤340** minutes and
+seconds hide again, and that one is arithmetic rather than taste: 244px of nav
+minus the same 135px chip leaves 109, and four tiles in that are 22px wide with
+10px digits.
 
 The 701–900 band is the phone treatment with its own proportions, not a copy of
 it: a 0.82 hero would stand 1000px tall out there. Two numbers change with the
