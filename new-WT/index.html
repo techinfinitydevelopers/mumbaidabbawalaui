@@ -150,6 +150,45 @@
             </header>
 
             <div class="hero__copy">
+              <!-- The same countdown as the nav's, for phones and tablets. It is a
+                   second readout, not a second clock: the ticker writes every
+                   [data-unit] on the page off one target, which is why the nav
+                   markup could be duplicated here rather than moved. Only one is
+                   ever displayed — `display: none` also keeps the other out of the
+                   accessibility tree, so there is never a duplicate timer to a
+                   screen reader. Down here there is a whole copy column to sit in,
+                   so this one gets the "Launches in" label the nav row has no room
+                   for, and full-size tiles at every width. -->
+              <div class="counter counter--copy" role="timer" aria-live="off">
+                <span class="counter__lead"><span class="counter__pulse" aria-hidden="true"></span>Launches in</span>
+                <div class="counter__tiles">
+                  <span class="tile tile--lead">
+                    <span class="tile__num">
+                      <span class="tile__cur" data-unit="days">--</span>
+                    </span>
+                    <span class="tile__u">days</span>
+                  </span>
+                  <span class="tile">
+                    <span class="tile__num">
+                      <span class="tile__cur" data-unit="hours">--</span>
+                    </span>
+                    <span class="tile__u">hrs</span>
+                  </span>
+                  <span class="tile tile--fine">
+                    <span class="tile__num">
+                      <span class="tile__cur" data-unit="minutes">--</span>
+                    </span>
+                    <span class="tile__u">min</span>
+                  </span>
+                  <span class="tile tile--fine">
+                    <span class="tile__num">
+                      <span class="tile__cur" data-unit="seconds">--</span>
+                    </span>
+                    <span class="tile__u">sec</span>
+                  </span>
+                </div>
+              </div>
+
               <h1 class="hero__title">A 135-Year-Old Legend<br />Is Coming to Perth.</h1>
               <p class="hero__sub">
                 135+ years. Millions of deliveries. One legendary legacy.<br />

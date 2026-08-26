@@ -68,3 +68,61 @@ stack shrank. Nothing collides or overflows there, and closing it means either a
 landscape ratio for that band or capping the hero's height — the second changes
 how far the white panel tucks into the bite, since the pull resolves against
 width while the bite is a share of height. Left alone; it is a composition call.
+
+---
+
+## 2026-08-26 — The countdown moves into the copy column on mobile
+
+Asked for by annotation: a box drawn between the nav row and the headline, "kya
+hum countdown ko yaha add kar sakte hai with the heading Launches in?"
+
+Below 900 the readout now sits at the top of `.hero__copy`, above the headline,
+with the `Launches in` label and its pulse dot. The nav row keeps only the logo.
+
+### Duplicated, not moved
+
+The markup is a second `.counter` inside `.hero__copy`, `display: none` above 900;
+the nav's is `display: none` below it. That works without a second clock because
+the ticker already reads **every `[data-unit]` on the page** into one array off
+one target — a deliberate choice from when it was written, and the comment there
+says so. `display: none` also keeps the hidden one out of the accessibility tree,
+so a screen reader never meets two `role="timer"` elements.
+
+Moving the element instead would have meant putting it back into the nav row on
+desktop from inside `.hero__copy`, which is an absolutely positioned box that
+shrink-wraps its content — there is no reliable way to right-align a child of it
+to the nav's right edge.
+
+### What it buys
+
+The nav row could never hold this. At 360 the nav is 284px and the brand chip —
+the size the client asked for, and not up for shrinking — takes 135, so the four
+tiles had to live inside 149px: 32px wide with 15px digits. At 320 minutes and
+seconds could not fit at all and were hidden.
+
+The copy column is **248px at its narrowest**, which holds `4×48 + 3×6 = 210`
+with room over. So every width from 320 up now shows the full readout at the
+size the tiles were designed at, plus the label, which had been `display: none`
+from 1180 down for want of nav width.
+
+Deleted as dead: the `≤900` tile-shrinking rules, the `401–900` block that
+re-grew them, and the `≤340` block that hid minutes and seconds. All three
+existed only to squeeze the readout in beside the logo.
+
+### Hero floors again
+
+The readout adds **103px** to the stack (85 of tiles and label plus its 18px
+margin), so at the old floors the stack ran back into the nav: −26.7px at 390,
+−53.8 at 320. Floors to **570** (≤700) and **620** (701–900).
+
+The arithmetic, written into the CSS this time because it keeps coming back: the
+copy's top is `16 + 0.77H − stack`, so clearing the nav's 81px bottom edge with
+air to spare needs `0.77H ≥ 85 + stack` — 531 at 390, 566 at 320. In the 701–900
+band `bottom` could not absorb it instead: 24% is already close to the 20% where
+the carve starts eating the subcopy's right end.
+
+### Verified
+- `stack top − nav bottom` positive at **320, 360, 390, 430, 560, 700, 744, 900** (23.2 at its tightest, 320) and 4 tiles visible at every one of them, 320 included.
+- `cta bottom − hero bottom` negative and `scrollWidth − clientWidth` **0** at all of them.
+- **901 and 1440 unchanged**: nav readout 240 / 392px wide, copy readout measures 0×0. No desktop rule was touched.
+- Rendered and read at **320, 390, 744**.

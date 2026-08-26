@@ -78,9 +78,9 @@ that fixed each one:
 
 | Width | Hero height from | The stack's problem, and the lever |
 | --- | --- | --- |
-| ≤380 | `min-height: 470px` | 28px insets left a 232px column for a 245px line; insets go to 20px, column to 248 |
-| ≤700 | ratio 0.82, floor 470 | went to 520 when a 50px CTA put the headline 9.6px inside the logo row, back to 470 once the type came down a size |
-| 701–900 | ratio **1.28**, floor 520 | the desktop carve used to run here: 359px of hero against a 440px stack, CTA 65px *below* the hero |
+| ≤380 | `min-height: 570px` | 28px insets left a 232px column for a 245px line; insets go to 20px, column to 248 |
+| ≤700 | ratio 0.82, floor **570** | 470 → 520 → 470 → 570; the last one is the countdown moving into this column |
+| 701–900 | ratio **1.28**, floor **620** | the desktop carve used to run here: 359px of hero against a 440px stack, CTA 65px *below* the hero |
 | 901–1023 | ratio 1.941 (desktop) | 448 against 506; the chamfer sliced the CTA's chip off. Headline 48/62 and a 56px CTA give back 50px |
 | ≥1024 | ratio 1.941 (desktop) | clear on its own — measured, which is where the band above stops |
 
@@ -90,13 +90,24 @@ one earns its keep twice: at 390 it puts the whole of `A 135-Year-Old Legend` on
 one line (284px in a 302px column), so the headline is the two lines it is
 written as rather than three, and the stack drops from 296.5px to 221.
 
-**The countdown runs all four tiles down to 360.** They fit by giving up width,
-not by the logo giving any back: at 360 the nav is 284px and the brand chip takes
-135, so four tiles and three gaps have to live inside 149 — `4×32 + 3×4 = 140`,
-with 9px spare. Above 400 they go to 40px and 6px gaps. At **≤340** minutes and
-seconds hide again, and that one is arithmetic rather than taste: 244px of nav
-minus the same 135px chip leaves 109, and four tiles in that are 22px wide with
-10px digits.
+**Below 900 the countdown is not in the nav row at all** — it sits at the top of
+the copy column, above the headline, with the `Launches in` label. It got there
+because the nav row cannot hold it: at 360 the nav is 284px and the brand chip
+(the size the client asked for) takes 135, so four tiles had to shrink to 32px
+with 15px digits, and 320 could not carry minutes and seconds at any legible
+size. The copy column is 248px at its narrowest, which holds four 48px tiles and
+their gaps with room over — so every width gets the full readout, and the label
+the nav row has never had space for.
+
+It is a **second readout, not a second clock**. The ticker writes every
+`[data-unit]` on the page from one target — that was already true, and is why the
+nav markup could be duplicated rather than moved. Only one is ever displayed, and
+`display: none` keeps the other out of the accessibility tree too, so a screen
+reader never meets two timers.
+
+The readout costs the stack 103px (85 of tiles and label, plus an 18px margin),
+which is what took the hero floors to **570** on phones and **620** in the
+701–900 band.
 
 The 701–900 band is the phone treatment with its own proportions, not a copy of
 it: a 0.82 hero would stand 1000px tall out there. Two numbers change with the

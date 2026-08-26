@@ -284,6 +284,12 @@ img {
   gap: 8px;
 }
 
+/* The in-copy readout is the phone and tablet one; above 900 the nav row has
+   space for the tiles and this stays out of the flow entirely. */
+.counter--copy {
+  display: none;
+}
+
 .tile {
   display: flex;
   flex-direction: column;
@@ -2301,36 +2307,55 @@ h2 {
     display: none;
   }
 
-  /* All four tiles on phones now, minutes and seconds included. They fit by
-     giving up width, not by the logo giving up any: at 360 the nav is 284px and
-     the brand chip takes 135 of it, so the four tiles and their gaps have to
-     live inside 149 — 4x32 + 3x4 = 140, with 9px of air left. The digits stay
-     at 15px, which is the smallest size the turnover animation still reads at.
-
-     (The 320-class exception is at the bottom of this file: 244px of nav minus
-     the same 135px chip leaves 109, and four legible tiles do not fit in it.) */
-  .counter__tiles {
-    gap: 4px;
+  /* The countdown moves out of the nav row and into the copy column, above the
+     headline. Squeezing four tiles in beside the brand chip had them at 32px
+     with 15px digits at 360, and 320 could not carry minutes and seconds at all
+     — the chip alone takes 135 of a 244px nav. The copy column is 248px at its
+     narrowest, which holds four 48px tiles and their gaps (210) with room over,
+     so every width gets the full readout at a legible size and the "Launches in"
+     label the nav row has never had space for. */
+  .nav .counter {
+    display: none;
   }
 
-  .tile {
-    width: 32px;
-    padding: 5px 2px 4px;
-    border-radius: 10px;
+  .counter--copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 18px;
   }
 
-  .tile__num {
-    height: 18px;
+  /* Beats the display:none the label carries from 1180 down, where it was cut
+     for want of nav width. That reason does not apply down here. */
+  .counter--copy .counter__lead {
+    display: inline-flex;
+    font-size: 13px;
+    letter-spacing: 0.12em;
   }
 
-  .tile__cur,
-  .tile__prev {
-    font-size: 15px;
+  .counter--copy .counter__tiles {
+    gap: 6px;
   }
 
-  .tile__u {
-    font-size: 7.5px;
-    letter-spacing: 0.04em;
+  .counter--copy .tile {
+    width: 48px;
+    padding: 6px 3px 5px;
+    border-radius: 11px;
+  }
+
+  .counter--copy .tile__num {
+    height: 21px;
+  }
+
+  .counter--copy .tile__cur,
+  .counter--copy .tile__prev {
+    font-size: 18px;
+  }
+
+  .counter--copy .tile__u {
+    font-size: 8.5px;
+    letter-spacing: 0.06em;
   }
 
   /* 44px tall from 50, label 15 from 16, chip 36 from 42 — asked for smaller.
@@ -2522,7 +2547,11 @@ h2 {
        not). min-height covers the bottom of the band, where the ratio alone
        gives less than the stack needs. */
     aspect-ratio: 1.28;
-    min-height: 520px;
+    /* 520 -> 620 for the same reason as the phones' 470 -> 570: the in-copy
+       countdown. At 744 the ratio alone gives 544, which left the stack 3.4px
+       clear of the nav. `bottom` cannot absorb it instead — 24% is already close
+       to the 20% where the carve starts eating the subcopy's right end. */
+    min-height: 620px;
     height: auto;
     width: 100%;
     clip-path: url(#hero-cut-m);
@@ -2661,11 +2690,14 @@ h2 {
        copy block — headline, a three-line subcopy and the button — needs 248 of
        it, which pushed the headline up into the nav row.
 
-       Went 470 -> 520 when a 50px CTA pushed the headline 9.6px INSIDE the logo
-       row, and back to 470 once the headline, subcopy and button all came down a
-       size: the stack is 221px at 390 against the 296.5 it was, so 470 now
-       leaves 76px of clearance where 520 would leave 114 and read as a gap. */
-    min-height: 470px;
+       470 -> 520 when a 50px CTA pushed the headline 9.6px INSIDE the logo row,
+       back to 470 when the type came down a size, and now 570: the countdown
+       moved into this column and the stack took on another 103px (85 of readout
+       plus its 18px margin). At 470 the stack ran 26.7px into the nav at 390 and
+       53.8 at 320. The arithmetic, since this keeps coming back — the copy's top
+       is `16 + 0.77H - stack`, so clearing the nav's 81px bottom edge with air to
+       spare needs `0.77H >= 85 + stack`: 531 at 390, 566 at 320. */
+    min-height: 570px;
     height: auto;
     /* Definite, and it has to be: with width auto, the min-height above wins and
        the ratio then re-derives WIDTH from it — 470 x 0.82 = 385 inside a 358
@@ -2845,47 +2877,6 @@ h2 {
   .hero__copy {
     left: 20px;
     right: 20px;
-  }
-}
-
-/* Above 400 there is room to give the tiles back some presence: at 402 the nav
-   is 326px and the chip 135, so 4x40 + 3x6 = 178 fits the 191 that is left, and
-   everything wider than that only gains. Below it, the 32px tiles above hold. */
-@media (min-width: 401px) and (max-width: 900px) {
-  .counter__tiles {
-    gap: 6px;
-  }
-
-  .tile {
-    width: 40px;
-    padding: 6px 3px 5px;
-  }
-
-  .tile__num {
-    height: 20px;
-  }
-
-  .tile__cur,
-  .tile__prev {
-    font-size: 17px;
-  }
-
-  .tile__u {
-    font-size: 8px;
-  }
-}
-
-/* 320-class phones are the one width that cannot carry minutes and seconds. The
-   nav is 244px, the brand chip takes 135 of it — the chip being the size the
-   client asked for — and four tiles inside the remaining 109 would be 22px wide
-   with 10px digits. Days and hours stay, which is the reading that matters at a
-   glance anyway.
-
-   The headline needs no exception here any more: the clamp's 26px floor puts
-   "Is Coming to Perth." at 208px inside a 248px column. */
-@media (max-width: 340px) {
-  .tile--fine {
-    display: none;
   }
 }
 
