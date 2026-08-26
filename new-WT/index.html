@@ -1357,9 +1357,17 @@
              follows the section, so closing space below the last card lengthens
              the path by what it adds to the scroll and the ratio does not budge —
              the same conservation that kills `start`. Fixed to the card, the
-             padding is travel the route never traverses. */
+             padding is travel the route never traverses.
+
+             Off the RIGHT edge, though, not straight down. Down-and-short parked
+             the dabba 42px above the section's bottom, and the sprite is 80 units
+             tall on its centre plus a drop shadow — so it sat half-buried in the
+             boundary, stopped. Off the side it leaves properly, the way the
+             desktop route's tail runs past its own viewBox, and it costs almost
+             nothing: a near-horizontal exit is 231px of path against the 202 the
+             downward one used, and the closing padding stays untraversed. */
           const lastCard = cards[cards.length - 1];
-          const tail = { x: s.width * 0.5, y: lastCard.bottom + s.width * 0.55 };
+          const tail = { x: s.width * 1.3, y: lastCard.bottom + s.width * 0.18 };
           const q = [head, head, ...pts, tail, tail];
           const f = (n) => n.toFixed(1);
           let d = `M${f(head.x)} ${f(head.y)}`;

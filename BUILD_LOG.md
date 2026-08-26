@@ -3012,3 +3012,33 @@ the Browser pane (`document.hidden` is permanently true there) and scroll stalls
 under headless virtual time. The cap's numbers above come from simulating the
 shipped six-line expression against scroll traces, which is a transcription
 check, not an end-to-end one. Said plainly so it is not mistaken for the latter.
+
+---
+
+## 2026-08-26 — The dabba was parking half-buried in the section's bottom edge
+
+Screenshot: the sprite stopped at the section's lower boundary, sliced in half,
+with the dashes ending just above it.
+
+Not a clipping bug — the tail was simply in the worst possible place. Pegging it
+to the last card (previous entry) put it at `lastCard.bottom + 0.55 × width`,
+which at 390 is **42px above the section's bottom**. The sprite is 80 route units
+tall on its centre plus a drop shadow, so at progress 1 it came to rest straddling
+the edge: half inside, half gone, stopped.
+
+Two ways out, and the desktop already shows which: **its tail is at x=1928 in a
+1728-wide viewBox** — outside the canvas, so the plane flies off and disappears
+rather than landing anywhere. The mobile tail now does the same, off the **right**
+edge rather than the bottom: `x: width × 1.3, y: lastCard.bottom + width × 0.18`.
+
+Sideways rather than downward for a measured reason — a downward exit has to clear
+the section's bottom, which is what the closing padding is, so the route would
+traverse the travel that padding was added to buy. Off the side it stays well
+above the bottom and the padding remains untraversed. It also came out *cheaper*
+than the parked version: path 2891 against 2905, ratio **1.166** against 1.178.
+
+### Verified
+- Sprite fully clear of the section at progress 1 at **320 / 390 / 430** — right-edge clearance **26 / 30 / 59px** past the sprite's own half-width plus shadow. 1.25 was tried first and left only 12px at 320.
+- Exit heading 38° (down-right), so `rotate(ang − 90)` points the nose along it.
+- All six pins still pop on arrival at 390×844 (`at` 0.200 … 0.891), progress reaches 1.0000, every pin reachable, copy block still clear.
+- Rendered at progress 0.93 and 0.97: at 0.93 the dabba is past the Perth tower heading off the right edge; at 0.97 it is gone and the section's bottom boundary is clean — nothing straddling it.
