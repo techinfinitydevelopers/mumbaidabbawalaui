@@ -866,9 +866,10 @@ h2 {
   height: 200px;
 }
 
+/* object-position was 50% 46%, nudged for the dabba-lid close-up that used to
+   sit here. That photo is gone, so the offset is stale — back to centre. */
 .art--wide {
   height: 200px;
-  object-position: 50% 46%;
 }
 
 /* On-scroll reveal for the collage: each photo wipes in via its own clip-path

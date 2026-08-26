@@ -31,7 +31,7 @@ new-WT/
 | Section | Carries |
 |---|---|
 | Hero | Logo, the **launch countdown in the nav row**, the positioning headline, the Mumbai numbers, "Join Waitlist", and the six-dish rail |
-| Since 1890 | 135 years / 5,000+ carriers / 200k+ lunches, and a three-image collage — the carrier full height, the dabba stack and the routing code beside it |
+| Since 1890 | 135 years / 5,000+ carriers / 200k+ lunches, and a three-image collage of **real photographs** — the tiffin handover full height, a loaded handcart and a crowd of carriers beside it, each chosen against the lede's own words |
 | The run | A light-grey band carrying a dashed Mumbai-to-Perth route, a plane that flies it as you scroll, and six die-cut sticker pins, unlabelled on desktop — Mumbai, four dishes, Perth. Structure and plane artwork from a supplied zip; palette, faces and photography are MD's |
 | The waitlist | A bento mosaic (20 real photographs across two counter-scrolling columns) beside a headline card with the actual signup, a secondary highlight card, and a privacy note — then a modal for mobile (+61), Perth suburb and veg / non-veg — the brief's two-step signup |
 | Footer | The logo, a **Stay Connected** block (Instagram, Facebook, LinkedIn, X and YouTube as icon-only links; **TikTok is still a dimmed `<span>` placeholder** — no anchor until a URL exists, since a link with no destination is a dead control on a live page. Activate it by wrapping it in the same `<a href … aria-label>` the others use and dropping `.foot__pending`. YouTube is the one Australian channel, `@mumbaidabbawalaau`; the other four point at the India parent org) and **Contact** with `hello@mumbaidabbawala.com.au`. No phone number anywhere, by design |

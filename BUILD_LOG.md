@@ -2560,3 +2560,44 @@ point at the India parent organisation (`in.linkedin.com`, `mumbai_dabbawala`,
   `cursor: pointer`, `aria-label="Mumbai Dabbawala on YouTube"`,
   `rel="noopener"`, `aria-hidden` on its mark.
 - TikTok unchanged at opacity 0.42, `cursor: default`.
+
+---
+
+## 2026-08-26 — Since-1890 collage swapped to real photographs
+
+The band's three generated stills (`legacy-carrier`, `legacy-stack`,
+`legacy-code`) were replaced with real photographs. Slots are one 418px
+portrait plus two 200px landscape, so portrait and landscape sources were
+matched to them rather than left to `cover` to sort out.
+
+**Chosen against the lede sitting beside them**, which names bicycle, handcart
+and suburban train, and the stats which say 5,000 carriers:
+
+- lead — `net-10`, the tiffin handover itself
+- top — `net-04`, a loaded handcart
+- wide — `net-14`, a crowd of carriers, echoing "5,000 carriers on the network"
+
+**Two picks were made and rejected on looking at them**, which is the whole
+reason for rendering before committing:
+
+1. `net-06` (train doorway) went in the lead slot first. Two visitors' **backs**
+   fill that frame with the dabbawala small in a corner — a poor lead for a band
+   headed "135 years of never missing lunch", where the lead is the one photo
+   the eye lands on.
+2. `net-01` went in the wide slot, and read as a near-duplicate of the lead —
+   both a handover across the same yellow rail. Swapped for the crowd shot.
+
+Also cleared `.art--wide`'s `object-position: 50% 46%`. That nudge existed for
+the dabba-lid close-up which is no longer there, so it was silently offsetting
+an unrelated photograph.
+
+**All five `legacy-*.jpg` are now unreferenced** (~1MB): the mosaic dropped them
+last turn, and the band was the last thing using three of them. Not deleted —
+they are real content that may be wanted elsewhere, and removing them means
+editing five `generate-assets.mjs` entries too or the next run recreates them.
+
+### Verified
+- All three collage wipes still armed (`clip-path` set on each), all three
+  images load, all three carry alt text.
+- Band layout holds at 1440 / 1180 / 900 / 768 / 700 / 560 with no horizontal
+  overflow; the ≤900 block's smaller slot sizes still fit.
