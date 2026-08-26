@@ -69,6 +69,30 @@ Under 700px the hero keeps the idea rather than the geometry: a **portrait card
 **white panel tucked into that bite**, and the dish rail following below at two
 cards across.
 
+The hero's height is the one number every other hero rule is downstream of, and
+it is derived two different ways at different widths — from the frame's ratio, or
+from a floor. The copy stack's height is not derived at all; it is fixed px that
+grows when the type wraps. Those two facts are the source of every hero
+regression this page has had, so the widths are set out here with the measurement
+that fixed each one:
+
+| Width | Hero height from | The stack's problem, and the lever |
+| --- | --- | --- |
+| ≤340 | `min-height: 520px` | `Is Coming to Perth.` broke to a 4th line; `font-size: 8vw` (25.6px) holds it whole |
+| ≤380 | `min-height: 520px` | 28px insets left a 232px column for a 245px line; insets go to 20px, column to 248 |
+| ≤700 | ratio 0.82, floor 520 | 470 floor + a 50px CTA put the headline 9.6px inside the logo row; floor to 520 |
+| 701–900 | ratio **1.28**, floor 520 | the desktop carve used to run here: 359px of hero against a 440px stack, CTA 65px *below* the hero |
+| 901–1023 | ratio 1.941 (desktop) | 448 against 506; the chamfer sliced the CTA's chip off. Headline 48/62 and a 56px CTA give back 50px |
+| ≥1024 | ratio 1.941 (desktop) | clear on its own — measured, which is where the band above stops |
+
+The 701–900 band is the phone treatment with its own proportions, not a copy of
+it: a 0.82 hero would stand 1000px tall out there. Two numbers change with the
+ratio. `.hero__copy`'s `bottom` goes 23% → 24%, and `.intro`'s pull into the bite
+goes −22% → −13%, because the bite is 20% of the hero's **height** while the pull
+resolves against its **width** — so the ceiling on the pull is `20 / ratio`,
+which is 24.4% at 0.82 but only 15.6% at 1.28. Overshoot it and the panel stops
+tucking into the bite and starts covering the photograph.
+
 - The carve is a second clipPath, `#hero-cut-m`. The desktop path's proportions
   shear unusably when the box goes from 1.94 wide to 0.82, so it is authored
   separately: a step with a concave fillet where the panel's corner sits.

@@ -2718,3 +2718,90 @@ Also updated the YouTube comment, which had named X as the last India-org link.
 ### Verified
 - 5 marks in the row: 4 links with AU hrefs, 1 pending.
 - No `x.com` or `twitter` reference left anywhere in the page, styles or docs.
+
+---
+
+## 2026-08-26 — Mobile hero: the tablet band, and the headline in the logo row
+
+Reported as "mobile view fix karo" with a screenshot. The screenshot turned out
+to be the **390px phone at ~1.9x** — a headless render at 390 reproduces it
+pixel for pixel, which is what pinned the width before any CSS was touched.
+
+Two separate defects, both the same root cause: **the hero's height is derived
+(from a ratio or a floor) while the copy stack's height is fixed px that grows
+when the type wraps.** Nothing reconciles the two, so every time the stack grew —
+most recently when the client's CTA went to 50px — it ate the clearance above it.
+
+### 1. The headline was sitting inside the logo row (≤430)
+
+Measured at 390: nav bottom at y=81, headline top at y=71.4 — **9.6px of
+overlap**. The room between the nav and the carve was 297px against a 296.5px
+stack, i.e. exactly zero clearance, so the shortfall showed up as the headline
+climbing into the logo pill.
+
+The carve fixes the floor of that gap: the copy cannot cross y=0.8 of the hero,
+and `bottom: 23%` already sits only 14px clear of it. So the height was the only
+place clearance could come from — `min-height` 470 → **520**. That buys 39px at
+390 and 23px at 360.
+
+At 360 and below the headline was also breaking to a **fourth** line, which the
+extra height could not absorb (the stack ran 370px there, not 312). Two cheaper
+levers instead of more height:
+
+- the clamp's floor and slope, `clamp(34px, 9vw, 54px)` → **`clamp(30px, 8.4vw, 54px)`**. The old 34px floor made `Is Coming to Perth.` 276px wide in a 257px column at 360.
+- ≤380, the copy's insets 28px → **20px**, trading 8px a side for 16px of measure. At 320 that line measured 245px against a 232px column; 248px holds it.
+- ≤340 only, `font-size: 8vw` (25.6px at 320) — the widened column still was not enough there.
+
+Tried and reverted: hiding the headline's `<br>` on phones. It saves **no**
+height (the empty rect the `<br>` leaves sits on "Legend"'s own line, it does not
+open a new one) and costs the rhetorical break — 390 rewraps to "Legend Is
+Coming / to Perth.", 744 to "…Legend Is / Coming to Perth."
+
+### 2. 701–900 was running the desktop carve on a phone's type
+
+The comment in the ≤900 block says the carve "stops earning its keep" below 900,
+but the rules that restructure the hero all live in the **≤700** block. So this
+band got the desktop geometry with phone type. Measured at 744:
+
+- hero **359px** tall (frame ratio 1.941) against a **440px** stack
+- CTA finished **65px below the hero's bottom edge** — invisible
+- the carve cut the subcopy mid-word
+
+Fixed with a dedicated `701–900` block: same portrait treatment as the phones
+(rail into flow, paragraph into the bite) at **ratio 1.28** with a 520 floor,
+since a 0.82 hero would stand 1000px tall out here. Two numbers follow the ratio:
+`.hero__copy`'s `bottom` 23% → 24%, and `.intro`'s pull −22% → **−13%** — the
+bite is 20% of the hero's *height* while the pull resolves against its *width*,
+so the pull's ceiling is `20 / ratio`: 24.4% at 0.82 but 15.6% at 1.28.
+Overshoot and the panel stops tucking into the bite and covers the photograph.
+The CTA also drops the phones' `width: 60%` for `fit-content` — at 744 that was
+400px of red behind a 16px label.
+
+### 3. 901–1023 — found while sweeping, same class of bug
+
+Not reported, but the sweep caught it: at 901 the desktop hero is 448px against a
+506px stack, and the chamfer **sliced the CTA's dabba chip clean off**. The
+constraint here is the carve, not the hero's bottom edge: the button's right edge
+sits at 0.382 of the hero's width, where the carve's edge has already climbed to
+0.869 of its height, and the button was reaching 0.98.
+
+Two passes. First, in ≤1180: `.hero__copy` `top` 150 → **110** and the CTA's
+`margin-top` 56 → **32**, taking 64px out of the stack. That fixed the hero's
+bottom edge but not the chamfer, which is why the screenshot mattered — the
+numbers said +9.7px clear while the render showed the chip cut in half. Then a
+`901–1023` block: headline 48/62 and a 56px CTA (chip 46), −50px more. 1024
+measured clear on its own, which is where the band stops.
+
+### Verified
+`title top − nav bottom` and `cta bottom − hero bottom` at **320, 340, 360, 375,
+380, 390, 400, 414, 430, 480, 500, 560, 620, 640, 700, 701, 744, 800, 820, 900,
+901, 950, 1000, 1024, 1100, 1180, 1181, 1280, 1440, 1600** — every one positive,
+`scrollWidth − clientWidth` **0** at every one.
+
+Rendered and read at **320, 390, 744, 901, 1000, 1024** — the two bands that the
+geometry probe passed but the eye failed (901's clipped chip) were caught here.
+A probe that only knows the hero's bounding box cannot see a clip path; the
+screenshot is not optional for anything the carve touches.
+
+Untouched: index.html (the `<br>` edit was reverted), the run section, the
+waitlist mosaic, the footer.

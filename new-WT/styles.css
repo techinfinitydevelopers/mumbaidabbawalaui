@@ -2200,9 +2200,15 @@ h2 {
     right: 36px;
   }
 
+  /* 150 -> 110, and the CTA's gap 56 -> 32, because this band is where the
+     stack stopped fitting: the hero's height is the frame's width / 1.941 while
+     the stack is fixed px, so at 901 the hero stood 448px tall against a 506px
+     stack and the CTA finished 54px BELOW the hero — off the photograph, over
+     the paragraph. The two cuts take 64px out, which clears 901 by 22px and
+     everything above it by more. */
   .hero__copy {
     left: 60px;
-    top: 150px;
+    top: 110px;
   }
 
   /* The rail's left edge is at 42.51%, so the paragraph has to stop short of it —
@@ -2230,7 +2236,7 @@ h2 {
   }
 
   .hero__copy .cta {
-    margin-top: 56px;
+    margin-top: 32px;
   }
 
   .card__text p {
@@ -2262,8 +2268,13 @@ h2 {
     height: 36px;
   }
 
+  /* 8.4vw with a 30px floor, down from 9vw/34px: at 360 the old floor set the
+     headline at 34px, which made "Is Coming to Perth." 276px wide inside a 257px
+     copy column — so it broke to a FOURTH line, the stack grew to 370px, and the
+     first line landed 34px inside the logo row. 8.4vw gives 30.2px at 360, which
+     fits that line whole. The clamp still tops out at 54. */
   .hero__title {
-    font-size: clamp(34px, 9vw, 54px);
+    font-size: clamp(30px, 8.4vw, 54px);
     line-height: 1.24;
   }
 
@@ -2274,7 +2285,12 @@ h2 {
   }
 
   /* The hard breaks are set for the desktop measure; at this width they fight it.
-     The markup keeps a space around each one so removing them cannot fuse words. */
+     The markup keeps a space around each one so removing them cannot fuse words.
+
+     The headline's break stays: measured, hiding it saves no height (the empty
+     rect the <br> leaves sits on "Legend"'s own line, it does not open a new
+     one) and costs the rhetorical break — 390 rewraps to "Legend Is Coming /
+     to Perth.", and 744 to "...Legend Is / Coming to Perth." */
   .hero__sub br,
   .intro br {
     display: none;
@@ -2438,6 +2454,108 @@ h2 {
   }
 }
 
+/* 901-1023: the narrowest widths that still get the desktop carve, and the last
+   place the stack has to fit a hero only width/1.941 tall. Measured at 901: the
+   hero stood 448px while the stack ran 506px, and the chamfer sliced the CTA's
+   dabba chip clean off — the button's right edge sits at 0.382 of the hero's
+   width, where the carve's edge has already climbed to 0.869 of its height, and
+   the button was reaching 0.98. The headline and the button give back 50px
+   between them. 1024 measured clear on its own, which is where this stops. */
+@media (min-width: 901px) and (max-width: 1023px) {
+  .hero__title {
+    font-size: 48px;
+    line-height: 62px;
+  }
+
+  .hero__copy .cta {
+    margin-top: 24px;
+    height: 56px;
+  }
+
+  .hero__copy .cta .cta__chip {
+    top: 5px;
+    right: 5px;
+    width: 46px;
+    height: 46px;
+  }
+
+  .hero__copy .cta:hover .cta__chip {
+    right: calc(100% - 51px);
+  }
+}
+
+/* 701-900: the block below restructures the hero for portrait, but it stops at
+   700 — so this band kept the desktop carve while running phone type, and the
+   numbers were bad. Measured at 744: the frame's 1.94 ratio gave the hero 359px
+   of height while the copy stack needed 440, so the CTA finished 65px BELOW the
+   hero's bottom edge (invisible) and the carve cut the subcopy mid-word.
+
+   Same treatment as phones, then — rail into flow, paragraph into the bite — but
+   a phone's 0.82 hero would stand 1000px tall out here, so the ratio opens up
+   and everything keyed to it follows. */
+@media (min-width: 701px) and (max-width: 900px) {
+  .stage {
+    padding-bottom: 0;
+  }
+
+  .frame {
+    aspect-ratio: auto;
+  }
+
+  .hero {
+    position: relative;
+    inset: auto;
+    /* Landscape, unlike the phones': 1.28 is the flattest ratio that still
+       leaves the copy stack clear of the nav row at 744 (the tightest width in
+       the band, since the stack's height is fixed in px while the hero's is
+       not). min-height covers the bottom of the band, where the ratio alone
+       gives less than the stack needs. */
+    aspect-ratio: 1.28;
+    min-height: 520px;
+    height: auto;
+    width: 100%;
+    clip-path: url(#hero-cut-m);
+  }
+
+  .hero__copy {
+    left: 44px;
+    right: 44px;
+    top: auto;
+    bottom: 24%;
+  }
+
+  /* Content width, not the phones' 60%: at 744 a 60% button is 400px of red for
+     a 16px label. */
+  .hero__copy .cta {
+    width: fit-content;
+  }
+
+  .rail {
+    position: relative;
+    left: auto;
+    right: auto;
+    top: auto;
+    margin-top: 26px;
+  }
+
+  /* 13%, not the phones' 22%: the bite is 20% of the hero's HEIGHT, and both
+     the depth and this pull resolve against width, so the ceiling on the pull
+     is 20/ratio — 15.6% here against 24.4% at 0.82. Overshoot and the panel
+     stops tucking into the bite and starts covering the photograph. */
+  .intro {
+    position: relative;
+    z-index: 2;
+    width: 58%;
+    max-width: none;
+    margin: calc(-13% + 6px) 0 0 auto;
+    padding: 20px 24px 22px;
+    border-radius: 24px;
+    background: var(--brand-white);
+    font-size: 18px;
+    line-height: 28px;
+  }
+}
+
 @media (max-width: 700px) {
   /* Relative, so .rail__next anchors to the rail rather than to .frame — and the
      desktop offsets have to be cleared, or `left` still shifts it 42% across. */
@@ -2530,8 +2648,15 @@ h2 {
     aspect-ratio: 0.82;
     /* Floor, because on a 360 phone the aspect ratio alone gives 400px and the
        copy block — headline, a three-line subcopy and the button — needs 248 of
-       it, which pushed the headline up into the nav row. */
-    min-height: 470px;
+       it, which pushed the headline up into the nav row.
+
+       470 -> 520 after the CTA grew to 50px: the stack measured 296.5 at 390 and
+       the room between the nav's bottom edge and the carve was 297, so the
+       headline was landing 9.6px INSIDE the logo row. The carve fixes the floor
+       of that gap (the copy cannot cross y=0.8 of the hero, and `bottom: 23%`
+       already sits only 14px clear of it), so the height is the only place the
+       clearance can come from. 520 buys 39px at 390 and 23px at 360. */
+    min-height: 520px;
     height: auto;
     /* Definite, and it has to be: with width auto, the min-height above wins and
        the ratio then re-derives WIDTH from it — 470 x 0.82 = 385 inside a 358
@@ -2696,6 +2821,31 @@ h2 {
 
   .piece--object img {
     width: min(84px, 100%);
+  }
+}
+
+/* 320 and 360-class phones: the copy column trades 8px of inset each side for
+   16px of measure. At 320 the headline's third line ("Is Coming to Perth.")
+   measured 245px against a 232px column and broke to a fourth, which pushed the
+   first line 39px into the logo row; 248px of column holds it. Cheaper than
+   shrinking the type again — 26.9px is already the floor of what reads.
+
+   Last of the width queries on purpose: it overrides `.hero__copy`'s 28px inset
+   from the max-width:700 block, and these two tie on specificity. */
+@media (max-width: 380px) {
+  .hero__copy {
+    left: 20px;
+    right: 20px;
+  }
+}
+
+/* 320-class phones only. Even on the widened column above, 26.9px leaves
+   "Is Coming to Perth." breaking to a fourth line and the headline 13px inside
+   the logo row; 8vw = 25.6px at 320 holds the line whole. Kept off 360+, where
+   the clamp's 8.4vw is already comfortable. */
+@media (max-width: 340px) {
+  .hero__title {
+    font-size: 8vw;
   }
 }
 
