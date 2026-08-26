@@ -3042,3 +3042,29 @@ than the parked version: path 2891 against 2905, ratio **1.166** against 1.178.
 - Exit heading 38° (down-right), so `rotate(ang − 90)` points the nose along it.
 - All six pins still pop on arrival at 390×844 (`at` 0.200 … 0.891), progress reaches 1.0000, every pin reachable, copy block still clear.
 - Rendered at progress 0.93 and 0.97: at 0.93 the dabba is past the Perth tower heading off the right edge; at 0.97 it is gone and the section's bottom boundary is clean — nothing straddling it.
+
+---
+
+## 2026-08-26 — The five unreferenced legacy stills, deleted for real
+
+Offered twice before and left alone; taken out now.
+
+`assets/legacy-carrier.jpg`, `legacy-code.jpg`, `legacy-lunch.jpg`,
+`legacy-rush.jpg`, `legacy-stack.jpg` — **908K** that had been shipping to the CDN
+unreferenced since the waitlist board moved to the twenty supplied network
+photographs and the run's pins became die-cut stickers.
+
+**Their entries in `scripts/generate-assets.mjs` went with them**, which is the
+part that actually matters: an entry there recreates its file on the next run, so
+deleting the images alone would have quietly restored all five. Same lesson the
+`run-mumbai` / `run-perth` pair taught earlier in this project — the comment that
+recorded it has been folded into one place covering all seven removals.
+
+`legacy-code` was the only asset generated through gpt-image-2 rather than FLUX,
+because its whole point was legible lettering on a dabba lid. Noted in the script
+so the choice is not lost with the entry.
+
+### Verified
+- `node --check` on the edited script passes; both arrays still parse (the removals were whole entries, trailing commas intact).
+- No reference to any `legacy-*.jpg` left in markup, styles or script.
+- The remaining 7 mentions of "legacy" are the `#legacy` **section** (the Since-1890 band) and the phrase "one legendary legacy" in the hero subcopy — unrelated, checked one by one rather than assumed from the count.

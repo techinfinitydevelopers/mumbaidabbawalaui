@@ -7,11 +7,11 @@
  *   node new-WT/scripts/generate-assets.mjs --only dish-3 --force
  *
  * Two sources, on purpose:
- *   dabbawala-street.jpg, legacy-code.jpg   generated here with FAL (raw REST,
- *               so new-WT needs no packages)
- *   hero, dishes, legacy stills   cropped from public/img and public/food, which
- *               the main site already generated — same subjects, so there is no
- *               reason to pay for them twice or risk a different look
+ *   dabbawala-street.jpg   generated here with FAL (raw REST, so new-WT needs
+ *               no packages)
+ *   hero, dishes   cropped from public/img and public/food, which the main site
+ *               already generated — same subjects, so there is no reason to pay
+ *               for them twice or risk a different look
  *
  * Both paths finish with `sips` (built into macOS) to crop and downscale to ~2x
  * display size: FLUX returns 2752px originals where the page shows the hero at
@@ -62,28 +62,17 @@ const IMAGES = [
       "blurred; completely blank bare timber crate with absolutely no lettering " +
       "or markings anywhere, " + LOOK,
   },
-  /* `run-mumbai` and `run-perth` used to be generated here as the route's two
-     bookend photos. The route's pins are supplied die-cut stickers now
-     (`run-mumbai.png`, `run-perth.png` and friends — note the extension), so
-     the generated .jpg pair went unreferenced and has been deleted. Their
-     entries are removed with them: leaving them in would quietly recreate two
-     orphan files on the next run of this script. */
-  {
-    slug: "legacy-code",
-    model: MODEL_TEXT,
-    image_size: "landscape_16_9",
-    maxEdge: 1200,
-    /* The one asset whose point is its lettering, so it goes through gpt-image-2
-       and asks for a specific code. FLUX returns convincing paint and nonsense
-       letters; this returns "K BO / 12 E7" as written. */
-    prompt:
-      "Extreme close-up photograph of the round lid of a well-used scratched " +
-      "stainless steel tiffin dabba. Hand-painted on the lid in thick red and " +
-      "yellow enamel is a short routing code on two lines: the letters 'K BO' " +
-      "above, and '12 E7' below. Condensation beads on the metal, strong raking " +
-      "side light revealing scratches and texture, dark neutral background, " +
-      "photojournalistic, photoreal, fine grain, no other text or writing anywhere.",
-  },
+  /* Removed, and the same reason each time — an entry here recreates its file on
+     the next run, so a deleted asset has to lose its entry with it:
+
+       `run-mumbai` / `run-perth`  were the route's two bookend photos. The
+         route's pins are supplied die-cut stickers now (`run-mumbai.png`,
+         `run-perth.png` and friends — note the extension).
+
+       `legacy-code`  was a close-up of a hand-painted routing code on a dabba
+         lid, the one asset generated through gpt-image-2 rather than FLUX
+         because its whole point was legible lettering. It went unreferenced when
+         the waitlist board moved to the supplied network photographs. */
 ];
 
 /** Stills the main site already generated; cropped here rather than re-made. */
@@ -91,13 +80,11 @@ const DERIVED = [
   /* The hero is the site's existing Perth shot, cropped to the hero box's ratio —
      chosen over a generated one because it is the frame the brief asked for. */
   { slug: "hero", dir: IMG_DIR, from: "perth-arrival", ratio: 1400 / 721, edge: 2400 },
-  { slug: "legacy-carrier", dir: IMG_DIR, from: "dabbawala-cycle", ratio: 3 / 4, edge: 1000 },
-  { slug: "legacy-stack", dir: IMG_DIR, from: "dabba-stack", ratio: 3 / 4, edge: 1000 },
-  /* Two more stills for the waitlist board's scrolling columns. Same 3:4 crop
-     and 1000px edge as the other two so every tile in that board is sampled
-     from the same pipeline. */
-  { slug: "legacy-lunch", dir: IMG_DIR, from: "home-lunch", ratio: 3 / 4, edge: 1000 },
-  { slug: "legacy-rush", dir: IMG_DIR, from: "mumbai-rush", ratio: 3 / 4, edge: 1000 },
+  /* `legacy-carrier`, `legacy-stack`, `legacy-lunch` and `legacy-rush` were 3:4
+     crops of the main site's stills, four tiles for the waitlist board's
+     scrolling columns. The board runs on the twenty supplied network photographs
+     now, so all four went unreferenced — deleted, entries included, for the
+     reason given above. */
 ];
 
 /** Card rail order: mains first, dessert last. Sources live in public/food/. */
