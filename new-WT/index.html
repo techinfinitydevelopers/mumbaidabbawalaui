@@ -1217,9 +1217,15 @@
              The phone passes 1.0 instead, which spreads the same flight over the
              section's whole pass rather than its height minus 0.4 of a viewport:
              2325px of scroll instead of 1987, so 17% slower per pixel. The
-             reason 0.6 exists does not apply down here — the phone route's first
-             fifth runs straight down through the copy above the first card, so
-             there is no dip to keep on screen. */
+             reason 0.6 exists does not apply down here: the phone route starts
+             below the copy and leads in from off the right edge, so there is no
+             early dip that could fall below the fold.
+
+             What is NOT a lever, measured rather than assumed: the column's gap.
+             It looks like one — more scroll for the same route — but the route is
+             built through the cards, so a taller gutter lengthens the path by
+             very nearly what it adds to the travel. 16cqw -> 22cqw moved the
+             ratio 1.308 -> 1.287 in exchange for 108px of page height. */
           const startTop = innerHeight * start;
           const travel = Math.max(t.height - innerHeight * (1 - start), 1);
           target = clamp((startTop - t.top) / travel, 0, 1);
@@ -1262,6 +1268,7 @@
            the section so the dabba flies in from above and leaves below rather
            than starting and stopping dead on the first and last card. The
            section's `overflow: hidden` clips both. */
+        const HEAD_X = 1.95;
         const rebuild = (s) => {
           /* Two points per stage, not one. Through the card centres alone the
              curve came out a near-straight diagonal: the centres only alternate
@@ -1326,7 +1333,25 @@
           builtW = s.width;
           builtH = s.height;
 
-          const head = { x: s.width * 0.5, y: -s.height * 0.05 };
+          /* The head used to be top-centre, above the section, which meant the
+             first span ran straight down the middle of the copy — a dashed line
+             through the eyebrow, both lines of the headline and every line of
+             the lede. So it starts BELOW the copy instead, and off the right
+             edge: `overflow: hidden` clips the entry, so the dabba still flies
+             in from outside rather than appearing from nowhere, and nothing is
+             drawn over the text at all.
+
+             Measured off .run__copy rather than a guessed offset, because that
+             block's height is three wrapping paragraphs and moves with the
+             width. The min() is a floor, not decoration: if the copy ever grew
+             past the first card the head would otherwise land below it and the
+             route would double back up. */
+          const copy = section.querySelector(".run__copy");
+          const copyBottom = copy ? copy.getBoundingClientRect().bottom - s.top : 0;
+          const head = {
+            x: s.width * HEAD_X,
+            y: Math.min(copyBottom + 26, cards[0].top - 26),
+          };
           const tail = { x: s.width * 0.5, y: s.height * 1.05 };
           const q = [head, head, ...pts, tail, tail];
           const f = (n) => n.toFixed(1);
@@ -1417,11 +1442,17 @@
            it genuinely 1:1 would need another ~1100px of column, i.e. 276px
            between cards, which is a page of white space.
 
-           So the phone lags instead: 0.055 against the desktop's 0.12 means the
+           So the phone lags instead: 0.04 against the desktop's 0.12 means the
            dabba trails a flick and glides in after it rather than tracking it
-           frame for frame. Same distance, half the apparent speed. Pins pop off
-           the smoothed value, so they land as the dabba actually arrives rather
-           than when the scroll says it should have. */
+           frame for frame. Pins pop off the smoothed value, so they land as the
+           dabba actually arrives rather than when the scroll says it should
+           have.
+
+           0.12 -> 0.055 -> 0.04 over two passes, both times because it still
+           read fast. This is about as low as it goes: the lag is 24x the
+           per-frame step at 0.04, and much past that the dabba stops feeling
+           attached to the scroll and starts feeling broken. Further slowdown
+           has to come from the ratio, not from here. */
         const loop = () => {
           current += (target - current) * ease;
           place(current);
@@ -1487,7 +1518,7 @@
          own section is display:none, so only the variant on screen is driven,
          and crossing 767 hands over on the next resize. */
       initRunRoute("run", "run-path", "run-plane", { buildPath: false, ease: 0.12, start: 0.6 });
-      initRunRoute("run-m", "mrun-path", "mrun-plane", { buildPath: true, ease: 0.055, start: 1 });
+      initRunRoute("run-m", "mrun-path", "mrun-plane", { buildPath: true, ease: 0.04, start: 1 });
 
       /* Per-element entrance reveal for the run's pins and copy. Separate from
          revealOnScroll above because that one is a single-shot trigger for a

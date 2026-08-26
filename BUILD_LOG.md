@@ -2842,3 +2842,91 @@ label stops being text and becomes texture.
 - Badge 50×50 at 390, inset `top 0 / right −4` as specified; 72×72 and −5 still at 1440.
 - Ring run 106.7 of a 119.4 half-arc (89.3%), rendered font 6.75px.
 - Rendered and read the rail at **390 and 1440**, side by side, for the notch.
+
+---
+
+## 2026-08-26 — Mobile run: route off the copy, dabba slower again, panel tucked flush
+
+Three things, two asked for mid-flight.
+
+### 1. The route was drawn straight through the copy
+
+The head was top-centre, above the section, so the first span ran down the middle
+of the copy block — a dashed line across the eyebrow, both headline lines and
+every line of the lede.
+
+Head now sits **below the copy and off the right edge**: `overflow: hidden` clips
+the entry so the dabba still flies in from outside rather than appearing from
+nowhere. Measured off `.run__copy`'s own box, not a guessed offset, because that
+block is three wrapping paragraphs and moves with the width. The `min()` against
+the first card's top is a floor, not decoration — if the copy ever grew past the
+first card the head would land below it and the route would double back up.
+
+**Verified: 0 of 1201 path samples fall inside the copy block**, at 320, 390 and
+430.
+
+### 2. That broke the pop timing, and the fix was a measured sweep
+
+With the head just above the first card, the dabba reached it at progress 0.105
+while the card only clears the fold at 0.190 — so the on-screen gate held every
+pop, and each card popped ~210px of scroll after the dabba had passed it. The old
+head accidentally had this right: its long descent through the copy happened to
+consume the same fraction of the path as the scroll needed to bring card 1 into
+view.
+
+Swept the head's off-canvas lead-in rather than guessing (all values keep the
+copy clear):
+
+| `HEAD_X` | path | ratio | pin 1 `at` / visible at | worst mismatch |
+| --- | --- | --- | --- | --- |
+| 1.06 | 2795 | 1.149 | 0.103 / 0.190 | 0.087 |
+| 1.50 | 2941 | 1.209 | 0.146 / 0.190 | 0.044 |
+| **1.95** | **3103** | **1.276** | **0.187 / 0.190** | **0.004** |
+| 2.50 | 3310 | 1.361 | 0.233 / 0.190 | 0.046 |
+
+Took **1.95**. Five of six pins now pop the instant the dabba arrives; pin 1 pops
+0.008 of progress later, about 19px of scroll.
+
+### 3. Slower again — and one claimed lever that does not exist
+
+`ease` **0.055 → 0.04**: lag 24× the per-frame step against 17.2×, and a flick
+glides 3.48s against 2.52s. That is where the felt slowdown comes from. Note the
+version being judged was the deployed 0.055; 0.04 had not shipped yet.
+
+**I bumped `.mrun`'s gap 16cqw → 22cqw claiming it would slow the dabba, then
+measured it: ratio 1.308 → 1.287.** The route is built *through the cards*, so a
+taller gutter lengthens the path by very nearly what it adds to the travel. Gap
+is not a speed control. Reverted — 108px of page height for 2% is not a trade.
+Both the CSS and the script now record that, since the comment I had written
+asserted the opposite.
+
+The ratio is close to its floor by construction: a serpentine through six
+alternating cards is always longer than its own vertical extent, so it cannot go
+below ~1. The one lever left is the lobes' throw, measured at `HEAD_X` 1.95:
+
+| flank | path | ratio | worst mismatch |
+| --- | --- | --- | --- |
+| **0.85** (now) | 3013 | 1.296 | 0.006 |
+| 0.80 | 2907 | 1.250 | 0.008 |
+| 0.75 | 2811 | 1.209 | 0.014 |
+| 0.70 | 2729 | 1.174 | 0.019 |
+| 0.65 | 2663 | 1.145 | 0.023 |
+
+Not applied — it trades the serpentine's amplitude for speed, which is a design
+call.
+
+### 4. `.intro`'s tuck, as specified
+Floor 570 → **620** in `calc(10px - max(620px, 121.95%) * 0.2)`, asked for after
+seeing it render. `0.2 × 620 = 124` against a 114px bite, so on phones where
+`min-height` governs the panel's top lands exactly on the carve's inner corner
+instead of 10px below. Above ~499px the ratio governs and 121.95% exceeds 620, so
+nothing changes.
+
+Measured **ceiling → panel 0.0px at 320/390/430/499** — it meets the corner, it
+never crosses it — and unchanged 10.0px at 560/700.
+
+### Verified
+- Copy block clear at 320/390/430; every pin reachable at 390×844 with progress reaching exactly 1.0000.
+- `.intro`: ceiling→panel 0.0 (≤499) / 10.0 (≥560), panel never over the photograph, right edge flush with the frame, at 320/390/430/499/560/700.
+- Desktop untouched at 1440: authored path, 8956 long, `start: 0.6`, `ease: 0.12`, phone route inert.
+- Rendered and read the top of the run section — copy fully clear of the dashes.

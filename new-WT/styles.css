@@ -1744,10 +1744,15 @@ h2 {
   display: none;
 }
 
-/* 9cqw -> 16cqw. The stage labels and notes are gone, so a stage IS its card
-   and this gap is the entire vertical room the route has to make a lobe in.
-   At 9 the gutter was 32px against a 161px horizontal throw — a corner, not a
-   curve. */
+/* 9cqw -> 16cqw. The stage labels and notes are gone, so a stage IS its card and
+   this gap is the entire vertical room the route has to make a lobe in: at 9 the
+   gutter was 32px against a 161px horizontal throw, which is a corner rather
+   than a curve.
+
+   Tried 22 to slow the dabba and measured it instead of assuming: the ratio only
+   moved 1.308 -> 1.287, because the route follows the cards, so a taller gutter
+   lengthens the PATH by very nearly what it adds to the scroll. Gap is not a
+   speed control. 108px of page height for 2% was not a trade worth making. */
 .mrun {
   display: flex;
   flex-direction: column;
@@ -2765,15 +2770,20 @@ h2 {
 
      So state the hero's height instead of a proxy for it: it is
      `max(min-height, width / 0.82)`, and 100% here is the same frame width the
-     hero measures against. 10px is deliberate clearance — at 0 the panel's top
-     corner meets the carve's inner corner, which pinches, and any rounding
-     spills white onto the photograph. */
+     hero measures against.
+
+     The floor is 620 where the hero's is 570, asked for after seeing it render:
+     0.2 x 620 = 124 against a 114px bite, so on the narrow phones where
+     min-height governs the panel's top lands exactly on the carve's inner
+     corner rather than 10px below it. Above ~499px the ratio governs the hero
+     and 121.95% exceeds 620, so nothing changes there. Measured: ceiling to
+     panel 0.0px, never negative — it meets the corner, it does not cross it. */
   .intro {
     position: relative;
     z-index: 2;
     width: 66%;
     max-width: none;
-    margin: calc(10px - max(570px, 121.95%) * 0.2) 0 0 auto;
+    margin: calc(10px - max(620px, 121.95%) * 0.2) 0 0 auto;
     padding: 16px 18px 18px;
     border-radius: 22px;
     background: var(--brand-white);
