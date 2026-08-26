@@ -2537,3 +2537,26 @@ run recreates them.
 - Speeds 20.6 and 20.2 px/s; `padding-bottom == gap` still true.
 - Alt audit clean; no broken images; no horizontal overflow.
 - Hero dish rail still 6 cards, Since-1890 band still 3 images.
+
+---
+
+## 2026-08-26 — YouTube link activated
+
+`https://www.youtube.com/@mumbaidabbawalaau` supplied, so the YouTube
+placeholder became a real anchor. TikTok stays a dimmed `<span>`; no URL yet.
+
+**Verified with page content, not a status code.** A 200 from YouTube proves
+nothing (it soft-404s, which is why three guessed handles were rejected
+earlier). This one returns `<title>Mumbai Dabbawala | Australia</title>`,
+`channelMetadataRenderer.title` of the same, and a `canonicalBaseUrl` of
+`/@mumbaidabbawalaau` — an exact match for what was given.
+
+Worth noting: this is the only **Australian** channel in the row. The other four
+point at the India parent organisation (`in.linkedin.com`, `mumbai_dabbawala`,
+`MumbaiDabbawala`), which suits a Perth page less well.
+
+### Verified
+- Footer row: 5 live links + 1 placeholder. YouTube at opacity 1,
+  `cursor: pointer`, `aria-label="Mumbai Dabbawala on YouTube"`,
+  `rel="noopener"`, `aria-hidden` on its mark.
+- TikTok unchanged at opacity 0.42, `cursor: default`.
