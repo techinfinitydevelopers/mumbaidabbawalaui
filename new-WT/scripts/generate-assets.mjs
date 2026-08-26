@@ -62,33 +62,12 @@ const IMAGES = [
       "blurred; completely blank bare timber crate with absolutely no lettering " +
       "or markings anywhere, " + LOOK,
   },
-  {
-    /* Bookends for the run section's route: Mumbai where the run starts,
-       Perth where it lands. 3:4 to match the pin cards, which crop to
-       16 x 19cqw. Both are cities the brief names, so they are generated
-       rather than pulled from stock the project has no licence for. */
-    slug: "run-mumbai",
-    aspect_ratio: "3:4",
-    maxEdge: 1000,
-    prompt:
-      "Documentary photograph of Mumbai at golden hour, looking along a dense " +
-      "city street towards weathered mid-century apartment blocks with iron " +
-      "balconies, hand-painted shop signage, tangled overhead cables and a " +
-      "black-and-yellow taxi; warm low sun, haze, portrait orientation, " +
-      "photojournalistic, photoreal, fine grain, no legible text anywhere, " +
-      LOOK,
-  },
-  {
-    slug: "run-perth",
-    aspect_ratio: "3:4",
-    maxEdge: 1000,
-    prompt:
-      "Documentary photograph of Perth, Western Australia at golden hour: the " +
-      "city skyline of glass towers seen across the calm Swan River, low warm " +
-      "sun, a few gum trees in the foreground, clear wide southern sky, " +
-      "portrait orientation, photojournalistic, photoreal, fine grain, no " +
-      "legible text anywhere, " + LOOK,
-  },
+  /* `run-mumbai` and `run-perth` used to be generated here as the route's two
+     bookend photos. The route's pins are supplied die-cut stickers now
+     (`run-mumbai.png`, `run-perth.png` and friends — note the extension), so
+     the generated .jpg pair went unreferenced and has been deleted. Their
+     entries are removed with them: leaving them in would quietly recreate two
+     orphan files on the next run of this script. */
   {
     slug: "legacy-code",
     model: MODEL_TEXT,
