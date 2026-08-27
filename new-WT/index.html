@@ -834,10 +834,12 @@
                 </svg>
               </a>
             </li>
-            <!-- Supplied as an app share link carrying `?_r=1&_t=ZS-99DxiuSZzrU`.
-                 The `_t` is a share-session token tied to the sender's own app
-                 session, not part of the address — stripped rather than
-                 published on every visitor's page. -->
+            <!-- Supplied as an app share link, with TikTok's `?_r=1&_t=…` pair
+                 stripped: `_t` is a share-session token tied to whoever hit
+                 Share, not part of the address, and it has no business on a link
+                 every visitor loads. The token's value is deliberately not
+                 quoted here either — an HTML comment ships to the client, so
+                 writing it down in one would undo the removal. -->
             <li>
               <a href="https://www.tiktok.com/@mumbaidabbawalaau" target="_blank" rel="noopener" aria-label="Mumbai Dabbawala on TikTok">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
