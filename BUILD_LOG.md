@@ -3488,3 +3488,40 @@ square and the widest respectively.
 ### Two things worth flagging
 1. **These photographs show identifiable people.** The previous batch was published only after you confirmed usage rights. Same question applies to these ten — they are live now because you asked for them by path, but say the word and I will pull any of them.
 2. On phones the board runs slower than on desktop (15.9 / 15.5 px/s against 20.7 / 20.2) because the tile height classes shrink below 560 while the duration does not. That was true of the old board too. Tell me if you want it matched.
+
+---
+
+## 2026-08-27 — The email-only note removed from the waitlist section
+
+`<p class="showcase__note" id="route-note">` — the lock icon and "Email only — we
+never publish a phone number and we never call. One email, the week your suburb
+goes live." Removed from the markup, not hidden.
+
+### It had three attachments, and only one was obvious
+
+1. **`aria-describedby`.** The email input carried
+   `aria-describedby="route-note route-err"`. Deleting the element alone would
+   have left a pointer to an id that no longer exists — browsers ignore it
+   silently, so nothing would have looked broken while the input's description
+   was half missing. Narrowed to `route-err`.
+2. **Two shared reveal selector lists**, `.showcase.reveal-ready .showcase__feature, .showcase.reveal-ready .showcase__note { … }` and its `.is-visible` twin, plus the reduced-motion list. This is the same shape that bit the footer icons earlier this session — delete the wrong half and the surviving selector inherits a declaration block meant for something else. Read the diff to confirm `.showcase__feature` came out intact in all three.
+3. Its own `transition-delay: 0.38s` stagger, and the now-dead `.showcase__note` / `.showcase__lock` / `.showcase__lock svg` rules.
+
+`#route-note` was **not** queried by JS — only `#route-err` is — so the submit
+handler needed no change. Confirmed by running it.
+
+### Verified
+- Nothing named `showcase__note`, `showcase__lock`, `route-note` or "Email only" anywhere in the folder.
+- Runtime: `aria-describedby="route-err"`, that id **exists** (not dangling), `route-note` gone, 0 `.showcase__note` in the DOM.
+- **The form still works:** submitting `not-an-email` still puts "That address does not look right yet." into `#route-err`. No JS errors.
+- Rendered at 390 and 1200 — the mosaic follows the Launching-soon card with normal spacing, no leftover gap.
+
+### Worth raising
+That note was the page's only statement of the email-only promise, and the
+follow-up sheet still asks for an **optional Mobile** (`#d-mobile`, `type="tel"`,
+`+61`). So a reader is now asked for a phone number with nothing on the page
+saying what it is for or that they will not be called. The policy has not changed
+— no `tel:` link anywhere, one email at launch — but the reassurance is gone.
+Two clean options if that matters: put a short version of the line beside the
+Mobile field in the sheet, or drop the Mobile field. Not done either way; it is a
+content decision.

@@ -142,7 +142,7 @@ tiles beside a headline card with the real signup, a secondary feature card,
 and a slim privacy note. Two earlier redesigns of this section (a dark
 dabba-lid concept, then a lid-painting animation) were fully replaced; the
 functional contract carried through unchanged (`#waitlist`, `form#signup`,
-`input#email`, `#route-err`, `#route-note`, `.signup--bad`) so the submit
+`input#email`, `#route-err`, `.signup--bad`) so the submit
 handler needed no changes across any of the three.
 
 - **The mosaic is two counter-scrolling image columns** — **10 real

@@ -1317,29 +1317,6 @@ h2 {
   object-fit: cover;
 }
 
-.showcase__note {
-  display: flex;
-  align-items: flex-start;
-  gap: 9px;
-  margin: 0;
-  padding: 4px 28px;
-  font-size: 13.5px;
-  line-height: 1.5;
-  color: var(--ink-soft);
-}
-
-.showcase__lock {
-  flex: 0 0 16px;
-  margin-top: 2px;
-  color: var(--accent);
-}
-
-.showcase__lock svg {
-  display: block;
-  width: 16px;
-  height: 16px;
-}
-
 /* On-scroll reveal: the mosaic's tiles pop in staggered, as if the grid were
    assembling itself, while the copy/form and the cards beside it fade and
    rise — the same reveal-ready/is-visible mechanism the rest of the page
@@ -1404,8 +1381,7 @@ h2 {
   transition-delay: 0.24s;
 }
 
-.showcase.reveal-ready .showcase__feature,
-.showcase.reveal-ready .showcase__note {
+.showcase.reveal-ready .showcase__feature {
   opacity: 0;
   transform: translateY(14px);
   transition:
@@ -1413,17 +1389,13 @@ h2 {
     transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.showcase.reveal-ready.is-visible .showcase__feature,
-.showcase.reveal-ready.is-visible .showcase__note {
+.showcase.reveal-ready.is-visible .showcase__feature {
   opacity: 1;
   transform: none;
 }
 
 .showcase.reveal-ready.is-visible .showcase__feature {
   transition-delay: 0.3s;
-}
-.showcase.reveal-ready.is-visible .showcase__note {
-  transition-delay: 0.38s;
 }
 
 /* ------------------------------------------------------------------- run -- */
@@ -3029,8 +3001,7 @@ h2 {
 
   .reveal-ready .mosaic__col,
   .reveal-ready .showcase__hero > *,
-  .reveal-ready .showcase__feature,
-  .reveal-ready .showcase__note {
+  .reveal-ready .showcase__feature {
     opacity: 1;
     transform: none;
     transition: none;
