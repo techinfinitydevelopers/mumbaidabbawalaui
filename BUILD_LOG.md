@@ -3288,3 +3288,54 @@ is the lobes' flank (0.78 → 0.70 buys back about as much), which costs amplitu
 ### Verified
 - Hero gap positive at **320 / 341 / 360 / 390 / 430**: 23.2 / 32.3 / 29.9 / 24.5 / 17.3. Rendered at 390 — the stack sits under the logo pill with no band of sky.
 - Run closing gap 83.7 / 89.2 / 94.2 / 102.0 / 112.5 at the same widths. Rendered — the route still exits off the right edge past the Perth card, nothing straddling the boundary.
+
+---
+
+## 2026-08-27 — The subcopy again, and a correction to how I was measuring it
+
+Reported a second time: still merging with the photograph. It was, and my
+"verified" number from the previous entry was wrong. Worth writing down how,
+because the method mattered more than the fix.
+
+### Three metrics, two of them useless
+
+1. **Descender band, brightest 10%.** What the last entry used. Samples the bottom
+   28% of each line box on the assumption it is mostly background. It reported
+   5.50:1. But it never looks at what sits behind the letters themselves, so a
+   bright building edge running through the x-height is invisible to it.
+2. **x-height band, brightest per column.** Tried next. Reported **1.00:1** — and
+   that is white text measured against white text, because the band I sampled is
+   full of glyph pixels. Nonsense, not a finding.
+3. **Two renders, differenced.** Render the page as-is, render it again with
+   `.hero__title, .hero__sub { visibility: hidden }`, and difference them. The
+   pixels that changed are *exactly* the ink; sampling the second render at those
+   same coordinates gives the true background behind every glyph.
+
+Method 3 said **4.64:1** at 390 — over the 4.5:1 line by a **1.03× margin**. A
+metric can call that a pass; an eye calls it merging. The reader was right and the
+number I quoted was measuring the wrong pixels.
+
+### Two causes, once measurable
+
+- **The ink was not white.** `rgba(255, 255, 255, 0.92)` over a dark ground put the subcopy's stroke luminance at **0.77** where the headline's pure white is **1.00**. Fixed for free: `#fff` on phones.
+- **Local, not average.** A soft-focus building edge can sit brighter behind one word than the line's average. A `text-shadow` (12px blur, 0.62) separates the stroke from whatever is immediately behind it — the same treatment `.counter__lead` already carries.
+- Then the scrim's copy band went up **0.06–0.08** across its stops, since 320 was still at 4.62:1 after the first two.
+
+### After
+
+| width | subcopy | headline |
+| --- | --- | --- |
+| 320 | 5.75 – 7.34 | 5.95 / 7.01 |
+| 360 | 5.47 – 6.70 | 5.41 / 6.82 |
+| 390 | 6.48 / 6.58 | 5.26 / 6.81 |
+| 430 | 6.30 / 6.42 | 5.88 / 7.09 |
+| 744 | 6.22 / 6.38 | 5.63 / 7.16 |
+
+Worst margin over requirement **1.22×**, against 1.03× before. Rendered at 320
+and 390 — the skyline still reads, buildings and yellow tower and water
+reflections all present.
+
+### The lesson
+A contrast check that samples "near the text" instead of "behind the text" will
+pass things the eye fails. Differencing two renders costs one extra screenshot and
+is the only version of this measurement I would quote again.
