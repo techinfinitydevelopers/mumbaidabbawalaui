@@ -1920,8 +1920,7 @@ h2 {
 
 /* 38px targets rather than the icon's own 20px: an icon-only control needs a
    hit area bigger than its ink. */
-.foot__links a,
-.foot__links .foot__pending {
+.foot__links a {
   display: inline-flex;
   width: 38px;
   height: 38px;
@@ -1930,13 +1929,6 @@ h2 {
   border-radius: 50%;
   color: var(--accent);
   transition: background-color 0.2s ease;
-}
-
-/* A mark with no URL yet. Deliberately dimmed and not a link: at full strength
-   beside four working icons it would read as clickable and do nothing. */
-.foot__pending {
-  opacity: 0.42;
-  cursor: default;
 }
 
 .foot__links svg {
