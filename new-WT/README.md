@@ -145,13 +145,15 @@ functional contract carried through unchanged (`#waitlist`, `form#signup`,
 `input#email`, `#route-err`, `#route-note`, `.signup--bad`) so the submit
 handler needed no changes across any of the three.
 
-- **The mosaic is two counter-scrolling image columns** — **20 real
-  photographs of the organisation** (`net-01`..`net-20`), ten per column, no
+- **The mosaic is two counter-scrolling image columns** — **10 real
+  photographs of the organisation** (`net-01`..`net-10`), five per column, no
   cards, the left column travelling up and the right down inside a
-  fixed-height `overflow: hidden` window. The eleven generated stills it began
-  with were removed once real photography existed; six of those files are still
-  live in the hero dish rail and three in the Since-1890 band, so only
-  `legacy-lunch.jpg` and `legacy-rush.jpg` fell out of use entirely. It began as a static
+  fixed-height `overflow: hidden` window. Three of the ten are reused in the
+  Since-1890 band. The eleven generated stills it began with went once real
+  photography existed, and the first batch of twenty network photographs was
+  replaced in turn by the client's own ten — a stronger, more editorial set, and
+  smaller on the wire (1.7MB against 4MB+). Every tile change means recomputing
+  the marquee durations; see the running note in `styles.css`. It began as a static
   masonry board (CSS `columns`); that had to go when the columns needed to
   animate independently, which multi-column cannot do.
 - **Each track holds its tiles twice** and animates to exactly `-50%`, so the

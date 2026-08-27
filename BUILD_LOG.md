@@ -3437,3 +3437,54 @@ The new photo is bright, so the caption was re-measured by differencing:
 **Idli description 5.49–5.81:1** against 4.5. The card already carried
 `.card--lit` from the old dosa, which is correct for this photo too. Rendered the
 card — title and description both legible over the plate.
+
+---
+
+## 2026-08-27 — The client's own ten photographs replace the twenty
+
+Ten supplied files (`1.png`..`10.png`) into `net-01`..`net-10`, and the previous
+twenty deleted. Both places that used them are switched: the waitlist mosaic and
+the Since-1890 band.
+
+A better set editorially — the network at events, a carrier balancing a crate of
+dabbas on a platform, stacked dabbas with routing codes painted on the lids,
+sorting, a handcart, a cyclist in traffic, a felicitation, a studio appearance —
+against the previous batch, which was mostly visitors on walking tours. And
+smaller: **1.7MB for ten against 4MB+ for twenty** (PNG in, `sips` to JPEG at
+quality 82, long edge 900 — 2× the largest slot, which is the 418px collage tile).
+
+### The marquee duration, for the fourth time
+
+The board went from ten photographs a column to five, so the distance each track
+travels **halved**. Left alone, 90s/92s would have run the board at half speed.
+
+Derived rather than guessed, from the old markup in git:
+
+| | old half | old duration | speed | new half | new duration |
+| --- | --- | --- | --- | --- | --- |
+| up | 1854px | 90s | 20.60 px/s | 890px | **43s** |
+| down | 1854px | 92s | 20.15 px/s | 990px | **49s** |
+
+Measured after: **20.70 and 20.20 px/s** — within 0.5% of the originals. Each
+half is still taller than the 660px window (890 and 990), so the loop has no
+seam. Also corrected a comment that claimed both columns are the same height:
+they are not any more, 890 against 990, because the two sets of five carry
+different height classes — which is exactly why the duration is computed per
+column rather than shared.
+
+### Tile assignment
+Height classes were assigned against each photo's aspect rather than at random:
+the two widest (2.16 and 1.79) went to the shortest slots and the portrait (0.67)
+and the square to the tallest, so no photograph is crop-mangled. The collage's
+three slots — one 418px tall, one 200px tall, one wide — took the portrait, the
+square and the widest respectively.
+
+### Verified
+- 23 `net-*` references, all within `net-01`..`net-10`; **no orphaned and no missing assets** across the whole folder (25 on disk, 25 referenced).
+- 20 mosaic figures = 5 real + 5 duplicate per column, all 20 images loading, 0 broken, page overflow 0 at both 1200 and 390.
+- Rendered the collage at 1200 and the mosaic at 1200 and 390.
+- The duplicate halves are generated from the reals in one pass, so they cannot drift; duplicates keep `aria-hidden` and empty alts, and every real tile has descriptive alt text written from the photograph.
+
+### Two things worth flagging
+1. **These photographs show identifiable people.** The previous batch was published only after you confirmed usage rights. Same question applies to these ten — they are live now because you asked for them by path, but say the word and I will pull any of them.
+2. On phones the board runs slower than on desktop (15.9 / 15.5 px/s against 20.7 / 20.2) because the tile height classes shrink below 560 while the duration does not. That was true of the old board too. Tell me if you want it matched.

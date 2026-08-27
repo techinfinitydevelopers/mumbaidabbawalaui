@@ -1108,18 +1108,23 @@ h2 {
    original 1894/2172px tracks; adding the network photographs took those to
    5602/5880px (136s/146s); dropping the eleven generated tiles brought them
    back to 3708px each, where 136s/146s ran 33% too SLOW at 13.6 and 12.7 px/s.
-   Half the track height divided by the target speed is the duration.
+   Half the track height divided by the target speed is the duration. Then the
+   client's own ten photographs replaced the twenty, five to a column instead of
+   ten: halves of 890px and 990px against the previous 1854px, so 90s/92s would
+   have crawled at half speed. 43s and 49s hold 20.60 and 20.15 px/s. Fourth time.
 
-   Both columns are the same height now, since each holds ten tiles of the same
-   height-class multiset. The durations still differ so the two do not travel in
-   lockstep — that plus the opposite directions is what keeps them reading as
-   two boards rather than one mirrored pair. */
+   The columns are no longer the same height — 890 against 990 — because the two
+   sets of five carry different height classes. That is fine and is why the
+   duration is computed per column rather than shared. The durations differing is
+   also what stops the two travelling in lockstep; that plus the opposite
+   directions is what keeps them reading as two boards rather than one mirrored
+   pair. */
 .mosaic__col--up .mosaic__track {
-  animation: mosaic-up 90s linear infinite;
+  animation: mosaic-up 43s linear infinite;
 }
 
 .mosaic__col--down .mosaic__track {
-  animation: mosaic-down 92s linear infinite;
+  animation: mosaic-down 49s linear infinite;
 }
 
 /* Pausing on hover is what makes it feel like a board rather than a billboard —
