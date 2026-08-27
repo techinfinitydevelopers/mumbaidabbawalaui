@@ -3339,3 +3339,60 @@ reflections all present.
 A contrast check that samples "near the text" instead of "behind the text" will
 pass things the eye fails. Differencing two renders costs one extra screenshot and
 is the only version of this measurement I would quote again.
+
+---
+
+## 2026-08-27 — Gulab Jamun and Masala Dosa regenerated to supplied references
+
+Both asked for as "something like the shared one, don't add smoke".
+
+### The smoke was in a shared constant, not the prompts
+
+`LOOK` — appended to every dish — contains **"steam rising"** and "dark rustic
+surface". Right for the savoury dishes, wrong for a syrup sweet, and the reason
+the gulab jamun came out smoky and sunk in a black frame. Fighting that inside one
+dish's prompt would have been arguing with the suffix, so there is now a
+`LOOK_STILL`: same camera and detail, no steam, warm golden side light, and the
+negatives named explicitly (FLUX holds an absence better when it is stated more
+than once).
+
+- **Gulab Jamun** — a plateful on an ornate gold-rimmed plate with pistachio and rose petals over a warm blurred table, instead of one dumpling lifted on a spoon in the dark. The spoon was in the old prompt; the smoke was in `LOOK`. Both had to go together.
+- **Masala Dosa** — second pass. A long tight roll on a banana leaf over a steel thali, chunky potato cubes at the open ends, three chutney bowls behind. **Composed on the diagonal deliberately:** the reference is landscape and the slot is 3:4, so a dosa lying flat across the frame would lose its ends to the crop.
+
+Gulab Jamun also moves **1:1 → 3:4** (and `site.ts` with it), for the same reason
+masala-dosa did: every consumer crops to 3:4, so a square source spent a quarter
+of itself on the crop.
+
+### The knock-on I went looking for
+
+Both new photographs are far brighter than the dark originals they replace, and
+the cards overlay white captions. Measured every card's caption with the
+differencing method — render, render again with the caption hidden, sample the
+background at the exact ink pixels:
+
+| card | title (needs 3.0) | description (needs 4.5) |
+| --- | --- | --- |
+| Butter Chicken | 6.64 | 5.34 |
+| Hyderabadi Biryani | 4.05 | 15.69 |
+| Masala Dosa | 4.28 | 5.72 |
+| Paneer Tikka | 15.21 | 4.11 → **7.38** |
+| Chole Bhature | 4.23 | 7.74 |
+| Gulab Jamun | 3.02 → **5.70** | 5.25 → **9.00** |
+
+Gulab Jamun's title was at **3.02:1** — passing 3.0 by 0.02, which is the same
+false pass the hero subcopy taught. And **Paneer Tikka's description was already
+failing at 4.11:1** before I touched anything: its photo is dark at the top where
+the title sits (15.21) but bright at the foot where the description does.
+
+Fixed with the mechanism already in the file rather than a new one:
+`.card--lit` (`--scrim-foot: 0.78` against the default 0.58) added to Gulab Jamun
+and Paneer Tikka. Masala Dosa already carried it. Rendered the rail after — the
+captions read and the photographs are not flattened.
+
+### Copy accuracy
+The dosa card said "folded over spiced potato" and its alt said "a folded masala
+dosa". The new photograph is plainly *rolled*. Both now say so.
+
+### Standing item
+The **FAL key still needs rotating** — pasted into plaintext chat earlier in this
+project and used again here. `.env*` is gitignored, never committed or deployed.

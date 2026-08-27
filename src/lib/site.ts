@@ -108,7 +108,9 @@ export const dishes: Dish[] = [
     name: "Gulab Jamun",
     city: "Kolkata",
     note: "Warm, soaked, rose-scented.",
-    aspect: "1/1",
+    /* 3/4 with the still, same reason as masala-dosa: every consumer crops to
+       3/4, so a square source spent a quarter of itself on the crop. */
+    aspect: "3/4",
   },
 ];
 

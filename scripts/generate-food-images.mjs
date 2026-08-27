@@ -19,6 +19,17 @@ const LOOK =
   "deep shadows, steam rising, hyper-detailed texture, editorial food photography, " +
   "dark rustic surface, no text, no watermark";
 
+/* The shared LOOK asks for "steam rising" and a dark rustic surface, which is
+   right for the savoury dishes and wrong for a syrup sweet — it is what put smoke
+   across the gulab jamun and sank it into a black frame. This variant keeps the
+   camera and the detail, drops the steam, and opens the light up. Negatives are
+   stated explicitly because "no steam" alone tends not to hold; FLUX responds to
+   the absence being named more than once. */
+const LOOK_STILL =
+  "shot on Hasselblad, 90mm macro, shallow depth of field, warm golden side light, " +
+  "bright and appetising, hyper-detailed glossy texture, editorial food photography, " +
+  "no steam, no smoke, no haze, no text, no watermark";
+
 const DISHES = [
   {
     slug: "butter-chicken",
@@ -35,12 +46,17 @@ const DISHES = [
   {
     slug: "masala-dosa",
     name: "Masala Dosa",
-    /* Regenerated. Two things were wrong. The frame was the smaller one: 4:3
+    /* Regenerated twice. First pass fixed the frame — it was the only dish at 4:3
        against every consumer's 3:4 slot, so the centre-crop threw away the
-       chutneys and half the dosa and what survived read as a plain folded
-       pancake. And "rolled open to reveal" was too indirect — the filling has to
-       be the subject, not a thing the bread is hiding. */
-    prompt: `Masala dosa on a banana leaf, one end unrolled so a generous mound of bright yellow spiced potato masala with mustard seeds and curry leaves spills out in the foreground, the rest of the dosa crisp and deep golden-brown with a blistered lacy surface, small steel bowls of white coconut chutney and sambar tucked behind, ${LOOK}`,
+       chutneys and half the dosa. Second pass to a supplied reference: a long
+       tightly-rolled dosa on a banana leaf over a steel thali with CHUNKY potato
+       showing at the open ends and three bowls behind, and no smoke — which meant
+       leaving the shared LOOK, since that is where "steam rising" comes from.
+
+       Composed on the diagonal on purpose: the reference is landscape and the slot
+       is 3:4, so a dosa lying flat across the frame would lose its ends to the
+       crop. The diagonal keeps both ends and the bowls inside a portrait box. */
+    prompt: `A long masala dosa rolled into a tight cylinder, lying diagonally across a banana leaf on a round steel thali, crisp deep-golden crust with mottled brown blistering, both open ends facing the camera showing chunky cubes of spiced yellow potato with coriander and mustard seeds, three small steel bowls behind holding white coconut chutney, red tomato chutney and sambar, ${LOOK_STILL}`,
     aspect_ratio: "3:4",
   },
   {
@@ -63,8 +79,15 @@ const DISHES = [
   {
     slug: "gulab-jamun",
     name: "Gulab Jamun",
-    prompt: `Gulab jamun in a shallow ceramic dish, deep amber syrup catching the light, crushed pistachio and rose petals on top, single dumpling lifted on a spoon, ${LOOK}`,
-    aspect_ratio: "1:1",
+    /* Regenerated to a supplied reference: a plateful rather than one on a spoon,
+       and a warm festive table rather than a dark smoky one. The spoon was in the
+       old prompt ("single dumpling lifted on a spoon") and the smoke came from the
+       shared LOOK, so both had to go at once.
+
+       3:4 like the rest, not 1:1 — every consumer crops to 3:4, and a square
+       source spends a quarter of itself on the crop. */
+    prompt: `A generous mound of gulab jamun piled high on an ornate gold-rimmed plate, deep amber-brown glossy spheres glistening with syrup, slivered green pistachio and a few dried rose petals scattered over them, shallow pool of syrup in the plate, warm festive table behind thrown softly out of focus with glass jars of nuts and a brass bowl, ${LOOK_STILL}`,
+    aspect_ratio: "3:4",
   },
 ];
 
