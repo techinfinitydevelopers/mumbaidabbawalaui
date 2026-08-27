@@ -1122,12 +1122,21 @@ h2 {
   animation: mosaic-down 92s linear infinite;
 }
 
-/* Pausing on hover is what makes it feel like a board rather than a
-   billboard — the reader can stop it to look at something. :focus-within so
-   it also stops for a keyboard user tabbing through. */
-.mosaic:hover .mosaic__track,
-.mosaic:focus-within .mosaic__track {
-  animation-play-state: paused;
+/* Pausing on hover is what makes it feel like a board rather than a billboard —
+   the reader can stop it to look at something. :focus-within so it also stops for
+   a keyboard user tabbing through.
+
+   Gated on a real hovering pointer, because on a phone it was a bug rather than a
+   feature: a tap sets :hover on touch browsers and leaves it set until the reader
+   taps something else, so one tap on a tile stopped the board for good. Nothing
+   inside is focusable either — 40 figures, 40 images, no anchor, button, input or
+   tabindex — so :focus-within can live behind the same gate without costing a
+   keyboard user anything, since keyboards come with hovering pointers. */
+@media (hover: hover) and (pointer: fine) {
+  .mosaic:hover .mosaic__track,
+  .mosaic:focus-within .mosaic__track {
+    animation-play-state: paused;
+  }
 }
 
 .piece {
@@ -2264,6 +2273,33 @@ h2 {
      two it is written as, and the stack loses 52px. The 26px floor holds that
      for 320 too — where the line does still wrap, but the smaller subcopy has
      already paid for it. */
+  /* The desktop scrim does not transfer, and it showed. Its three gradients are
+     a top band, a LEFT WEDGE and a foot — tuned for a 1.94 hero where the copy
+     sits in the left third, so the wedge (0.78 at x=0) carries it. On a portrait
+     hero the copy spans the whole column, and by x=100% that wedge is down to
+     0.06; the top band is spent by 34% of the height while the copy sits between
+     18% and 77% of it. Measured at 390, over the lit buildings behind the
+     subcopy: background p90 (220,170,139) — the file's own stated target is
+     "under 110 of 255" — giving **2.07:1** on the long lines against the 4.5:1
+     body text needs. The headline was at 2.01:1 against its 3:1.
+
+     So: two gradients keyed to a portrait frame instead of three keyed to a
+     landscape one. Full-width, because that is what the copy is now. The stops
+     are solved rather than eyeballed — 0.52 alpha where the subcopy sits and
+     0.40 where the headline does, which lands them at 5.8:1 and 3.9:1. */
+  .hero__scrim {
+    background:
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.1) 16%, rgba(0, 0, 0, 0) 30%),
+      linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.62) 0%,
+        rgba(0, 0, 0, 0.58) 26%,
+        rgba(0, 0, 0, 0.5) 55%,
+        rgba(0, 0, 0, 0.22) 78%,
+        rgba(0, 0, 0, 0) 90%
+      );
+  }
+
   .hero__title {
     font-size: clamp(26px, 7.2vw, 46px);
     line-height: 1.24;

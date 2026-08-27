@@ -3146,3 +3146,64 @@ string in any of them, and the script only *reads* `FAL_KEY` from
 So it is exposure of internal reasoning and the FAL model ids / prompts, not a
 security hole. Left as-is because which files deploy is the user's call; the fix
 is a one-line `new-WT/.vercelignore` listing the three.
+
+---
+
+## 2026-08-27 — Phone review: hero subcopy contrast, mosaic pausing on tap, 135+
+
+### The subcopy was unreadable over the skyline (and so was the headline)
+
+Reported as "text visible nahi hai". It was rendering — it had no contrast. The
+scrim is three gradients: a top band, a **left wedge** and a foot, all tuned for
+the 1.94 desktop hero where the copy sits in the left third and the wedge (0.78
+at x=0) carries it. On a portrait hero the copy spans the whole column, and by
+x=100% that wedge is down to **0.06**; the top band is spent by 34% of the height
+while the copy sits between 18% and 77% of it.
+
+Measured at 390, sampling the descender band of each line and taking the
+brightest 10% of the background behind it — the part that actually breaks
+legibility:
+
+| | background p90 | contrast | needs |
+| --- | --- | --- | --- |
+| subcopy line 1 | (220,170,139) | **2.07:1** | 4.5:1 |
+| subcopy line 2 | (222,166,128) | **2.13:1** | 4.5:1 |
+| headline line 1 | (206,177,165) | **2.01:1** | 3:1 (large) |
+| headline line 2 | (196,161,142) | **2.38:1** | 3:1 |
+
+The file's own comment states the target as "under 110 of 255 behind the
+subcopy". It was at ~190.
+
+Replaced with two gradients keyed to a portrait frame — a nav band and a
+full-width bottom-up band, no wedge, since full-width is what the copy is now.
+Stops solved rather than eyeballed: ~0.52 alpha where the subcopy sits, ~0.40
+where the headline does. After:
+
+| | background p90 | contrast |
+| --- | --- | --- |
+| subcopy | (114,107,7) / (113,95,49) | **5.50:1** / **6.21:1** |
+| headline | (124,109,103) / (121,99,88) | **4.95:1** / **5.62:1** |
+
+Same check at 744: 5.59 / 5.92 / 5.30 / 5.97. Rendered it — the skyline still
+reads, buildings and water and the yellow tower all present.
+
+### The mosaic stopped for good on the first tap
+
+`.mosaic:hover .mosaic__track { animation-play-state: paused }` is a feature with
+a mouse and a bug with a finger: touch browsers set `:hover` on tap and leave it
+set until the reader taps elsewhere, so one tap stopped the board permanently.
+
+Gated on `(hover: hover) and (pointer: fine)`. `:focus-within` went behind the
+same gate — checked first that nothing inside is focusable (40 figures, 40
+images, no anchor, button, input or tabindex), and keyboards come with hovering
+pointers, so it costs a keyboard user nothing.
+
+Verified on the pane's **emulated touch device** rather than by reasoning:
+`maxTouchPoints: 5`, `hover: none`, `pointer: coarse`, the gate reads **false**,
+and both tracks are `running` before and after a real touchstart/touchend/click
+on a tile. Synthetic MouseEvents cannot set `:hover` in Chrome, which is why the
+headless attempt proved nothing and this one does.
+
+### 135+
+The first stat was the only one without the red plus. 1890 to 2026 is 136 years,
+so `135+` is also the more accurate reading. All three now match.
