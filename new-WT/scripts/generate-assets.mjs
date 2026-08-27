@@ -91,7 +91,7 @@ const DERIVED = [
 const DISHES = [
   { slug: "dish-1", from: "butter-chicken" },
   { slug: "dish-2", from: "hyderabadi-biryani" },
-  { slug: "dish-3", from: "masala-dosa" },
+  { slug: "dish-3", from: "idli" },
   { slug: "dish-4", from: "paneer-tikka" },
   { slug: "dish-5", from: "chole-bhature" },
   { slug: "dish-6", from: "gulab-jamun" },

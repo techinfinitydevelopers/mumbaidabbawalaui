@@ -44,19 +44,18 @@ const DISHES = [
     aspect_ratio: "3:4",
   },
   {
-    slug: "masala-dosa",
-    name: "Masala Dosa",
-    /* Regenerated twice. First pass fixed the frame — it was the only dish at 4:3
-       against every consumer's 3:4 slot, so the centre-crop threw away the
-       chutneys and half the dosa. Second pass to a supplied reference: a long
-       tightly-rolled dosa on a banana leaf over a steel thali with CHUNKY potato
-       showing at the open ends and three bowls behind, and no smoke — which meant
-       leaving the shared LOOK, since that is where "steam rising" comes from.
+    /* Replaced masala dosa outright. Art-directed from a supplied reference, which
+       was a watermarked stock comp — used as direction for a fresh generation, not
+       as an asset. `LOOK_STILL` again: the reference has no steam and the shared
+       LOOK would have added it.
 
-       Composed on the diagonal on purpose: the reference is landscape and the slot
-       is 3:4, so a dosa lying flat across the frame would lose its ends to the
-       crop. The diagonal keeps both ends and the bowls inside a portrait box. */
-    prompt: `A long masala dosa rolled into a tight cylinder, lying diagonally across a banana leaf on a round steel thali, crisp deep-golden crust with mottled brown blistering, both open ends facing the camera showing chunky cubes of spiced yellow potato with coriander and mustard seeds, three small steel bowls behind holding white coconut chutney, red tomato chutney and sambar, ${LOOK_STILL}`,
+       The reference is landscape and the slot is 3:4, so the two idli sit in the
+       lower two thirds with the bowls stacked behind them rather than beside — a
+       side-by-side arrangement would lose a bowl to the crop, the same trap the
+       dosa fell into at 4:3. */
+    slug: "idli",
+    name: "Idli",
+    prompt: `Two steamed idli on a speckled cream ceramic plate in the lower two thirds of the frame, each a low domed disc of white fermented rice cake, matte chalk-white with a fine softly pitted grain and a faint speckle of semolina, gently irregular and slightly rustic, not glazed and not smooth, a few black mustard seeds and a curl of curry leaf resting on top, a sprig of fresh mint, behind them two dark stoneware bowls stacked back to front, one of orange sambar with green chilli and coriander, one of thick white coconut chutney flecked with mustard seed and a thread of red chilli oil, dark weathered wood table, ${LOOK_STILL}`,
     aspect_ratio: "3:4",
   },
   {

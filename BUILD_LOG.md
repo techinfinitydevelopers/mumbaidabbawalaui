@@ -3396,3 +3396,44 @@ dosa". The new photograph is plainly *rolled*. Both now say so.
 ### Standing item
 The **FAL key still needs rotating** — pasted into plaintext chat earlier in this
 project and used again here. `.env*` is gitignored, never committed or deployed.
+
+---
+
+## 2026-08-27 — Idli replaces Masala Dosa
+
+Asked for, with a reference. The reference was a **watermarked Adobe Stock comp**,
+so it was used as art direction for a fresh generation, never as an asset.
+
+`LOOK_STILL` again — the reference has no steam, and the shared `LOOK` would have
+added it. Composed with the two idli in the lower two thirds and the bowls stacked
+back to front rather than side by side: the reference is landscape and the slot is
+3:4, so a side-by-side arrangement loses a bowl to the crop — the same trap the
+dosa fell into at 4:3.
+
+### Three passes, because the texture is what makes it idli
+
+1. **Too smooth.** "Visibly porous and spongy" produced two pale domes that read as dumplings or buns.
+2. **Far too much.** "Coarse open crumb… hundreds of tiny air holes like a sponge or crumpet" produced a regular honeycomb lattice with a dimple in the middle — closer to a sea sponge than food. Overcorrected.
+3. **Right.** "Matte chalk-white with a fine softly pitted grain and a faint speckle of semolina, gently irregular and slightly rustic, not glazed and not smooth." Reads as idli.
+
+Worth keeping: for a texture this specific, the useful prompt language is the
+*finish* ("matte", "not glazed", "gently irregular"), not an analogy. Both
+analogies I reached for — sponge, crumpet — pulled the model toward a repeating
+structure rather than a food surface.
+
+### Wired through, all of it
+- `scripts/generate-food-images.mjs` — the `masala-dosa` entry became `idli`
+- `new-WT/scripts/generate-assets.mjs` — `dish-3` derives `from: "idli"`
+- `new-WT/index.html` — title `Idli`, description "Rice cakes steamed soft, with sambar and coconut chutney.", and a new alt
+- `src/lib/site.ts` — slug, name, city (Chennai) and note, plus a comment that still named masala-dosa as its precedent
+- **`public/food/masala-dosa.jpg` deleted.** Its generator entry went in the same commit — the lesson from the five legacy stills is that a file whose entry survives comes back on the next run.
+
+Confirmed by grep that nothing anywhere still points at masala dosa. The three
+remaining "masala" hits are "chaat masala", "masala clinging to the chickpeas",
+and the comment recording this replacement.
+
+### Card caption contrast, re-checked
+The new photo is bright, so the caption was re-measured by differencing:
+**Idli description 5.49–5.81:1** against 4.5. The card already carried
+`.card--lit` from the old dosa, which is correct for this photo too. Rendered the
+card — title and description both legible over the plate.

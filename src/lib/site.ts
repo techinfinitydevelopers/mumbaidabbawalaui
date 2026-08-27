@@ -88,12 +88,12 @@ export const dishes: Dish[] = [
     aspect: "3/4",
   },
   {
-    slug: "masala-dosa",
-    name: "Masala Dosa",
-    city: "Bengaluru",
-    note: "Fermented overnight, crisp for ninety seconds.",
-    /* 3/4 with the still: every consumer crops to 3/4, and generating it 4/3
-       meant this one was the only dish losing most of its frame to the crop. */
+    slug: "idli",
+    name: "Idli",
+    city: "Chennai",
+    note: "Fermented overnight, steamed soft at dawn.",
+    /* 3/4 with the still: every consumer crops to 3/4, and the dish this replaced
+       was generated 4/3, which made it the only one losing most of its frame. */
     aspect: "3/4",
   },
   {
@@ -108,8 +108,8 @@ export const dishes: Dish[] = [
     name: "Gulab Jamun",
     city: "Kolkata",
     note: "Warm, soaked, rose-scented.",
-    /* 3/4 with the still, same reason as masala-dosa: every consumer crops to
-       3/4, so a square source spent a quarter of itself on the crop. */
+    /* 3/4 with the still, same reason as the rest: every consumer crops to 3/4,
+       so a square source spent a quarter of itself on the crop. */
     aspect: "3/4",
   },
 ];
