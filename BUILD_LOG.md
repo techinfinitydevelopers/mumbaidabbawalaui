@@ -3243,3 +3243,48 @@ Both new sources are 1792×2368 (3:4); crops are 600×800 at 92K and 108K.
 The **FAL key in `.env.local` still needs rotating** — it was pasted into
 plaintext chat earlier in this project, and this run used it again. `.env*` is
 gitignored, so it has never been committed or deployed.
+
+---
+
+## 2026-08-27 — Two dead spaces closed
+
+### Under the logo, in the hero
+
+The copy stack is anchored to the hero's **bottom** — it has to be, it must stay
+clear of the carve — so the gap under the logo is whatever the hero's height does
+not spend: `H − 0.23H − stack − 65`. At the 570 floor that was **47.6px of empty
+sky at 390**.
+
+Floor to **540**, and not globally, because 320 is the binding case: there the
+headline wraps to three lines and the subcopy to four, so the stack is **350.7px**
+against 326.3 at 390 and 540 would leave **0.1px**. Measured where the jump
+happens — between 320 and 335 — and gated the tighter floor at `min-width: 341px`:
+
+| width | stack | gap at 570 | gap at 540 |
+| --- | --- | --- | --- |
+| 320 | 350.7 | 23.2 | *0.1 — kept at 570* |
+| 341 | 318.5 | 55.4 | **32.3** |
+| 360 | 320.9 | 53.0 | **29.9** |
+| 390 | 326.3 | 47.6 | **24.5** |
+| 430 | 333.5 | 40.4 | **17.3** |
+
+320 keeps 570 because at 23.2px it has nothing to give back.
+
+### Under the Perth card, in the run
+
+That one was mine: `padding-bottom` went 14 → 52cqw last pass to buy travel the
+route does not traverse, which is the only slowdown left that does not flatten the
+lobes. **240px of empty grey under the last card is what it actually looked like.**
+
+Back to **18cqw** (18, not the original 14, so the card is not hard against the
+section's edge). The closing gap goes 239.7px → **102px** at 390.
+
+**The trade, stated because it is a real one:** ratio **1.172 → 1.241** at 390, so
+the dabba is ~6% quicker per pixel of scroll. `maxPps` (850 path px/s) still caps
+the flicks, which is where the speed was being felt — the sustained rate was
+always the smaller half of that complaint. If it now reads fast again, the lever
+is the lobes' flank (0.78 → 0.70 buys back about as much), which costs amplitude.
+
+### Verified
+- Hero gap positive at **320 / 341 / 360 / 390 / 430**: 23.2 / 32.3 / 29.9 / 24.5 / 17.3. Rendered at 390 — the stack sits under the logo pill with no band of sky.
+- Run closing gap 83.7 / 89.2 / 94.2 / 102.0 / 112.5 at the same widths. Rendered — the route still exits off the right edge past the Perth card, nothing straddling the boundary.

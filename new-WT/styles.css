@@ -2466,13 +2466,16 @@ h2 {
     display: none;
   }
 
-  /* 14 -> 52cqw. The tail is pegged to the last card now, so everything past it
-     is scroll the route does not use — the only way left to slow the dabba that
-     does not flatten the lobes. 136px at 390 buys ~6% of ratio; it also stops the
-     Perth card sitting hard against the section's edge. */
+  /* Went 14 -> 52cqw to buy travel the route does not traverse, which is the only
+     slowdown left that does not flatten the lobes — and back to 18 because 240px
+     of empty grey under the Perth card is what it actually looked like. The trade,
+     measured: ratio 1.172 -> 1.245, so the dabba is ~6% quicker per pixel of
+     scroll. `maxPps` still caps the flicks, which is where the speed was being
+     felt anyway. 18 rather than the original 14 so the card is not hard against
+     the section's edge. */
   .run--mobile {
     display: block;
-    padding: 0 0 52cqw;
+    padding: 0 0 18cqw;
   }
 
   .run--mobile .run__copy {
@@ -2946,6 +2949,26 @@ h2 {
 
   .piece--object img {
     width: min(84px, 100%);
+  }
+}
+
+/* The hero's floor, tightened above the 320 class. The copy stack is anchored to
+   the hero's BOTTOM — it has to be, it must stay clear of the carve — so the gap
+   under the logo is whatever the hero's height does not spend:
+   `H - 0.23H - stack - 65`. At a 570 floor that left 47.6px of empty sky at 390.
+
+   540 is as low as the measurements allow, and 320 is why it is not global: there
+   the headline wraps to three lines and the subcopy to four, so the stack is
+   350.7px against 326.3 at 390, and 540 would leave 0.1px. The jump happens
+   between 320 and 335. Above 341 the stack is 318-334 and 540 leaves 29.9 at 360,
+   24.5 at 390, 17.3 at 430. Below it the 570 floor stays, where the gap is
+   already only 23.2px and there is nothing to give back.
+
+   After the max-width:700 block, deliberately — that is where the 570 floor is
+   set and the two tie on specificity. */
+@media (min-width: 341px) and (max-width: 700px) {
+  .hero {
+    min-height: 540px;
   }
 }
 
