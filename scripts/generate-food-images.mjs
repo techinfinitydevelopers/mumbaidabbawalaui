@@ -35,8 +35,13 @@ const DISHES = [
   {
     slug: "masala-dosa",
     name: "Masala Dosa",
-    prompt: `Crisp golden masala dosa on a banana leaf, rolled open to reveal spiced potato filling, three small steel bowls of coconut chutney, tomato chutney and sambar, ${LOOK}`,
-    aspect_ratio: "4:3",
+    /* Regenerated. Two things were wrong. The frame was the smaller one: 4:3
+       against every consumer's 3:4 slot, so the centre-crop threw away the
+       chutneys and half the dosa and what survived read as a plain folded
+       pancake. And "rolled open to reveal" was too indirect — the filling has to
+       be the subject, not a thing the bread is hiding. */
+    prompt: `Masala dosa on a banana leaf, one end unrolled so a generous mound of bright yellow spiced potato masala with mustard seeds and curry leaves spills out in the foreground, the rest of the dosa crisp and deep golden-brown with a blistered lacy surface, small steel bowls of white coconut chutney and sambar tucked behind, ${LOOK}`,
+    aspect_ratio: "3:4",
   },
   {
     slug: "paneer-tikka",
@@ -47,7 +52,12 @@ const DISHES = [
   {
     slug: "chole-bhature",
     name: "Chole Bhature",
-    prompt: `Chole bhature — a tall puffed golden bhatura beside dark spiced chickpea curry in a steel bowl, sliced red onion, green chilli, pickle, ${LOOK}`,
+    /* Regenerated. "A tall puffed golden bhatura" is what produced the cone —
+       the model read "tall" as the silhouette and gave a spire that dominated the
+       frame with the chole barely present. The chole leads now, and the bhatura
+       is described by what it actually is: a round, flat-ish, hollow-puffed
+       bread. */
+    prompt: `Chole bhature, the bowl of chole in front: dark glossy spiced chickpea curry in a steel bowl, thick masala clinging to the chickpeas, coriander and ginger julienne on top; behind it one round golden-brown bhatura, wide and flat with a soft hollow puff and blistered spots, lying flat on the plate rather than standing; sliced red onion, a green chilli and a lime wedge to the side, ${LOOK}`,
     aspect_ratio: "3:4",
   },
   {

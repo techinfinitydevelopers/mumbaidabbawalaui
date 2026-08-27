@@ -3207,3 +3207,39 @@ headless attempt proved nothing and this one does.
 ### 135+
 The first stat was the only one without the red plus. 1890 to 2026 is 136 years,
 so `135+` is also the more accurate reading. All three now match.
+
+---
+
+## 2026-08-27 — Masala Dosa and Chole Bhature regenerated
+
+Both flagged on review. Regenerated through `scripts/generate-food-images.mjs`
+(FLUX Pro v1.1 Ultra), then re-derived into `new-WT/assets/dish-3.jpg` and
+`dish-5.jpg`. The old files are the backup at `/tmp` only — git has them in
+history.
+
+**Masala Dosa had two faults, and one was the frame.** It was the only dish
+generated at **4:3** while every consumer crops to **3:4**, so the centre-crop
+threw away the chutneys and half the dosa, and what survived read as a plain
+folded pancake. The prompt's "rolled open to reveal spiced potato filling" was
+also too indirect — the filling has to be the subject, not something the bread is
+hiding. Now 3:4, with the potato masala spilling into the foreground.
+
+`src/lib/site.ts` had `aspect: "4/3"` for this dish to match the old still; moved
+to `3/4` so the Next app's gallery stays consistent with the new source.
+
+**Chole Bhature: "a tall puffed golden bhatura" is what produced the cone.** The
+model took "tall" as the silhouette and gave a spire that filled the frame with
+the chole barely present. Rewritten so the chole leads and the bhatura is
+described by what it is — round, wide, flat-ish, hollow-puffed, lying on the
+plate.
+
+Both new sources are 1792×2368 (3:4); crops are 600×800 at 92K and 108K.
+
+### Verified
+- Read both renders before deriving: dosa shows the yellow potato masala clearly, blistered golden surface, chutney bowls and banana leaf; chole shows chickpeas in dark masala with coriander and ginger julienne, two round flat bhature behind. No cone, no watermark.
+- Read both derived crops: nothing important lost to the 3:4 crop in either.
+
+### Standing item, unchanged
+The **FAL key in `.env.local` still needs rotating** — it was pasted into
+plaintext chat earlier in this project, and this run used it again. `.env*` is
+gitignored, so it has never been committed or deployed.

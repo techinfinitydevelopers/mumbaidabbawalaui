@@ -92,7 +92,9 @@ export const dishes: Dish[] = [
     name: "Masala Dosa",
     city: "Bengaluru",
     note: "Fermented overnight, crisp for ninety seconds.",
-    aspect: "4/3",
+    /* 3/4 with the still: every consumer crops to 3/4, and generating it 4/3
+       meant this one was the only dish losing most of its frame to the crop. */
+    aspect: "3/4",
   },
   {
     slug: "chole-bhature",
