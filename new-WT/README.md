@@ -17,11 +17,15 @@ new-WT/
   styles.css            hero styles annotated with their reference px, then the
                         sections below, which have no reference and are built
                         from the hero's own vocabulary
-  assets/               logo, hero, six dishes, legacy stills, the run's sticker
-                        pins, 20 network photographs (net-*), see below
+  assets/               logo, hero, six dishes, the run's sticker pins,
+                        10 photographs of the organisation (net-01..net-10),
+                        see below. The five legacy-*.jpg stills were deleted
+                        once nothing referenced them
   scripts/
-    generate-assets.mjs rebuilds the imagery — FAL for the hero, Perth and the
-                        lid code; public/food and public/img for the rest
+    generate-assets.mjs rebuilds the imagery — FAL for the street still;
+                        public/food and public/img crops for the rest. The
+                        entries for the deleted stills went with the files:
+                        an entry left behind recreates its file on the next run
     serve.mjs           tiny static server for previewing
   comparison.png        reference vs shipped hero, side by side at one scale
 ```
@@ -30,10 +34,10 @@ new-WT/
 
 | Section | Carries |
 |---|---|
-| Hero | Logo (48px in a 64px chip, matching the countdown's height), the **launch countdown in the nav row** with a live accent pulse on its label, the positioning headline, the Mumbai numbers, an enlarged "Join The Waitlist" CTA (66px), and the six-dish rail |
-| Since 1890 | 135 years / 5,000+ carriers / 200k+ lunches, and a three-image collage of **real photographs** — the tiffin handover full height, a loaded handcart and a crowd of carriers beside it, each chosen against the lede's own words |
-| The run | A light-grey band carrying a dashed Mumbai-to-Perth route, a plane that flies it as you scroll, and six die-cut sticker pins, unlabelled on desktop — Mumbai, four dishes, Perth. Structure and plane artwork from a supplied zip; palette, faces and photography are MD's |
-| The waitlist | A bento mosaic (20 real photographs across two counter-scrolling columns) beside a headline card with the actual signup, a secondary highlight card, and a privacy note — then a modal for mobile (+61), Perth suburb and veg / non-veg — the brief's two-step signup |
+| Hero | Logo (48px in a 64px chip, matching the countdown's height), the **launch countdown** — in the nav row on desktop, moved into the copy column below 900 (see Phones) — with a live accent pulse on its label, the positioning headline, the Mumbai numbers, an enlarged "Join The Waitlist" CTA (66px), and the six-dish rail |
+| Since 1890 | **135+** years / 5,000+ carriers / 200k+ lunches, and a three-image collage of the client's own photographs — a carrier walking with a load of bags full height, a felicitation and a medalled line-up beside it, picked so each slot gets an aspect it does not have to crop away |
+| The run | A light-grey band carrying a dashed Mumbai-to-Perth route, a dabba that flies it as you scroll, and six die-cut sticker pins, unlabelled — Mumbai, four dishes, Perth. Desktop pins the section until the flight lands; **phones get the same mechanic on their own route, built from the cards, with no pin.** Structure and plane artwork from a supplied zip; palette, faces and photography are MD's |
+| The waitlist | A bento mosaic (**10** of the client's photographs across two counter-scrolling columns) beside a headline card with the actual signup and a secondary highlight card — then a modal for mobile (+61), Perth suburb and veg / non-veg — the brief's two-step signup. The email-only privacy note that used to sit under the cards was removed on request |
 | Footer | The logo, a **Stay Connected** block (Instagram, Facebook, LinkedIn, TikTok and YouTube as icon-only links — **all five live**, all pointing at the Australian accounts, `mumbaidabbawalaau`. TikTok was a dimmed placeholder until its URL arrived; it was supplied as an app share link and the `?_r=1&_t=…` tracking pair was stripped before publishing, since `_t` is a share-session token belonging to the sender, not part of the address. X was removed: the only account was India-only, and a Perth page pointing there was worse than not linking at all) and **Contact** with `hello@mumbaidabbawala.com.au`. No phone number anywhere, by design |
 
 The signup does not post anywhere: there is no backend behind this page, so the
@@ -78,8 +82,9 @@ that fixed each one:
 
 | Width | Hero height from | The stack's problem, and the lever |
 | --- | --- | --- |
-| ≤380 | `min-height: 570px` | 28px insets left a 232px column for a 245px line; insets go to 20px, column to 248 |
-| ≤700 | ratio 0.82, floor **570** | 470 → 520 → 470 → 570; the last one is the countdown moving into this column |
+| ≤340 | ratio 0.82, floor **570** | the stack is 350.7px here (headline three lines, subcopy four), so this is the one width with nothing to give back — the gap under the logo is already only 23.2px |
+| 341–700 | ratio 0.82, floor **540** | 470 → 520 → 470 → 570 → 540. The 570 came from the countdown moving into this column; 540 came back off it once the gap under the logo was the complaint |
+| ≤380 | (insets, not height) | 28px insets left a 232px column for a 245px line; insets go to 20px, column to 248 |
 | 701–900 | ratio **1.28**, floor **620** | the desktop carve used to run here: 359px of hero against a 440px stack, CTA 65px *below* the hero |
 | 901–1023 | ratio 1.941 (desktop) | 448 against 506; the chamfer sliced the CTA's chip off. Headline 48/62 and a 56px CTA give back 50px |
 | ≥1024 | ratio 1.941 (desktop) | clear on its own — measured, which is where the band above stops |
@@ -121,9 +126,14 @@ tucking into the bite and starts covering the photograph.
   shear unusably when the box goes from 1.94 wide to 0.82, so it is authored
   separately: a step with a concave fillet where the panel's corner sits.
 - `.intro` sits **between `.hero` and `.rail` in the DOM** for this reason, and is
-  pulled up into the bite with `margin-top: calc(-22% + 6px)` — a percentage margin
-  resolves against the container's width, and once the hero's aspect ratio is fixed
-  the bite's depth is a fixed share of that width. On desktop the same element is
+  pulled up into the bite with `margin-top: calc(10px - max(620px, 121.95%) * 0.2)`.
+  It used to be `calc(-22% + 6px)`, a share of the frame's *width*, and that only
+  agrees with the bite while the hero's height comes from its aspect ratio — below
+  ~499px `min-height` pins the height and the width keeps shrinking, so the pull
+  shrank and the bite did not. Measured at 400: a 114px bite against a 71.7px pull,
+  **42px of unused bite**, and since the panel is `#FFFFFF` on a `#FEFEFE` page that
+  gap is indistinguishable from the panel and reads as dead space over the text. The
+  expression states the hero's height instead of a proxy for it. On desktop the same element is
   positioned absolutely below the hero, with `.stage` reserving the 173px it gives
   up by leaving the flow.
 - Cards go to a fixed 172 × 200 with their own scoop path for the featured one — a
@@ -167,17 +177,31 @@ handler needed no changes across any of the three.
   7px every pass. The ≤700 block overrides the gap, so it overrides the
   padding too; keep the two equal.
 - A `mask-image` gradient fades both ends so tiles enter and leave rather
-  than being chopped; hover and `:focus-within` pause both tracks; durations
-  differ per column (**90s / 92s**) so the two do not travel in lockstep.
+  than being chopped; durations differ per column (**43s / 49s**) so the two do
+  not travel in lockstep.
+- **Hover and `:focus-within` pause both tracks — but only behind
+  `(hover: hover) and (pointer: fine)`.** Ungated it was a feature with a mouse
+  and a bug with a finger: touch browsers set `:hover` on tap and leave it set
+  until the reader taps elsewhere, so one tap stopped the board for good.
+  `:focus-within` sits behind the same gate because nothing inside is focusable
+  (40 figures, 40 images, no anchor, button, input or tabindex) and keyboards
+  come with hovering pointers. Verified on an emulated touch device, not by
+  reasoning: `maxTouchPoints: 5`, `hover: none`, the gate `false`, both tracks
+  still `running` after a real touchstart/touchend/click.
 - **Duration is a function of track length, so it has to be re-derived every
-  time tiles change — this has bitten twice.** The reference speeds are 20.6
-  and 20.1 px/s. 46s/54s ran the original 1894/2172px tracks; adding the
+  time tiles change — this has now bitten four times.** The reference speeds are
+  20.6 and 20.1 px/s. 46s/54s ran the original 1894/2172px tracks; adding the
   network photographs took them to 5602/5880px (136s/146s); removing the
   generated tiles brought both to 3708px, where those same durations ran 33%
-  too *slow* at 13.6 and 12.7 px/s. Half the track height over the target speed
-  is the duration. Adding tiles alone would have scrolled three times too
-  fast. Same speeds now need 136s and 146s. Measure the track, divide half its
-  height by the old speed.
+  too *slow* at 13.6 and 12.7 px/s; then the client's ten replaced the twenty,
+  five to a column instead of ten, halving the travel to 890px and 990px — where
+  90s/92s would have crawled at half speed, so **43s and 49s**, measured after at
+  20.70 and 20.20 px/s. Half the track height over the target speed is the
+  duration. Measure the track, divide half its height by the old speed.
+- The two columns are **no longer the same height** (890 against 990): the two
+  sets of five carry different height classes. That is why the duration is
+  computed per column rather than shared. Each half still exceeds the 660px
+  window, which is what keeps the loop seamless.
 - **The duplicate set is generated from the real set, not maintained by hand.**
   The `-50%` loop only lands seamlessly if the two halves are identical, and 31
   tiles per column is well past what is safe to keep in sync manually — the
